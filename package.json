@@ -1,0 +1,31 @@
+{
+  "name": "react-native-magic-move",
+  "version": "0.1.0",
+  "description": "See what's inside your react-native bundle",
+  "author": "IjzerenHein <hrutjes@gmail.com>",
+  "keywords": [
+    "react-native-magic-move",
+    "react-native",
+    "magic move",
+    "fluid",
+    "scene-transition"
+  ],
+  "repository": "https://github.com/IjzerenHein/react-native-magic-move",
+  "bugs": "https://github.com/IjzerenHein/react-native-magic-move/issues",
+  "license": "MIT",
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint ./src"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.11.1",
+    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-react-native": "^3.5.0",
+    "prettier": "^1.15.3"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  }
+}
