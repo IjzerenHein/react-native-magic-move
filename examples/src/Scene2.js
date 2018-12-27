@@ -12,7 +12,9 @@ const styles = StyleSheet.create({
   box: {
     width: 200,
     height: 200,
-    backgroundColor: "green"
+    backgroundColor: "purple",
+    borderRadius: 30,
+    borderColor: "green"
   }
 });
 

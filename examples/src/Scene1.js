@@ -10,9 +10,11 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   box: {
-    width: 100,
-    height: 100,
-    backgroundColor: "green"
+    marginLeft: 50,
+    width: 50,
+    height: 50,
+    backgroundColor: "green",
+    borderRadius: 2
   }
 });
 

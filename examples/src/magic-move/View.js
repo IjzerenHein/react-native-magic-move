@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated } from "react-native";
+import { StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import MagicMoveContext from "./Context";
 
@@ -9,18 +9,19 @@ import MagicMoveContext from "./Context";
  */
 class MagicMoveView extends React.Component {
   static propTypes = {
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    useNativeDriver: PropTypes.bool
     /** show:
           hide:
           update:*/
   };
 
-  _layout = undefined;
+  _ref = undefined;
 
   constructor(props, context) {
     super(props, context);
     this.state = {
-      opacity: new Animated.Value(1),
+      opacity: 1,
       id: props.id
     };
   }
@@ -32,33 +33,33 @@ class MagicMoveView extends React.Component {
     return null;
   }
 
-  getContext() {
+  getAdministration() {
     return this._context || this.context;
   }
 
   componentDidMount() {
-    this.getContext().mountComponent(this);
+    this.getAdministration().addComponent(this);
   }
 
-  componentWillUmount() {
-    // this.getContext().unmountComponent(this);
+  componentWillUnmount() {
+    this.getAdministration().removeComponent(this);
   }
 
   componentDidUpdate() {
-    this.getContext().updateComponentProps(this);
+    // this.getAdministration().updateComponentProps(this);
   }
 
   render() {
-    const { id, style, onLayout, ...otherProps } = this.props; // eslint-disable-line
+    const { id, style, ...otherProps } = this.props; // eslint-disable-line
     const { opacity } = this.state;
     return (
       <MagicMoveContext.Consumer>
         {context => {
           this._context = context;
           return (
-            <Animated.View
+            <View
+              ref={this._setRef}
               style={[style, { opacity }]}
-              onLayout={this._onLayout}
               {...otherProps}
             />
           );
@@ -67,26 +68,25 @@ class MagicMoveView extends React.Component {
     );
   }
 
-  _onLayout = event => {
-    this._layout = event.currentTarget.layout;
-    //this.context.updateComponentLayout(this);
-    // console.log("onLayout", event);
-
-    if (this.props.onLayout) {
-      this.props.onLayout(event);
-    }
+  _setRef = ref => {
+    this._ref = ref;
   };
 
+  getRef() {
+    return this._ref;
+  }
+
   setOpacity(val) {
-    this.state.opacity.setValue(val);
+    //this.state.opacity.setValue(val);
+    if (this.state.opacity !== val) {
+      this.setState({
+        opacity: val
+      });
+    }
   }
 
-  get style() {
-    // TODO
-  }
-
-  get layout() {
-    return this._layout;
+  getStyle() {
+    return StyleSheet.flatten([this.props.style]);
   }
 }
 

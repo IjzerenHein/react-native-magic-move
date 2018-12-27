@@ -1,5 +1,3 @@
-import MagicMoveAnimation from "./Animation";
-
 /**
  * The MagicMove administration keeps track of the
  * components that have been mounted/unmounted and
@@ -15,9 +13,14 @@ class MagicMoveAdministration {
   constructor() {
     this._components = {}; // registered components
     this._animations = {}; // running animations
+    this._listenerCallback = undefined;
   }
 
-  mountComponent(component) {
+  addListener(callback) {
+    this._listenerCallback = callback;
+  }
+
+  addComponent(component) {
     const { id } = component.props;
     console.log("mountComp: ", id);
     let array = this._components[id];
@@ -32,7 +35,7 @@ class MagicMoveAdministration {
     }
   }
 
-  unmountComponent(component) {
+  removeComponent(component) {
     const { id } = component.props;
     console.log("unmountComp: ", id);
     let array = this._components[id];
@@ -58,18 +61,28 @@ class MagicMoveAdministration {
     }
   }
 
-  _animate(id, targetComponent, sourceComponent) {
+  removeAnimation(id) {
+    delete this._animations[id];
+    if (this._listenerCallback) {
+      this._listenerCallback();
+    }
+  }
+
+  _animate(id, to, from) {
     console.log("animate: ", id);
     let anim = this._animations[id];
     if (anim) {
-      //anim.update(targetComponent);
+      anim.to = to;
     } else {
-      anim = new MagicMoveAnimation(id, sourceComponent, targetComponent);
-      this._animations[id] = anim;
-      anim.start(() => {
-        delete this._animations[id];
-      });
+      this._animations[id] = { id, from, to };
     }
+    if (this._listenerCallback) {
+      this._listenerCallback();
+    }
+  }
+
+  get animations() {
+    return Object.keys(this._animations).map(id => this._animations[id]);
   }
 }
 
