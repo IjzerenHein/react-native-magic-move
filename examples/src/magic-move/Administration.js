@@ -1,3 +1,5 @@
+import MagicMoveAnimation from "./Animation";
+
 /**
  * The MagicMove administration keeps track of the
  * components that have been mounted/unmounted and
@@ -11,28 +13,29 @@
  */
 class MagicMoveAdministration {
   constructor() {
-    this._map = {};
+    this._components = {}; // registered components
+    this._animations = {}; // running animations
   }
 
-  async mountComponent(component) {
+  mountComponent(component) {
     const { id } = component.props;
-    let array = this._map[id];
+    console.log("mountComp: ", id);
+    let array = this._components[id];
     if (!array) {
       array = [];
-      this._map[id] = array;
+      this._components[id] = array;
     }
     array.push(component);
     if (array.length >= 2) {
       const prevComponent = array[array.length - 2];
-      const prevStyle = prevComponent.getStyle();
-      await component.show(prevStyle);
-      component.hide();
+      this._animate(id, component, prevComponent);
     }
   }
 
   unmountComponent(component) {
     const { id } = component.props;
-    let array = this._map[id];
+    console.log("unmountComp: ", id);
+    let array = this._components[id];
     if (!array)
       throw new Error(
         "MagicMove: Unmounting a component with id " +
@@ -48,13 +51,24 @@ class MagicMoveAdministration {
       );
     array.splice(idx, 1);
     if (!array.length) {
-      delete this._map[id];
+      delete this._components[id];
     } else {
-      // TODO
-      /** const prevComponent = array[array.length - 2];
-          const prevStyle = prevComponent.getStyle();
-          await component.show(prevStyle);
-          component.hide();*/
+      const prevComponent = array[array.length - 2];
+      this._animate(id, prevComponent, component);
+    }
+  }
+
+  _animate(id, targetComponent, sourceComponent) {
+    console.log("animate: ", id);
+    let anim = this._animations[id];
+    if (anim) {
+      //anim.update(targetComponent);
+    } else {
+      anim = new MagicMoveAnimation(id, sourceComponent, targetComponent);
+      this._animations[id] = anim;
+      anim.start(() => {
+        delete this._animations[id];
+      });
     }
   }
 }

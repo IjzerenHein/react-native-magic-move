@@ -15,11 +15,12 @@ class MagicMoveView extends React.Component {
           update:*/
   };
 
-  static contextType = MagicMoveContext;
+  _layout = undefined;
 
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     this.state = {
+      opacity: new Animated.Value(1),
       id: props.id
     };
   }
@@ -31,28 +32,64 @@ class MagicMoveView extends React.Component {
     return null;
   }
 
-  componenentDidMount() {
-    this.context.mountComponent(this);
+  getContext() {
+    return this._context || this.context;
+  }
+
+  componentDidMount() {
+    this.getContext().mountComponent(this);
   }
 
   componentWillUmount() {
-    this.context.unmountComponent(this);
+    // this.getContext().unmountComponent(this);
   }
 
   componentDidUpdate() {
-    // TODO UPDATE
+    this.getContext().updateComponentProps(this);
   }
 
   render() {
-    const { id, style, ...otherProps } = this.props; // eslint-disable-line
-    return <Animated.View style={style} {...otherProps} />;
+    const { id, style, onLayout, ...otherProps } = this.props; // eslint-disable-line
+    const { opacity } = this.state;
+    return (
+      <MagicMoveContext.Consumer>
+        {context => {
+          this._context = context;
+          return (
+            <Animated.View
+              style={[style, { opacity }]}
+              onLayout={this._onLayout}
+              {...otherProps}
+            />
+          );
+        }}
+      </MagicMoveContext.Consumer>
+    );
   }
 
-  _getStyle() {}
+  _onLayout = event => {
+    this._layout = event.currentTarget.layout;
+    //this.context.updateComponentLayout(this);
+    // console.log("onLayout", event);
 
-  async _show(startStyle) {}
+    if (this.props.onLayout) {
+      this.props.onLayout(event);
+    }
+  };
 
-  _hide() {}
+  setOpacity(val) {
+    this.state.opacity.setValue(val);
+  }
+
+  get style() {
+    // TODO
+  }
+
+  get layout() {
+    return this._layout;
+  }
 }
+
+// MagicMoveView.contextType = MagicMoveContext;
 
 export default MagicMoveView;

@@ -9,8 +9,6 @@ import MagicMoveContext from "./Context";
  * <MagicMove> component.
  */
 class MagicMoveProvider extends React.Component {
-  static View = MagicMoveView;
-
   constructor(props) {
     super(props);
     this._administration = new MagicMoveAdministration();
@@ -25,5 +23,7 @@ class MagicMoveProvider extends React.Component {
     );
   }
 }
+
+MagicMoveProvider.View = MagicMoveView;
 
 export default MagicMoveProvider;
