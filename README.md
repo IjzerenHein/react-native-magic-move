@@ -10,7 +10,7 @@ Create magical move transitions between scenes in react-native 🐰🎩✨
   - [Components](#components)
   - [Props](#props)
   - [Scenes](#scenes)
-- [Example](#example)
+- [Examples](#examples)
 - [Disclaimer 🐰🎩](#disclaimer-%F0%9F%90%B0%F0%9F%8E%A9)
 
 ## Usage
@@ -94,7 +94,7 @@ This is important so that Magic Move can correctly assess the destination-positi
 `MagicMove.Scene` is implemented using a regular `View` and supports all its properties.
 
 
-## Example
+## Examples
 
 Example with scene transitions using `react-native-router-flux`.
 
@@ -138,6 +138,9 @@ const App = () => (
   </MagicMove>
 );
 ```
+
+See [`examples/src`](./examples/src) for more code examples.
+
 
 ## Disclaimer 🐰🎩
 
