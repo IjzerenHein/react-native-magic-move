@@ -3,7 +3,7 @@
 
 Create magical move transitions between scenes in react-native 🐰🎩✨
 
-## WIP go away <!-- omit in toc -->
+## Work in progress, use at own risk :) <!-- omit in toc -->
 
 - [Usage](#usage)
 - [Documentation](#documentation)
@@ -34,7 +34,7 @@ const App = () => (
 ```
 
 Add the `<MagicMove.{View|Image|Text}>` component to your views. Whenever the Magic Move component
-is mounted while another Magic Move component with the same `id` is mounted, then a magic transition between the components is performed.
+is mounted while another Magic Move component with the same `id` is already mounted, then a magic transition between the components is performed.
 
 ```js
 import MagicMove from 'react-native-magic-move';
