@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Animated, Easing, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import MagicMoveContext from "./Context";
 
@@ -9,11 +9,26 @@ import MagicMoveContext from "./Context";
  */
 class MagicMoveView extends React.Component {
   static propTypes = {
+    Component: PropTypes.any.isRequired,
+    AnimatedComponent: PropTypes.any.isRequired,
     id: PropTypes.string.isRequired,
-    useNativeDriver: PropTypes.bool
-    /** show:
-          hide:
-          update:*/
+    useNativeDriver: PropTypes.bool,
+    keepHidden: PropTypes.bool,
+    duration: PropTypes.number,
+    delay: PropTypes.number,
+    easing: PropTypes.func,
+    debug: PropTypes.bool
+  };
+
+  static defaultProps = {
+    Component: View,
+    AnimatedComponent: Animated.View,
+    useNativeDriver: false,
+    duration: 500,
+    delay: 0,
+    easing: Easing.inOut(Easing.ease),
+    keepHidden: false,
+    debug: false
   };
 
   _ref = undefined;
@@ -50,14 +65,14 @@ class MagicMoveView extends React.Component {
   }
 
   render() {
-    const { id, style, ...otherProps } = this.props; // eslint-disable-line
+    const { id, style, Component, ...otherProps } = this.props; // eslint-disable-line
     const { opacity } = this.state;
     return (
       <MagicMoveContext.Consumer>
         {context => {
           this._context = context;
           return (
-            <View
+            <Component
               ref={this._setRef}
               style={[style, { opacity }]}
               {...otherProps}
@@ -77,7 +92,6 @@ class MagicMoveView extends React.Component {
   }
 
   setOpacity(val) {
-    //this.state.opacity.setValue(val);
     if (this.state.opacity !== val) {
       this.setState({
         opacity: val

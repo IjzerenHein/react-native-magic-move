@@ -1,6 +1,6 @@
 /* globals Promise */
 import React from "react";
-import { Animated, View, StyleSheet } from "react-native";
+import { Animated, View, StyleSheet, Dimensions } from "react-native";
 import PropTypes from "prop-types";
 
 const styles = StyleSheet.create({
@@ -17,6 +17,14 @@ function measureLayout(ref) {
   return new Promise(resolve => {
     function onMeasure(x, y, width, height, pageX, pageY) {
       if (width || height || pageX || pageY) {
+        const dims = Dimensions.get("window");
+        const percWidthVisible = (dims.width - pageX) / width;
+        if (percWidthVisible < 0.2) {
+          pageX = x;
+        }
+        /* if (pageY > dims.height || pageY < 0) {
+          pageY = y;
+        }*/
         return resolve({
           x: pageX,
           y: pageY,
@@ -32,33 +40,37 @@ function measureLayout(ref) {
   });
 }
 
-const ANIMATABLE_PROPS = [
-  "borderRightColor",
-  "borderBottomColor",
-  "borderBottomEndRadius",
-  "borderBottomLeftRadius",
-  "borderBottomRightRadius",
-  "borderBottomStartRadius",
-  "borderBottomWidth",
-  "borderColor",
-  "borderEndColor",
-  "borderLeftColor",
-  "borderLeftWidth",
-  "borderRadius",
-  "backgroundColor",
-  "borderRightWidth",
-  "borderStartColor",
-  "borderStyle",
-  "borderTopColor",
-  "borderTopEndRadius",
-  "borderTopLeftRadius",
-  "borderTopRightRadius",
-  "borderTopStartRadius",
-  "borderTopWidth",
-  "borderWidth",
-  "opacity",
-  "elevation"
-];
+const ANIMATABLE_PROPS = {
+  // View
+  borderRightColor: "transparent",
+  borderBottomColor: "transparent",
+  borderBottomEndRadius: 0,
+  borderBottomLeftRadius: 0,
+  borderBottomRightRadius: 0,
+  borderBottomStartRadius: 0,
+  borderBottomWidth: 0,
+  borderColor: "transparent",
+  borderEndColor: "transparent",
+  borderLeftColor: "transparent",
+  borderLeftWidth: 0,
+  borderRadius: 0,
+  backgroundColor: "transparent",
+  borderRightWidth: 0,
+  borderStartColor: "transparent",
+  borderStyle: undefined,
+  borderTopColor: "transparent",
+  borderTopEndRadius: 0,
+  borderTopLeftRadius: 0,
+  borderTopRightRadius: 0,
+  borderTopStartRadius: 0,
+  borderTopWidth: 0,
+  borderWidth: 0,
+  opacity: 1,
+  elevation: 0,
+  // Text,
+  fontSize: undefined,
+  color: "black"
+};
 
 /**
  * 1. Hide to component
@@ -101,7 +113,7 @@ class MagicMoveAnimation extends React.Component {
       measureLayout(to.getRef()),
       measureLayout(from.getRef())
     ]).then(layouts => {
-      this.setState({
+      const newState = {
         container: layouts[0],
         to: {
           ...to.getStyle(),
@@ -111,7 +123,9 @@ class MagicMoveAnimation extends React.Component {
           ...from.getStyle(),
           ...layouts[2]
         }
-      });
+      };
+      console.log("NEW STATE: ", newState);
+      this.setState(newState);
     });
   }
 
@@ -137,7 +151,6 @@ class MagicMoveAnimation extends React.Component {
       const y = this.interpolate(from.y - (to.height - from.height) / 2, to.y);
       const scaleX = this.interpolate(from.width / to.width, 1);
       const scaleY = this.interpolate(from.height / to.height, 1);
-      // const backgroundColor = this.interpolate(from)
 
       const style = {
         position: "absolute",
@@ -152,16 +165,42 @@ class MagicMoveAnimation extends React.Component {
           { scaleY: scaleY }
         ]
       };
-      ANIMATABLE_PROPS.forEach(propName => {
-        if (to[propName] || from[propName]) {
-          style[propName] = this.interpolate(from[propName], to[propName]);
-        }
+      Object.keys(ANIMATABLE_PROPS).forEach(propName => {
+        let toProp = to[propName];
+        let fromProp = from[propName];
+        if (toProp === undefined && fromProp === undefined) return;
+        let defaultValue = ANIMATABLE_PROPS[propName];
+        defaultValue =
+          defaultValue === undefined ? toProp || fromProp : defaultValue;
+        toProp = toProp === undefined ? defaultValue : toProp;
+        fromProp = fromProp === undefined ? defaultValue : fromProp;
+        style[propName] =
+          toProp === fromProp ? toProp : this.interpolate(fromProp, toProp);
       });
 
+      const {
+        children,
+        debug,
+        AnimatedComponent,
+        ...otherProps
+      } = this.props.to.props;
+      if (debug) {
+        style.backgroundColor = "pink";
+        style.borderStyle = "solid";
+        style.borderWidth = 1;
+        style.borderColor = "deeppink";
+      }
+      delete otherProps.id;
+      delete otherProps.style;
+      delete otherProps.Component;
+      delete otherProps.useNativeDriver;
+      delete otherProps.keepHidden;
+      delete otherProps.duration;
+      delete otherProps.easing;
       content = (
-        <Animated.View style={style}>
-          {/*this._targetComponent.props.children*/}
-        </Animated.View>
+        <AnimatedComponent style={style} {...otherProps}>
+          {children}
+        </AnimatedComponent>
       );
     }
     return (
@@ -177,7 +216,7 @@ class MagicMoveAnimation extends React.Component {
 
   componentDidUpdate() {
     const { animValue, container, to, from } = this.state;
-    if (to && from && container) {
+    if (container && to && from) {
       //
       // 4. Hide from component
       //
@@ -186,16 +225,20 @@ class MagicMoveAnimation extends React.Component {
       //
       // 5. Animate...
       //
-      const useNativeDriver =
-        this.props.to.props.useNativeDriver &&
-        this.props.from.props.useNativeDriver;
+      const fromProps = this.props.from.props;
+      const toProps = this.props.to.props;
       Animated.timing(animValue, {
         toValue: 1,
-        duration: 400,
-        useNativeDriver
+        duration: toProps.debug ? 8000 : toProps.duration,
+        delay: toProps.delay,
+        easing: toProps.easing,
+        useNativeDriver: toProps.useNativeDriver && fromProps.useNativeDriver
       }).start(() => {
-        const { to, onCompleted } = this.props;
+        const { to, from, onCompleted } = this.props;
         to.setOpacity(1);
+        if (!from.props.keepHidden) {
+          from.setOpacity(1);
+        }
         onCompleted();
       });
     }

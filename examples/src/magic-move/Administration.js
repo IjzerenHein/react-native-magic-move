@@ -12,7 +12,7 @@
 class MagicMoveAdministration {
   constructor() {
     this._components = {}; // registered components
-    this._animations = {}; // running animations
+    this._animations = []; // running animations
     this._listenerCallback = undefined;
   }
 
@@ -56,13 +56,16 @@ class MagicMoveAdministration {
     if (!array.length) {
       delete this._components[id];
     } else {
-      const prevComponent = array[array.length - 2];
-      this._animate(id, prevComponent, component);
+      // const prevComponent = array[array.length - 2];
+      // this._animate(id, prevComponent, component);
     }
   }
 
   removeAnimation(id) {
-    delete this._animations[id];
+    const idx = this._animations.findIndex(anim => anim.id === id);
+    if (idx >= 0) {
+      this._animations.splice(idx, 1);
+    }
     if (this._listenerCallback) {
       this._listenerCallback();
     }
@@ -70,11 +73,11 @@ class MagicMoveAdministration {
 
   _animate(id, to, from) {
     console.log("animate: ", id);
-    let anim = this._animations[id];
+    const anim = this._animations.find(anim => anim.id === id);
     if (anim) {
       anim.to = to;
     } else {
-      this._animations[id] = { id, from, to };
+      this._animations.unshift({ id, from, to });
     }
     if (this._listenerCallback) {
       this._listenerCallback();
@@ -82,7 +85,7 @@ class MagicMoveAdministration {
   }
 
   get animations() {
-    return Object.keys(this._animations).map(id => this._animations[id]);
+    return this._animations;
   }
 }
 

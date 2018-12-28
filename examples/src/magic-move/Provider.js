@@ -1,6 +1,8 @@
 import React from "react";
 import MagicMoveAdministration from "./Administration";
 import MagicMoveView from "./View";
+import MagicMoveText from "./Text";
+import MagicMoveImage from "./Image";
 import MagicMoveContext from "./Context";
 import MagicMoveRenderer from "./Renderer";
 
@@ -27,5 +29,7 @@ class MagicMoveProvider extends React.Component {
 }
 
 MagicMoveProvider.View = MagicMoveView;
+MagicMoveProvider.Text = MagicMoveText;
+MagicMoveProvider.Image = MagicMoveImage;
 
 export default MagicMoveProvider;
