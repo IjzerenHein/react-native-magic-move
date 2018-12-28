@@ -28,21 +28,23 @@ const styles = StyleSheet.create({
 export default class Scene3 extends React.Component {
   render() {
     return (
-      <ScrollView style={styles.container}>
-        <MagicMove.Image
-          id="scene3"
-          style={styles.image}
-          source={require("./assets/waves.jpg")}
-          resizeMode="cover"
-          easing={Easing.in(Easing.cubic)}
-          duration={400}
-        />
-        <Text style={styles.text}>
-          Arise from sleep, old cat, And with great yawns and stretchings...
-          Amble out for love
-        </Text>
-        <Text style={styles.signature}>- Issa, Japanese Haiku</Text>
-      </ScrollView>
+      <MagicMove.Scene style={styles.container}>
+        <ScrollView style={styles.container}>
+          <MagicMove.Image
+            id="scene3"
+            style={styles.image}
+            source={require("./assets/waves.jpg")}
+            resizeMode="cover"
+            easing={Easing.in(Easing.cubic)}
+            duration={400}
+          />
+          <Text style={styles.text}>
+            Arise from sleep, old cat, And with great yawns and stretchings...
+            Amble out for love
+          </Text>
+          <Text style={styles.signature}>- Issa, Japanese Haiku</Text>
+        </ScrollView>
+      </MagicMove.Scene>
     );
   }
 }

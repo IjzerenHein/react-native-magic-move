@@ -19,11 +19,13 @@ const styles = StyleSheet.create({
 export default class Scene1 extends React.Component {
   render() {
     return (
-      <MagicMove.View id="scene1" style={styles.container}>
-        <MagicMove.Text id="scene1.title" style={styles.text}>
-          Scene 1
-        </MagicMove.Text>
-      </MagicMove.View>
+      <MagicMove.Scene style={styles.container}>
+        <MagicMove.View id="scene1" style={styles.container}>
+          <MagicMove.Text id="scene1.title" style={styles.text}>
+            Scene 1
+          </MagicMove.Text>
+        </MagicMove.View>
+      </MagicMove.Scene>
     );
   }
 }

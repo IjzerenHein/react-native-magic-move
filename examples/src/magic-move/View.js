@@ -2,6 +2,7 @@ import React from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import MagicMoveContext from "./Context";
+import MagicMoveScene from "./Scene";
 
 /**
  * An Animated view that is magically "moved" to the
@@ -32,6 +33,7 @@ class MagicMoveView extends React.Component {
   };
 
   _ref = undefined;
+  _sceneRef = undefined;
 
   constructor(props, context) {
     super(props, context);
@@ -72,11 +74,18 @@ class MagicMoveView extends React.Component {
         {context => {
           this._context = context;
           return (
-            <Component
-              ref={this._setRef}
-              style={[style, { opacity }]}
-              {...otherProps}
-            />
+            <MagicMoveScene.Context.Consumer>
+              {sceneRef => {
+                this._sceneRef = sceneRef;
+                return (
+                  <Component
+                    ref={this._setRef}
+                    style={[style, { opacity }]}
+                    {...otherProps}
+                  />
+                );
+              }}
+            </MagicMoveScene.Context.Consumer>
           );
         }}
       </MagicMoveContext.Consumer>
@@ -91,6 +100,10 @@ class MagicMoveView extends React.Component {
     return this._ref;
   }
 
+  getSceneRef() {
+    return this._sceneRef;
+  }
+
   setOpacity(val) {
     if (this.state.opacity !== val) {
       this.setState({
@@ -103,7 +116,5 @@ class MagicMoveView extends React.Component {
     return StyleSheet.flatten([this.props.style]);
   }
 }
-
-// MagicMoveView.contextType = MagicMoveContext;
 
 export default MagicMoveView;

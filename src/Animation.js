@@ -1,6 +1,6 @@
 /* globals Promise */
 import React from "react";
-import { Animated, View, StyleSheet, Dimensions } from "react-native";
+import { Animated, View, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
 const styles = StyleSheet.create({
@@ -17,14 +17,6 @@ function measureLayout(ref) {
   return new Promise(resolve => {
     function onMeasure(x, y, width, height, pageX, pageY) {
       if (width || height || pageX || pageY) {
-        const dims = Dimensions.get("window");
-        const percWidthVisible = (dims.width - pageX) / width;
-        if (percWidthVisible < 0.2) {
-          pageX = x;
-        }
-        /* if (pageY > dims.height || pageY < 0) {
-          pageY = y;
-        }*/
         return resolve({
           x: pageX,
           y: pageY,
@@ -111,17 +103,21 @@ class MagicMoveAnimation extends React.Component {
     Promise.all([
       measureLayout(this._ref),
       measureLayout(to.getRef()),
-      measureLayout(from.getRef())
+      measureLayout(to.getSceneRef() || this._ref),
+      measureLayout(from.getRef()),
+      measureLayout(from.getSceneRef() || this._ref)
     ]).then(layouts => {
       const newState = {
         container: layouts[0],
         to: {
           ...to.getStyle(),
-          ...layouts[1]
+          ...layouts[1],
+          scene: layouts[2]
         },
         from: {
           ...from.getStyle(),
-          ...layouts[2]
+          ...layouts[3],
+          scene: layouts[4]
         }
       };
       console.log("NEW STATE: ", newState);
@@ -147,7 +143,10 @@ class MagicMoveAnimation extends React.Component {
     if (container && to && from) {
       const width = to.width;
       const height = to.height;
-      const x = this.interpolate(from.x - (to.width - from.width) / 2, to.x);
+      const x = this.interpolate(
+        from.x - from.scene.x - (to.width - from.width) / 2,
+        to.x - to.scene.x
+      );
       const y = this.interpolate(from.y - (to.height - from.height) / 2, to.y);
       const scaleX = this.interpolate(from.width / to.width, 1);
       const scaleY = this.interpolate(from.height / to.height, 1);
