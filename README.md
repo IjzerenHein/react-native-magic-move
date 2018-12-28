@@ -1,22 +1,71 @@
 # react-native-magic-move
 
-Create magical move transitions between scenes in react-native ✨
-
-<video src="./magic-move.mov" width="384" height="795" preload></video>
+Create magical move transitions between scenes in react-native 🐰🎩✨
 
 # WIP go away
 
-- [`Introduction`](#introduction)
-- [`Documentation`](#documentation)
+- [`Usage`](#usage)
+- [`API Documentation`](#api-documentation)
+- [`Example`](#example)
 - [`Disclaimer`](#disclaimer)
 
-## Introduction
+## Usage
+
+Installation
+
+`yarn add react-native-magic-move`
+
+Wrap your app with the magic-move context.
+
+```js
+import MagicMove from 'react-native-magic-move';
+
+const App = () => (
+  <MagicMove>
+    {...}
+  </MagicMove>
+);
+```
+
+Add the MagicMove component to your views. Whenever MagicMove component
+is mounted while another MagicMove component is mounted with the same id, then a magic transition between the components is performed.
+
+```js
+const Scene1 = () => (
+  <View>
+    <MagicMove.View id="logo" style={{
+        width: 100,
+        height: 100,
+        backgroundColor: "green",
+        borderRadius: 50
+      }} />
+  </View>
+);
+
+const Scene2 = () => (
+  <View>
+    <MagicMove.View id="logo" style={{
+        width: 200,
+        height: 200,
+        backgroundColor: "purple",
+        borderRadius: 0
+      }} />
+  </View>
+);
+```
 
 
+## API Documentation
 
-## Documentation
+The following magic-move components are supported:
 
-Props
+- `MagicMove.View`
+- `MagicMove.Text`
+- `MagicMove.Image`
+
+These components support all the usual props that you expect (they are passed through). 
+
+### Props
 
 | Property          | Type       | Default                     | Description                                                         |
 | ----------------- | ---------- | --------------------------- | ------------------------------------------------------------------- |
@@ -29,7 +78,50 @@ Props
 | `debug`           | `boolean`  | `false`                     | Enables debug-mode to analyze animations                            |
 
 
+## Example
 
+Example with scene transitions using `react-native-router-flux`.
+
+```jsx
+import React from "react";
+import { View, TouchableOpacity } from "react-native";
+import { Router, Stack, Scene, Actions } from "react-native-router-flux";
+import MagicMove from "react-native-magic-move";
+
+const Scene1 = () => (
+  <View>
+    <TouchableOpacity onPress={() => Actions.scene2()}>
+      <MagicMove.View id="myView" style={{
+        alignSelf: "center",
+        width: 100,
+        height: 100,
+        backgroundColor: "green",
+        borderRadius: 20
+      }} />
+    </TouchableOpacity>
+  </View>
+);
+
+const Scene2 = () => (
+  <View>
+    <MagicMove.View id="myView" style={{
+      height: 300,
+      backgroundColor: "purple"
+    }} />
+  </View>
+);
+
+const App = () => (
+  <MagicMove>
+    <Router>
+      <Stack key="root">
+        <Scene key="scene1" component={Scene1} />
+        <Scene key="scene2" component={Scene2} />
+      </Stack>
+    </Router>
+  </MagicMove>
+);
+```
 
 ## Disclaimer 🐰🎩
 
