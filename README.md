@@ -13,7 +13,9 @@ Create magical move transitions between scenes in react-native 🐰🎩✨
 
 Installation
 
-`yarn add react-native-magic-move`
+```
+yarn add react-native-magic-move
+```
 
 Wrap your app with the magic-move context.
 
@@ -31,6 +33,8 @@ Add the MagicMove component to your views. Whenever MagicMove component
 is mounted while another MagicMove component is mounted with the same id, then a magic transition between the components is performed.
 
 ```js
+import MagicMove from 'react-native-magic-move';
+
 const Scene1 = () => (
   <View>
     <MagicMove.View id="logo" style={{
@@ -65,7 +69,7 @@ The following magic-move components are supported:
 
 These components support all the usual props that you expect (they are passed through). 
 
-### Props
+### Supported props
 
 | Property          | Type       | Default                     | Description                                                         |
 | ----------------- | ---------- | --------------------------- | ------------------------------------------------------------------- |

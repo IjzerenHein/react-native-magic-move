@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated } from "react-native";
+import { Animated, Easing, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import MagicMoveContext from "./Context";
 
@@ -9,17 +9,34 @@ import MagicMoveContext from "./Context";
  */
 class MagicMoveView extends React.Component {
   static propTypes = {
-    id: PropTypes.string.isRequired
-    /** show:
-          hide:
-          update:*/
+    Component: PropTypes.any.isRequired,
+    AnimatedComponent: PropTypes.any.isRequired,
+    id: PropTypes.string.isRequired,
+    useNativeDriver: PropTypes.bool,
+    keepHidden: PropTypes.bool,
+    duration: PropTypes.number,
+    delay: PropTypes.number,
+    easing: PropTypes.func,
+    debug: PropTypes.bool
   };
 
-  static contextType = MagicMoveContext;
+  static defaultProps = {
+    Component: View,
+    AnimatedComponent: Animated.View,
+    useNativeDriver: false,
+    duration: 500,
+    delay: 0,
+    easing: Easing.inOut(Easing.ease),
+    keepHidden: false,
+    debug: false
+  };
 
-  constructor(props) {
-    super(props);
+  _ref = undefined;
+
+  constructor(props, context) {
+    super(props, context);
     this.state = {
+      opacity: 1,
       id: props.id
     };
   }
@@ -31,28 +48,62 @@ class MagicMoveView extends React.Component {
     return null;
   }
 
-  componenentDidMount() {
-    this.context.mountComponent(this);
+  getAdministration() {
+    return this._context || this.context;
   }
 
-  componentWillUmount() {
-    this.context.unmountComponent(this);
+  componentDidMount() {
+    this.getAdministration().addComponent(this);
+  }
+
+  componentWillUnmount() {
+    this.getAdministration().removeComponent(this);
   }
 
   componentDidUpdate() {
-    // TODO UPDATE
+    // this.getAdministration().updateComponentProps(this);
   }
 
   render() {
-    const { children } = this.props; // eslint-disable-line
-    return <Animated.View>{children}</Animated.View>;
+    const { id, style, Component, ...otherProps } = this.props; // eslint-disable-line
+    const { opacity } = this.state;
+    return (
+      <MagicMoveContext.Consumer>
+        {context => {
+          this._context = context;
+          return (
+            <Component
+              ref={this._setRef}
+              style={[style, { opacity }]}
+              {...otherProps}
+            />
+          );
+        }}
+      </MagicMoveContext.Consumer>
+    );
   }
 
-  _getStyle() {}
+  _setRef = ref => {
+    this._ref = ref;
+  };
 
-  async _show(startStyle) {}
+  getRef() {
+    return this._ref;
+  }
 
-  _hide() {}
+  setOpacity(val) {
+    if (this.state.opacity !== val) {
+      this.setState({
+        opacity: val
+      });
+    }
+  }
+
+  getStyle() {
+    return StyleSheet.flatten([this.props.style]);
+  }
 }
+
+// MagicMoveView.contextType = MagicMoveContext;
 
 export default MagicMoveView;
