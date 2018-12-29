@@ -1,19 +1,9 @@
 /* globals Promise */
 import React from "react";
-import { Animated, View, StyleSheet } from "react-native";
+import { Animated } from "react-native";
 import PropTypes from "prop-types";
 
-const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0
-  }
-});
-
-function measureLayout(ref) {
+function measureLayout(name, ref) {
   return new Promise(resolve => {
     function onMeasure(x, y, width, height, pageX, pageY) {
       if (width || height || pageX || pageY) {
@@ -75,6 +65,7 @@ const ANIMATABLE_PROPS = {
  */
 class MagicMoveAnimation extends React.Component {
   static propTypes = {
+    containerRef: PropTypes.object.isRequired,
     from: PropTypes.object.isRequired,
     to: PropTypes.object.isRequired,
     onCompleted: PropTypes.func.isRequired
@@ -97,31 +88,39 @@ class MagicMoveAnimation extends React.Component {
 
   componentDidMount() {
     //
-    // 2. Get layout for from and to position
+    // 2a. Get layout for from position
     //
-    const { to, from } = this.props;
+    const { to, from, containerRef } = this.props;
     Promise.all([
-      measureLayout(this._ref),
-      measureLayout(to.getRef()),
-      measureLayout(to.getSceneRef() || this._ref),
-      measureLayout(from.getRef()),
-      measureLayout(from.getSceneRef() || this._ref)
+      measureLayout("container", containerRef),
+      measureLayout("from", from.getRef()),
+      measureLayout("fromScene", from.getSceneRef() || containerRef)
     ]).then(layouts => {
-      const newState = {
+      this.setState({
         container: layouts[0],
-        to: {
-          ...to.getStyle(),
-          ...layouts[1],
-          scene: layouts[2]
-        },
         from: {
           ...from.getStyle(),
-          ...layouts[3],
-          scene: layouts[4]
+          ...layouts[1],
+          scene: layouts[2]
         }
-      };
-      // console.log("NEW STATE: ", newState);
-      this.setState(newState);
+      });
+    });
+
+    //
+    // 2b. Get layout for to position (this may take slightly longer as the
+    //     new component has not been fully rendered/mounted yet.
+    //
+    Promise.all([
+      measureLayout("to", to.getRef()),
+      measureLayout("toScene", to.getSceneRef() || containerRef)
+    ]).then(layouts => {
+      this.setState({
+        to: {
+          ...to.getStyle(),
+          ...layouts[0],
+          scene: layouts[1]
+        }
+      });
     });
   }
 
@@ -200,6 +199,7 @@ class MagicMoveAnimation extends React.Component {
       delete otherProps.useNativeDriver;
       delete otherProps.keepHidden;
       delete otherProps.duration;
+      delete otherProps.delay;
       delete otherProps.easing;
       if (debug) {
         newStyle.opacity = 0.8;
@@ -242,30 +242,69 @@ class MagicMoveAnimation extends React.Component {
           {children}
         </AnimatedComponent>
       );
+    } else if (container && from) {
+      const {
+        children,
+        style,
+        AnimatedComponent,
+        ...otherProps
+      } = this.props.from.props;
+      delete otherProps.id;
+      delete otherProps.debug;
+      delete otherProps.Component;
+      delete otherProps.useNativeDriver;
+      delete otherProps.keepHidden;
+      delete otherProps.duration;
+      delete otherProps.delay;
+      delete otherProps.easing;
+      content = (
+        <AnimatedComponent
+          style={[
+            style,
+            {
+              position: "absolute",
+              width: from.width,
+              height: from.height,
+              left: from.x - container.x,
+              top: from.y - container.y,
+              transform: [],
+              margin: 0,
+              marginTop: 0,
+              marginBottom: 0,
+              marginLeft: 0,
+              marginRight: 0
+            }
+          ]}
+          {...otherProps}
+        >
+          {children}
+        </AnimatedComponent>
+      );
     }
     return (
-      <View ref={this._setRef} style={styles.container} pointerEvents="none">
+      <>
         {debugContent}
         {content}
-      </View>
+      </>
     );
   }
 
-  _setRef = ref => {
-    this._ref = ref;
-  };
-
   componentDidUpdate() {
     const { animValue, container, to, from } = this.state;
-    if (container && to && from) {
-      //
-      // 4. Hide from component
-      //
-      this.props.from.setOpacity(0);
 
-      //
-      // 5. Animate...
-      //
+    //
+    // 4. Hide from component
+    //
+    if (container && from && !this._isFromHidden) {
+      this._isFromHidden = true;
+      this.props.from.setOpacity(0);
+    }
+
+    //
+    // 5. Animate...
+    //
+    if (container && from && to && !this._isAnimationStarted) {
+      this._isAnimationStarted = true;
       const fromProps = this.props.from.props;
       const toProps = this.props.to.props;
       Animated.timing(animValue, {

@@ -4,6 +4,9 @@ import MagicMove from "./magic-move";
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1
+  },
+  background: {
     flex: 1,
     backgroundColor: "green"
   },
@@ -20,7 +23,7 @@ export default class Scene1 extends React.Component {
   render() {
     return (
       <MagicMove.Scene style={styles.container}>
-        <MagicMove.View id="scene1" style={styles.container}>
+        <MagicMove.View id="scene1" style={styles.background} ndebug>
           <MagicMove.Text id="scene1.title" style={styles.text}>
             Scene 1
           </MagicMove.Text>

@@ -7,7 +7,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    flexDirection: "column"
+    flexDirection: "column",
+    padding: 20
   },
   item: {
     borderRadius: 24,

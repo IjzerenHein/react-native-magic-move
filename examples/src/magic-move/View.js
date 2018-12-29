@@ -55,10 +55,12 @@ class MagicMoveView extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getAdministration().addComponent(this);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     this.getAdministration().removeComponent(this);
   }
 
@@ -105,7 +107,7 @@ class MagicMoveView extends React.Component {
   }
 
   setOpacity(val) {
-    if (this.state.opacity !== val) {
+    if (this.state.opacity !== val && this._isMounted) {
       this.setState({
         opacity: val
       });

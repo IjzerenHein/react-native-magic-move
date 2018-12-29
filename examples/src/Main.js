@@ -37,7 +37,7 @@ export default class Main extends React.Component {
           id={id}
           style={[styles.box, { backgroundColor: color }]}
         >
-          <Text id={`${id}.title`} style={styles.text}>
+          <Text id={`${id}.title2`} style={styles.text}>
             {text}
           </Text>
         </MagicMove.View>
