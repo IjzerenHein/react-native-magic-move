@@ -157,7 +157,7 @@ class MagicMoveAnimation extends React.Component {
           scaleY: 1
         }
       };
-      const style = {
+      const newStyle = {
         position: "absolute",
         width: a.width,
         height: a.height,
@@ -168,7 +168,12 @@ class MagicMoveAnimation extends React.Component {
           { translateY: this.interpolate(a.from.y, a.to.y) },
           { scaleX: this.interpolate(a.from.scaleX, a.to.scaleX) },
           { scaleY: this.interpolate(a.from.scaleY, a.to.scaleY) }
-        ]
+        ],
+        margin: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0
       };
       Object.keys(ANIMATABLE_PROPS).forEach(propName => {
         let toProp = to[propName];
@@ -179,7 +184,7 @@ class MagicMoveAnimation extends React.Component {
           defaultValue === undefined ? toProp || fromProp : defaultValue;
         toProp = toProp === undefined ? defaultValue : toProp;
         fromProp = fromProp === undefined ? defaultValue : fromProp;
-        style[propName] =
+        newStyle[propName] =
           toProp === fromProp ? toProp : this.interpolate(fromProp, toProp);
       });
 
@@ -187,17 +192,17 @@ class MagicMoveAnimation extends React.Component {
         children,
         debug,
         id,
+        style,
         AnimatedComponent,
         ...otherProps
       } = this.props.to.props;
-      delete otherProps.style;
       delete otherProps.Component;
       delete otherProps.useNativeDriver;
       delete otherProps.keepHidden;
       delete otherProps.duration;
       delete otherProps.easing;
       if (debug) {
-        style.opacity = 0.8;
+        newStyle.opacity = 0.8;
         console.debug('MagicMove animation "', id, '": ', a); //eslint-disable-line
         debugContent = [
           <Animated.View
@@ -233,7 +238,7 @@ class MagicMoveAnimation extends React.Component {
         ];
       }
       content = (
-        <AnimatedComponent style={style} {...otherProps}>
+        <AnimatedComponent style={[style, newStyle]} {...otherProps}>
           {children}
         </AnimatedComponent>
       );
