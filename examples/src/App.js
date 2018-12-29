@@ -8,7 +8,7 @@ import Scene3 from "./Scene3";
 import MagicMove from "./magic-move";
 
 const App = () => (
-  <View style={{ margin: 20, flex: 1 }}>
+  <View style={{ margin: 0, flex: 1 }}>
     <MagicMove>
       <Router>
         <Stack key="root">

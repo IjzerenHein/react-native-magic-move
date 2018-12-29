@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import MagicMove from "./magic-move";
 import { Actions } from "react-native-router-flux";
 
@@ -34,12 +34,12 @@ export default class Main extends React.Component {
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
         <MagicMove.View
-          id={id + "bla"}
+          id={id}
           style={[styles.box, { backgroundColor: color }]}
         >
-          <MagicMove.Text id={`${id}.title`} style={styles.text}>
+          <Text id={`${id}.title`} style={styles.text}>
             {text}
-          </MagicMove.Text>
+          </Text>
         </MagicMove.View>
       </TouchableOpacity>
     );
@@ -64,14 +64,15 @@ export default class Main extends React.Component {
             onPress: () => Actions.push("scene1")
           })}
           {this.renderItem({
-            id: "scene2",
+            id: "list2",
             color: "purple",
-            text: "Scene2"
+            text: "Scene2",
+            onPress: () => Actions.push("scene2")
           })}
         </View>
         <View style={styles.row}>
           {this.renderImageItem({
-            id: "scene3",
+            id: "image",
             source: require("./assets/waves.jpg"),
             text: "Image",
             onPress: () => Actions.push("scene3")

@@ -1,6 +1,7 @@
 import React from "react";
-import { Easing, Dimensions, StyleSheet, ScrollView, Text } from "react-native";
+import { Easing, Dimensions, StyleSheet, ScrollView } from "react-native";
 import MagicMove from "./magic-move";
+import * as Animatable from "react-native-animatable";
 
 const styles = StyleSheet.create({
   container: {
@@ -8,7 +9,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   image: {
-    width: Dimensions.get("window").width - 40,
+    width: Dimensions.get("window").width,
     height: 240
   },
   text: {
@@ -31,18 +32,31 @@ export default class Scene3 extends React.Component {
       <MagicMove.Scene style={styles.container}>
         <ScrollView style={styles.container}>
           <MagicMove.Image
-            id="scene3"
+            id="image"
             style={styles.image}
             source={require("./assets/waves.jpg")}
             resizeMode="cover"
             easing={Easing.in(Easing.cubic)}
             duration={400}
+            debug
           />
-          <Text style={styles.text}>
+          <Animatable.Text
+            style={styles.text}
+            animation="fadeInUp"
+            delay={400}
+            duration={500}
+          >
             Arise from sleep, old cat, And with great yawns and stretchings...
             Amble out for love
-          </Text>
-          <Text style={styles.signature}>- Issa, Japanese Haiku</Text>
+          </Animatable.Text>
+          <Animatable.Text
+            style={styles.signature}
+            animation="fadeInUp"
+            delay={600}
+            duration={500}
+          >
+            - Issa, Japanese Haiku
+          </Animatable.Text>
         </ScrollView>
       </MagicMove.Scene>
     );

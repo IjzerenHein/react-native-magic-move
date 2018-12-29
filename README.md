@@ -18,7 +18,7 @@ Create magical move transitions between scenes in react-native 🐰🎩✨
 Installation
 
 ```
-yarn add react-native-magic-move
+$ yarn add react-native-magic-move
 ```
 
 Wrap your app with the `<MagicMove>` context.
