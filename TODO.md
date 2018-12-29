@@ -1,3 +1,2 @@
-- [ ] Better start border-radius calculation, which takes scaling into account
 - [ ] Support for MagicMove components nesting
 - [ ] Fix glitch where older animation is shown

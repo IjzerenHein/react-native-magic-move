@@ -3,6 +3,8 @@ import React from "react";
 import { Animated } from "react-native";
 import PropTypes from "prop-types";
 
+const MagicMoveAnimationContext = React.createContext(undefined);
+
 function measureLayout(name, ref) {
   return new Promise(resolve => {
     function onMeasure(x, y, width, height, pageX, pageY) {
@@ -28,13 +30,19 @@ function resolveValue(value, def) {
 }
 
 const ANIMATABLE_PROPS = {
-  // View
-  borderRightColor: "transparent",
-  borderBottomColor: "transparent",
+  // Border-radius affects shape and has dedicated logic
+  // borderRadius: 0,
   // borderBottomEndRadius: 0,
   // borderBottomLeftRadius: 0,
   // borderBottomRightRadius: 0,
   // borderBottomStartRadius: 0,
+  // borderTopEndRadius: 0,
+  // borderTopLeftRadius: 0,
+  // borderTopRightRadius: 0,
+  // borderTopStartRadius: 0,
+  // View
+  borderRightColor: "transparent",
+  borderBottomColor: "transparent",
   borderBottomWidth: 0,
   borderColor: "transparent",
   borderEndColor: "transparent",
@@ -42,14 +50,9 @@ const ANIMATABLE_PROPS = {
   borderLeftWidth: 0,
   backgroundColor: "transparent",
   borderRightWidth: 0,
-  // borderRadius: 0,
   borderStartColor: "transparent",
   borderStyle: undefined,
   borderTopColor: "transparent",
-  // borderTopEndRadius: 0,
-  // borderTopLeftRadius: 0,
-  // borderTopRightRadius: 0,
-  // borderTopStartRadius: 0,
   borderTopWidth: 0,
   borderWidth: 0,
   opacity: 1,
@@ -135,6 +138,15 @@ class MagicMoveAnimation extends React.Component {
       inputRange: [0, 1],
       outputRange: [from, to]
     });
+  }
+
+  renderChildren(children) {
+    if (!children) return;
+    return (
+      <MagicMoveAnimationContext.Provider value={this.props.to.props.id}>
+        {children}
+      </MagicMoveAnimationContext.Provider>
+    );
   }
 
   renderDebugFrom() {
@@ -248,7 +260,7 @@ class MagicMoveAnimation extends React.Component {
         ]}
         {...otherProps}
       >
-        {children}
+        {this.renderChildren(children)}
       </AnimatedComponent>
     );
   }
@@ -387,7 +399,7 @@ class MagicMoveAnimation extends React.Component {
     }
     return (
       <AnimatedComponent style={[style, newStyle]} {...otherProps}>
-        {children}
+        {this.renderChildren(children)}
       </AnimatedComponent>
     );
   }
@@ -438,5 +450,7 @@ class MagicMoveAnimation extends React.Component {
     }
   }
 }
+
+MagicMoveAnimation.Context = MagicMoveAnimationContext;
 
 export default MagicMoveAnimation;

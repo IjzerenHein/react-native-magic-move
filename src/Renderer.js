@@ -13,6 +13,10 @@ const styles = StyleSheet.create({
 });
 
 class MagicMoveRenderer extends React.Component {
+  state = {
+    ref: undefined
+  };
+
   componentDidMount() {
     const { administration } = this.props; //eslint-disable-line
     administration.addListener(() => this.forceUpdate());
@@ -20,9 +24,10 @@ class MagicMoveRenderer extends React.Component {
   render() {
     const { administration } = this.props; //eslint-disable-line
     return (
-      <View style={styles.container} pointerEvents="none">
+      <View style={styles.container} pointerEvents="none" ref={this._setRef}>
         {administration.animations.map(({ id, from, to }) => (
           <MagicMoveAnimation
+            containerRef={this.state.ref}
             key={id}
             from={from}
             to={to}
@@ -32,6 +37,10 @@ class MagicMoveRenderer extends React.Component {
       </View>
     );
   }
+
+  _setRef = ref => {
+    this.setState({ ref: ref });
+  };
 }
 
 export default MagicMoveRenderer;

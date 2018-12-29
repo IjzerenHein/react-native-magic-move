@@ -3,6 +3,7 @@ import { Animated, Easing, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import MagicMoveContext from "./Context";
 import MagicMoveScene from "./Scene";
+import MagicMoveAnimation from "./Animation";
 
 /**
  * An Animated view that is magically "moved" to the
@@ -55,14 +56,19 @@ class MagicMoveView extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
+    if (this._isInsideAnimation) return;
     this.getAdministration().addComponent(this);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
+    if (this._isInsideAnimation) return;
     this.getAdministration().removeComponent(this);
   }
 
   componentDidUpdate() {
+    //if (this._isInsideAnimation) return;
     // this.getAdministration().updateComponentProps(this);
   }
 
@@ -70,25 +76,32 @@ class MagicMoveView extends React.Component {
     const { id, style, Component, ...otherProps } = this.props; // eslint-disable-line
     const { opacity } = this.state;
     return (
-      <MagicMoveContext.Consumer>
-        {context => {
-          this._context = context;
+      <MagicMoveAnimation.Context.Consumer>
+        {isInsideAnimation => {
+          this._isInsideAnimation = isInsideAnimation;
           return (
-            <MagicMoveScene.Context.Consumer>
-              {sceneRef => {
-                this._sceneRef = sceneRef;
+            <MagicMoveContext.Consumer>
+              {context => {
+                this._context = context;
                 return (
-                  <Component
-                    ref={this._setRef}
-                    style={[style, { opacity }]}
-                    {...otherProps}
-                  />
+                  <MagicMoveScene.Context.Consumer>
+                    {sceneRef => {
+                      this._sceneRef = sceneRef;
+                      return (
+                        <Component
+                          ref={this._setRef}
+                          style={[style, { opacity }]}
+                          {...otherProps}
+                        />
+                      );
+                    }}
+                  </MagicMoveScene.Context.Consumer>
                 );
               }}
-            </MagicMoveScene.Context.Consumer>
+            </MagicMoveContext.Consumer>
           );
         }}
-      </MagicMoveContext.Consumer>
+      </MagicMoveAnimation.Context.Consumer>
     );
   }
 
@@ -105,7 +118,7 @@ class MagicMoveView extends React.Component {
   }
 
   setOpacity(val) {
-    if (this.state.opacity !== val) {
+    if (this.state.opacity !== val && this._isMounted) {
       this.setState({
         opacity: val
       });

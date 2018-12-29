@@ -24,7 +24,7 @@ export default class Scene1 extends React.Component {
     return (
       <MagicMove.Scene style={styles.container}>
         <MagicMove.View id="scene1" style={styles.background} ndebug>
-          <MagicMove.Text id="scene1.title" style={styles.text}>
+          <MagicMove.Text id="scene1.title2" style={styles.text}>
             Scene 1
           </MagicMove.Text>
         </MagicMove.View>
