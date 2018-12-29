@@ -25,7 +25,7 @@ class MagicMoveView extends React.Component {
     Component: View,
     AnimatedComponent: Animated.View,
     useNativeDriver: false,
-    duration: 500,
+    duration: 400,
     delay: 0,
     easing: Easing.inOut(Easing.ease),
     keepHidden: false,

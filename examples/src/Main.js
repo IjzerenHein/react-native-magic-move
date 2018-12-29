@@ -55,7 +55,7 @@ export default class Main extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <MagicMove.Scene style={styles.container}>
         <View style={styles.row}>
           {this.renderItem({
             id: "scene1",
@@ -82,7 +82,7 @@ export default class Main extends React.Component {
             text: "Scene4"
           })}
         </View>
-      </View>
+      </MagicMove.Scene>
     );
   }
 }

@@ -120,7 +120,7 @@ class MagicMoveAnimation extends React.Component {
           scene: layouts[4]
         }
       };
-      console.log("NEW STATE: ", newState);
+      // console.log("NEW STATE: ", newState);
       this.setState(newState);
     });
   }
@@ -133,35 +133,41 @@ class MagicMoveAnimation extends React.Component {
   }
 
   render() {
-    console.log("RENDER");
     const { container, to, from } = this.state;
     let content;
+    let debugContent;
 
     //
     // 3. Render MagicMove component
     //
     if (container && to && from) {
-      const width = to.width;
-      const height = to.height;
-      const x = this.interpolate(
-        from.x - from.scene.x - (to.width - from.width) / 2,
-        to.x - to.scene.x
-      );
-      const y = this.interpolate(from.y - (to.height - from.height) / 2, to.y);
-      const scaleX = this.interpolate(from.width / to.width, 1);
-      const scaleY = this.interpolate(from.height / to.height, 1);
-
+      const a = {
+        width: to.width,
+        height: to.height,
+        from: {
+          x: from.x - container.x - (to.width - from.width) / 2,
+          y: from.y - container.y - (to.height - from.height) / 2,
+          scaleX: from.width / to.width,
+          scaleY: from.height / to.height
+        },
+        to: {
+          x: to.x - to.scene.x + from.scene.x - container.x,
+          y: to.y - to.scene.y + from.scene.y - container.y,
+          scaleX: 1,
+          scaleY: 1
+        }
+      };
       const style = {
         position: "absolute",
-        width: width,
-        height: height,
+        width: a.width,
+        height: a.height,
         left: 0,
         top: 0,
         transform: [
-          { translateX: x },
-          { translateY: y },
-          { scaleX: scaleX },
-          { scaleY: scaleY }
+          { translateX: this.interpolate(a.from.x, a.to.x) },
+          { translateY: this.interpolate(a.from.y, a.to.y) },
+          { scaleX: this.interpolate(a.from.scaleX, a.to.scaleX) },
+          { scaleY: this.interpolate(a.from.scaleY, a.to.scaleY) }
         ]
       };
       Object.keys(ANIMATABLE_PROPS).forEach(propName => {
@@ -180,22 +186,52 @@ class MagicMoveAnimation extends React.Component {
       const {
         children,
         debug,
+        id,
         AnimatedComponent,
         ...otherProps
       } = this.props.to.props;
-      if (debug) {
-        style.backgroundColor = "pink";
-        style.borderStyle = "solid";
-        style.borderWidth = 1;
-        style.borderColor = "deeppink";
-      }
-      delete otherProps.id;
       delete otherProps.style;
       delete otherProps.Component;
       delete otherProps.useNativeDriver;
       delete otherProps.keepHidden;
       delete otherProps.duration;
       delete otherProps.easing;
+      if (debug) {
+        style.opacity = 0.8;
+        console.debug('MagicMove animation "', id, '": ', a); //eslint-disable-line
+        debugContent = [
+          <Animated.View
+            key="debugFrom"
+            style={{
+              position: "absolute",
+              width: from.width,
+              height: from.height,
+              left: from.x - container.x,
+              top: from.y - container.y,
+              backgroundColor: "blue",
+              borderColor: "darkblue",
+              borderWidth: 1,
+              borderRadius: from.borderRadius || 0,
+              opacity: 0.5
+            }}
+          />,
+          <Animated.View
+            key="debugTo"
+            style={{
+              position: "absolute",
+              width: to.width,
+              height: to.height,
+              left: a.to.x,
+              top: a.to.y,
+              backgroundColor: "green",
+              borderColor: "darkgreen",
+              borderWidth: 1,
+              borderRadius: to.borderRadius || 0,
+              opacity: 0.5
+            }}
+          />
+        ];
+      }
       content = (
         <AnimatedComponent style={style} {...otherProps}>
           {children}
@@ -204,6 +240,7 @@ class MagicMoveAnimation extends React.Component {
     }
     return (
       <View ref={this._setRef} style={styles.container} pointerEvents="none">
+        {debugContent}
         {content}
       </View>
     );

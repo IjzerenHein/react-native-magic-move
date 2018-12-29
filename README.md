@@ -80,7 +80,7 @@ These components support all the usual props that you expect (they are passed th
 | Property          | Type       | Default                     | Description                                                         |
 | ----------------- | ---------- | --------------------------- | ------------------------------------------------------------------- |
 | `id`              | `string`   | **(required)**              | Unique id of the magic-move instance                                |
-| `duration`        | `number`   | `500`                       | Length of the animation (milliseconds)                              |
+| `duration`        | `number`   | `400`                       | Length of the animation (milliseconds)                              |
 | `easing`          | `function` | `Easing.inOut(Easing.ease)` | Easing function to define the curve                                 |
 | `delay`           | `number`   | `0`                         | Amount of msec to wait before starting the animation                |
 | `useNativeDriver` | `boolean`  | `false`                     | Enables the native-driver                                           |
