@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import MagicMoveContext from "./Context";
 import MagicMoveScene from "./Scene";
 import MagicMoveAnimation from "./Animation";
+import scaleTargetTransition from "./transitions/scaleTarget";
 
 /**
  * An Animated view that is magically "moved" to the
@@ -19,7 +20,8 @@ class MagicMoveView extends React.Component {
     duration: PropTypes.number,
     delay: PropTypes.number,
     easing: PropTypes.func,
-    debug: PropTypes.bool
+    debug: PropTypes.bool,
+    transition: PropTypes.func
   };
 
   static defaultProps = {
@@ -29,6 +31,7 @@ class MagicMoveView extends React.Component {
     duration: 400,
     delay: 0,
     easing: Easing.inOut(Easing.ease),
+    transition: scaleTargetTransition,
     keepHidden: false,
     debug: false
   };
@@ -58,12 +61,22 @@ class MagicMoveView extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     if (this._isInsideAnimation) return;
+    if (this.props.debug)
+      //eslint-disable-next-line
+      console.debug(
+        '[MagicMove] Mounted component with id "' + this.props.id + '"'
+      );
     this.getAdministration().addComponent(this);
   }
 
   componentWillUnmount() {
     this._isMounted = false;
     if (this._isInsideAnimation) return;
+    if (this.props.debug)
+      //eslint-disable-next-line
+      console.debug(
+        '[MagicMove] Unmounted component with id "' + this.props.id + '"'
+      );
     this.getAdministration().removeComponent(this);
   }
 
@@ -119,6 +132,16 @@ class MagicMoveView extends React.Component {
 
   setOpacity(val) {
     if (this.state.opacity !== val && this._isMounted) {
+      if (this.props.debug) {
+        //eslint-disable-next-line
+        console.debug(
+          "[MagicMove] " +
+            (val ? "Showing" : "Hiding") +
+            ' component with id "' +
+            this.props.id +
+            '"'
+        );
+      }
       this.setState({
         opacity: val
       });
