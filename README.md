@@ -67,13 +67,19 @@ const Scene2 = () => (
 
 ### Components
 
-The following magic-move components are supported:
+The following magic-move components are supported out of the box:
 
 - `MagicMove.View`
 - `MagicMove.Text`
 - `MagicMove.Image`
 
 These components support all the usual props that you expect (they are passed through). 
+
+You can also create your own custom MagicMove components, like so.
+
+```js
+MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
+```
 
 ### Props
 
