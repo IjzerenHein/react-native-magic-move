@@ -18,7 +18,7 @@ function measureLayout(id, name, ref) {
         });
       }
       i++;
-      if (i >= 3)
+      if (x === undefined || i >= 3)
         return reject(
           new Error(
             'Failed to measure MagicMove component "' + id + '" (' + name + ")"

@@ -14,7 +14,7 @@ class MagicMoveScene extends Component {
   render() {
     const { children, ...otherProps } = this.props; //eslint-disable-line
     return (
-      <View ref={this._setRef} {...otherProps}>
+      <View ref={this._setRef} {...otherProps} collapsable={false}>
         <MagicMoveSceneContext.Provider value={this.state.ref}>
           {children}
         </MagicMoveSceneContext.Provider>

@@ -24,7 +24,12 @@ class MagicMoveRenderer extends PureComponent {
   render() {
     const { administration } = this.props; //eslint-disable-line
     return (
-      <View style={styles.container} pointerEvents="none" ref={this._setRef}>
+      <View
+        style={styles.container}
+        pointerEvents="none"
+        ref={this._setRef}
+        collapsable={false}
+      >
         {administration.animations.map(({ id, from, to }) => (
           <MagicMoveAnimation
             containerRef={this.state.ref}
