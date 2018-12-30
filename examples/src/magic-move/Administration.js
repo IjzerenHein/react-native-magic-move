@@ -22,7 +22,7 @@ class MagicMoveAdministration {
 
   addComponent(component) {
     const { id } = component.props;
-    console.log("mountComp: ", id);
+    // console.log("mountComp: ", id);
     let array = this._components[id];
     if (!array) {
       array = [];
@@ -37,7 +37,7 @@ class MagicMoveAdministration {
 
   removeComponent(component) {
     const { id } = component.props;
-    console.log("unmountComp: ", id);
+    // console.log("unmountComp: ", id);
     let array = this._components[id];
     if (!array)
       throw new Error(
@@ -72,7 +72,7 @@ class MagicMoveAdministration {
   }
 
   _animate(id, to, from) {
-    console.log("animate: ", id);
+    // console.log("animate: ", id);
     const anim = this._animations.find(anim => anim.id === id);
     if (anim) {
       anim.to = to;

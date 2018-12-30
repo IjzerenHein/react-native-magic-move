@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import MagicMove from "./magic-move";
 
 const styles = StyleSheet.create({
@@ -23,10 +23,8 @@ export default class Scene1 extends React.Component {
   render() {
     return (
       <MagicMove.Scene style={styles.container}>
-        <MagicMove.View id="scene1" style={styles.background} ndebug>
-          <MagicMove.Text id="scene1.title2" style={styles.text}>
-            Scene 1
-          </MagicMove.Text>
+        <MagicMove.View id="scene1" style={styles.background}>
+          <Text style={styles.text}>Scene 1</Text>
         </MagicMove.View>
       </MagicMove.Scene>
     );

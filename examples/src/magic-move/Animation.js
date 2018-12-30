@@ -1,12 +1,13 @@
-/* globals Promise */
+/* globals Promise, __DEV__ */
 import React from "react";
 import { Animated } from "react-native";
 import PropTypes from "prop-types";
 
 const MagicMoveAnimationContext = React.createContext(undefined);
 
-function measureLayout(name, ref) {
-  return new Promise(resolve => {
+function measureLayout(id, name, ref) {
+  let i = 0;
+  return new Promise((resolve, reject) => {
     function onMeasure(x, y, width, height, pageX, pageY) {
       if (width || height || pageX || pageY) {
         return resolve({
@@ -16,6 +17,13 @@ function measureLayout(name, ref) {
           height
         });
       }
+      i++;
+      if (i >= 3)
+        return reject(
+          new Error(
+            'Failed to measure MagicMove component "' + id + '" (' + name + ")"
+          )
+        );
       requestAnimationFrame(() => {
         ref.measure(onMeasure);
       });
@@ -98,38 +106,53 @@ class MagicMoveAnimation extends React.Component {
     //
     // 2a. Get layout for from position
     //
-    const { to, from, containerRef } = this.props;
+    const { to, from, containerRef, onCompleted } = this.props;
+    const { id } = to.props;
+    function errorHandler(err) {
+      if (__DEV__) {
+        console.error(err.message); //eslint-disable-line
+      } else {
+        console.warn(err.message); //eslint-disable-line
+      }
+      to.setOpacity(1);
+      from.setOpacity(1);
+      onCompleted();
+    }
     Promise.all([
-      measureLayout("container", containerRef),
-      measureLayout("from", from.getRef()),
-      measureLayout("fromScene", from.getSceneRef() || containerRef)
-    ]).then(layouts => {
-      this.setState({
-        container: layouts[0],
-        from: {
-          ...from.getStyle(),
-          ...layouts[1],
-          scene: layouts[2]
-        }
-      });
-    });
+      measureLayout(id, "container", containerRef),
+      measureLayout(id, "from", from.getRef()),
+      measureLayout(id, "fromScene", from.getSceneRef() || containerRef)
+    ])
+      .then(layouts => {
+        this.setState({
+          container: layouts[0],
+          from: {
+            ...from.getStyle(),
+            ...layouts[1],
+            scene: layouts[2]
+          }
+        });
+      })
+      .catch(errorHandler);
 
     //
     // 2b. Get layout for to position (this may take slightly longer as the
     //     new component has not been fully rendered/mounted yet.
     //
     Promise.all([
-      measureLayout("to", to.getRef()),
-      measureLayout("toScene", to.getSceneRef() || containerRef)
-    ]).then(layouts => {
-      this.setState({
-        to: {
-          ...to.getStyle(),
-          ...layouts[0],
-          scene: layouts[1]
-        }
-      });
-    });
+      measureLayout(id, "to", to.getRef()),
+      measureLayout(id, "toScene", to.getSceneRef() || containerRef)
+    ])
+      .then(layouts => {
+        this.setState({
+          to: {
+            ...to.getStyle(),
+            ...layouts[0],
+            scene: layouts[1]
+          }
+        });
+      })
+      .catch(errorHandler);
   }
 
   interpolate(from, to) {
