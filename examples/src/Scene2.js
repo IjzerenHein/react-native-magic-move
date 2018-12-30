@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import * as MagicMove from "./magic-move";
 import randomColor from "randomcolor";
 
@@ -30,9 +30,19 @@ export default class Scene2 extends React.Component {
         <MagicMove.View
           key={i}
           id={`list${i}`}
-          style={[styles.item, { backgroundColor: randomColor() }]}
+          style={[
+            styles.item,
+            { backgroundColor: i === 2 ? "purple" : randomColor() }
+          ]}
+          useNativeDriver
         >
-          <Text style={styles.text}>Scene</Text>
+          <MagicMove.Text
+            id={`list${i}.title`}
+            style={styles.text}
+            useNativeDriver
+          >
+            ScrollView
+          </MagicMove.Text>
         </MagicMove.View>
       );
     }

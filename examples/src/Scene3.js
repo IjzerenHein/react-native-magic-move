@@ -38,6 +38,7 @@ export default class Scene3 extends React.Component {
             resizeMode="cover"
             easing={Easing.in(Easing.cubic)}
             duration={400}
+            useNativeDriver
           />
           <Animatable.Text
             style={styles.text}

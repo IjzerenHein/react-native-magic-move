@@ -45,6 +45,10 @@ class MagicMoveView extends Component {
       opacity: 1,
       id: props.id
     };
+    if (props.id === undefined) {
+      // eslint-disable-next-line
+      console.error('[MagicMove] Missing "id" prop in MagicMove component');
+    }
   }
 
   static getDerivedStateFromProps(props, state) {

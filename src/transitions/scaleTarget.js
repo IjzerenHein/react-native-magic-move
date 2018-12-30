@@ -34,7 +34,7 @@ const ANIMATABLE_PROPS = {
   opacity: 1,
   elevation: 0,
   // Text,
-  fontSize: undefined,
+  // fontSize: undefined,
   color: "black"
 };
 

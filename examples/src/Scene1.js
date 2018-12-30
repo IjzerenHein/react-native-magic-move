@@ -8,14 +8,14 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-    backgroundColor: "green"
+    backgroundColor: "white",
+    justifyContent: "center"
   },
   text: {
-    marginTop: 20,
     alignSelf: "center",
     textAlign: "center",
-    color: "white",
-    fontSize: 30
+    color: "orange",
+    fontSize: 50
   }
 });
 
@@ -25,7 +25,7 @@ export default class Scene1 extends React.Component {
       <MagicMove.Scene style={styles.container}>
         <MagicMove.View id="scene1" style={styles.background}>
           <MagicMove.Text id="scene1.title" style={styles.text}>
-            Scene 1
+            Color Change
           </MagicMove.Text>
         </MagicMove.View>
       </MagicMove.Scene>

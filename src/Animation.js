@@ -288,7 +288,6 @@ class MagicMoveAnimation extends PureComponent {
     //
     if (container && from && to && !this._isAnimationStarted) {
       this._isAnimationStarted = true;
-      const fromProps = this.props.from.props;
       const toProps = this.props.to.props;
       if (toProps.debug) {
         // eslint-disable-next-line
@@ -301,7 +300,7 @@ class MagicMoveAnimation extends PureComponent {
         duration: toProps.debug ? 8000 : toProps.duration,
         delay: toProps.delay,
         easing: toProps.easing,
-        useNativeDriver: toProps.useNativeDriver && fromProps.useNativeDriver
+        useNativeDriver: toProps.useNativeDriver
       }).start(() => {
         const { to, from, onCompleted } = this.props;
         if (to.props.debug) {

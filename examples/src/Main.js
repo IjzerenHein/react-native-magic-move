@@ -59,15 +59,15 @@ export default class Main extends React.Component {
       <MagicMove.Scene style={styles.container}>
         <View style={styles.row}>
           {this.renderItem({
-            id: "scene1",
-            color: "green",
-            text: "Scene1",
-            onPress: () => Actions.push("scene1")
+            id: "scene4",
+            color: "blueviolet",
+            text: "Magic Move",
+            onPress: () => Actions.push("scene4")
           })}
           {this.renderItem({
             id: "list2",
             color: "purple",
-            text: "Scene2",
+            text: "ScrollView",
             onPress: () => Actions.push("scene2")
           })}
         </View>
@@ -79,9 +79,10 @@ export default class Main extends React.Component {
             onPress: () => Actions.push("scene3")
           })}
           {this.renderItem({
-            id: "scene4",
+            id: "scene1",
             color: "orange",
-            text: "Scene4"
+            text: "Color Change",
+            onPress: () => Actions.push("scene1")
           })}
         </View>
       </MagicMove.Scene>
