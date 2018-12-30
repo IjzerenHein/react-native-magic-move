@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    borderTopLeftRadius: 0,
     flexDirection: "column",
     justifyContent: "center"
   },
@@ -31,13 +30,10 @@ const styles = StyleSheet.create({
 });
 
 export default class Main extends React.Component {
-  renderItem({ id, color, text, onPress }) {
+  renderItem({ id, style, text, onPress }) {
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
-        <MagicMove.View
-          id={id}
-          style={[styles.box, { backgroundColor: color }]}
-        >
+        <MagicMove.View id={id} style={[styles.box, style]}>
           <MagicMove.Text id={`${id}.title`} style={styles.text}>
             {text}
           </MagicMove.Text>
@@ -60,14 +56,20 @@ export default class Main extends React.Component {
         <View style={styles.row}>
           {this.renderItem({
             id: "scene4",
-            color: "blueviolet",
             text: "Magic Move",
+            style: {
+              backgroundColor: "blueviolet",
+              borderBottomRightRadius: 0
+            },
             onPress: () => Actions.push("scene4")
           })}
           {this.renderItem({
             id: "list2",
-            color: "purple",
-            text: "ScrollView",
+            text: "Morph",
+            style: {
+              backgroundColor: "purple",
+              borderBottomLeftRadius: 0
+            },
             onPress: () => Actions.push("scene2")
           })}
         </View>
@@ -80,8 +82,11 @@ export default class Main extends React.Component {
           })}
           {this.renderItem({
             id: "scene1",
-            color: "orange",
             text: "Color Change",
+            style: {
+              backgroundColor: "orange",
+              borderTopLeftRadius: 0
+            },
             onPress: () => Actions.push("scene1")
           })}
         </View>

@@ -41,7 +41,7 @@ export default class Scene2 extends React.Component {
             style={styles.text}
             useNativeDriver
           >
-            ScrollView
+            {"Item " + i}
           </MagicMove.Text>
         </MagicMove.View>
       );
