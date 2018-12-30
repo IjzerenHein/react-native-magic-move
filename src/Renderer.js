@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PureComponent } from "react";
 import { View, StyleSheet } from "react-native";
 import MagicMoveAnimation from "./Animation";
 
@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   }
 });
 
-class MagicMoveRenderer extends React.Component {
+class MagicMoveRenderer extends PureComponent {
   state = {
     ref: undefined
   };
