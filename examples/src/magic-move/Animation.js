@@ -125,7 +125,7 @@ class MagicMoveAnimation extends PureComponent {
   renderChildren(children) {
     if (!children) return;
     return (
-      <MagicMoveAnimationContext.Provider value={this.props.to.props.id}>
+      <MagicMoveAnimationContext.Provider value={true}>
         {children}
       </MagicMoveAnimationContext.Provider>
     );
@@ -137,6 +137,7 @@ class MagicMoveAnimation extends PureComponent {
     if (!container || !from) return;
     return (
       <Animated.View
+        key={`${this.props.from.props.id}.debugFrom`}
         style={{
           position: "absolute",
           width: from.width,
@@ -174,6 +175,7 @@ class MagicMoveAnimation extends PureComponent {
     if (!container || !from || !to) return;
     return (
       <Animated.View
+        key={`${this.props.to.props.id}.debugTo`}
         style={{
           position: "absolute",
           width: to.width,
@@ -225,6 +227,7 @@ class MagicMoveAnimation extends PureComponent {
     delete otherProps.transition;
     return (
       <AnimatedComponent
+        key={`${this.props.from.props.id}.initialFrom`}
         style={[
           style,
           {

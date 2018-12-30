@@ -177,9 +177,7 @@ export default function scaleTarget(props, state, Context) {
   return (
     <AnimatedComponent style={[style, newStyle]} {...otherProps}>
       {children ? (
-        <Context.Provider value={props.to.props.id}>
-          {children}
-        </Context.Provider>
+        <Context.Provider value={true}>{children}</Context.Provider>
       ) : (
         undefined
       )}

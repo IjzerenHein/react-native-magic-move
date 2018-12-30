@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import * as MagicMove from "./magic-move";
 import { Actions } from "react-native-router-flux";
 
@@ -38,9 +38,9 @@ export default class Main extends React.Component {
           id={id}
           style={[styles.box, { backgroundColor: color }]}
         >
-          <Text id={`${id}.title2`} style={styles.text}>
+          <MagicMove.Text id={`${id}.title`} style={styles.text}>
             {text}
-          </Text>
+          </MagicMove.Text>
         </MagicMove.View>
       </TouchableOpacity>
     );

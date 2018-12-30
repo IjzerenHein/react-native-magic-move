@@ -49,7 +49,12 @@ class MagicMoveView extends Component {
 
   static getDerivedStateFromProps(props, state) {
     if (state.id !== props.id) {
-      throw new Error("The id prop of MagicMove.View cannot be changed");
+      throw new Error(
+        "The id prop of MagicMove.View cannot be changed, previous: " +
+          state.id +
+          ", new: " +
+          props.id
+      );
     }
     return null;
   }
@@ -96,6 +101,12 @@ class MagicMoveView extends Component {
             <MagicMoveContext.Consumer>
               {context => {
                 this._context = context;
+                if (
+                  isInsideAnimation &&
+                  this.getAdministration().isAnimatingComponent(this)
+                ) {
+                  return undefined;
+                }
                 return (
                   <MagicMoveScene.Context.Consumer>
                     {sceneRef => {
