@@ -2,7 +2,7 @@
 
 Create magical move transitions between scenes in react-native 🐰🎩✨
 
-![MagicMoveGif](magicmove.gif)
+![MagicMoveGif](magicmove2.gif)
 
 - [Usage](#usage)
 - [Documentation](#documentation)
