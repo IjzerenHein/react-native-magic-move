@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, ScrollView } from "react-native";
-import MagicMove from "./magic-move";
+import * as MagicMove from "./magic-move";
 import randomColor from "randomcolor";
 
 const styles = StyleSheet.create({

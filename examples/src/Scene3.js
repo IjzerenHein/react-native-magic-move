@@ -1,6 +1,6 @@
 import React from "react";
 import { Easing, Dimensions, StyleSheet, ScrollView } from "react-native";
-import MagicMove from "./magic-move";
+import * as MagicMove from "./magic-move";
 import * as Animatable from "react-native-animatable";
 
 const styles = StyleSheet.create({
@@ -38,6 +38,7 @@ export default class Scene3 extends React.Component {
             resizeMode="cover"
             easing={Easing.in(Easing.cubic)}
             duration={400}
+            debug
           />
           <Animatable.Text
             style={styles.text}

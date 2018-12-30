@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import MagicMove from "./magic-move";
+import * as MagicMove from "./magic-move";
 import { Actions } from "react-native-router-flux";
 
 const styles = StyleSheet.create({

@@ -1,18 +1,14 @@
-import React from "react";
-import { Animated, Text, Image } from "react-native";
+import React, { Component } from "react";
 import MagicMoveAdministration from "./Administration";
-import MagicMoveView from "./View";
-import createMagicMoveComponent from "./createMagicMoveComponent";
-import MagicMoveScene from "./Scene";
 import MagicMoveContext from "./Context";
 import MagicMoveRenderer from "./Renderer";
 
 /**
  * Top level magic move container. Wrap your app or the scene within
  * which you want to perform magic-move transitions with this
- * <MagicMove> component.
+ * <MagicMove.Provider> component.
  */
-class MagicMove extends React.Component {
+class MagicMoveProvider extends Component {
   constructor(props) {
     super(props);
     this._administration = new MagicMoveAdministration();
@@ -29,10 +25,4 @@ class MagicMove extends React.Component {
   }
 }
 
-MagicMove.View = MagicMoveView;
-MagicMove.Text = createMagicMoveComponent(Text, Animated.Text);
-MagicMove.Image = createMagicMoveComponent(Image, Animated.Image);
-MagicMove.Scene = MagicMoveScene;
-MagicMove.createMagicMoveComponent = createMagicMoveComponent;
-
-export default MagicMove;
+export default MagicMoveProvider;

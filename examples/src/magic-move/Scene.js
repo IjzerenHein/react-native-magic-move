@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Component, createContext } from "react";
 import { View } from "react-native";
 
-const MagicMoveSceneContext = React.createContext(undefined);
+const MagicMoveSceneContext = createContext(undefined);
 
-class MagicMoveScene extends React.Component {
+class MagicMoveScene extends Component {
   constructor(props) {
     super(props);
     this.state = {

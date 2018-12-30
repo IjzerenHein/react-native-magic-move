@@ -1,5 +1,5 @@
-import React from "react";
+import { createContext } from "react";
 
-const MagicMoveContext = React.createContext(undefined);
+const MagicMoveContext = createContext(undefined);
 
 export default MagicMoveContext;

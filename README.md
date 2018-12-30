@@ -21,15 +21,15 @@ Installation
 $ yarn add react-native-magic-move
 ```
 
-Wrap your app with the `<MagicMove>` context.
+Wrap your app with the `<MagicMove.Provider>` context.
 
 ```js
-import MagicMove from 'react-native-magic-move';
+import * as MagicMove from 'react-native-magic-move';
 
 const App = () => (
-  <MagicMove>
+  <MagicMove.Provider>
     {...}
-  </MagicMove>
+  </MagicMove.Provider>
 );
 ```
 
@@ -37,7 +37,7 @@ Add the `<MagicMove.{View|Image|Text}>` component to your views. Whenever the Ma
 is mounted while another Magic Move component with the same `id` is already mounted, then a magic transition between the components is performed.
 
 ```js
-import MagicMove from 'react-native-magic-move';
+import * as MagicMove from 'react-native-magic-move';
 
 const Scene1 = () => (
   <MagicMove.Scene>
@@ -87,9 +87,9 @@ MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
 | ----------------- | ---------- | --------------------------- | ------------------------------------------------------------------- |
 | `id`              | `string`   | **(required)**              | Unique id of the magic-move instance                                |
 | `duration`        | `number`   | `400`                       | Length of the animation (milliseconds)                              |
-| `easing`          | `function` | `Easing.inOut(Easing.ease)` | Easing function to define the curve                                 |
 | `delay`           | `number`   | `0`                         | Amount of msec to wait before starting the animation                |
-| `useNativeDriver` | `boolean`  | `false`                     | Enables the native-driver                                           |
+| `easing`          | `function` | `Easing.inOut(Easing.ease)` | Easing function to define the curve                                 |
+| `useNativeDriver` | `boolean`  | `false`                     | Enables the native-driver                                           |  |
 | `keepHidden`      | `boolean`  | `false`                     | Keeps the source component hidden after the animation has completed |
 | `debug`           | `boolean`  | `false`                     | Enables debug-mode to analyze animations                            |
 
@@ -108,7 +108,7 @@ Example with scene transitions using `react-native-router-flux`.
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Router, Stack, Scene, Actions } from "react-native-router-flux";
-import MagicMove from "react-native-magic-move";
+import * as MagicMove from "react-native-magic-move";
 
 const Scene1 = () => (
   <MagicMove.Scene>
@@ -134,14 +134,14 @@ const Scene2 = () => (
 );
 
 const App = () => (
-  <MagicMove>
+  <MagicMove.Provider>
     <Router>
       <Stack key="root">
         <Scene key="scene1" component={Scene1} />
         <Scene key="scene2" component={Scene2} />
       </Stack>
     </Router>
-  </MagicMove>
+  </MagicMove.Provider>
 );
 ```
 

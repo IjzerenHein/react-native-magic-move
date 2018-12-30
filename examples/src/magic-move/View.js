@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import MagicMoveContext from "./Context";
@@ -10,7 +10,7 @@ import scaleTargetTransition from "./transitions/scaleTarget";
  * An Animated view that is magically "moved" to the
  * new position/size that it was mounted on.
  */
-class MagicMoveView extends React.Component {
+class MagicMoveView extends Component {
   static propTypes = {
     Component: PropTypes.any.isRequired,
     AnimatedComponent: PropTypes.any.isRequired,

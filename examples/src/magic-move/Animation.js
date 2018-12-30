@@ -1,9 +1,9 @@
 /* globals Promise, __DEV__ */
-import React from "react";
+import React, { PureComponent, createContext } from "react";
 import { Animated } from "react-native";
 import PropTypes from "prop-types";
 
-const MagicMoveAnimationContext = React.createContext(undefined);
+const MagicMoveAnimationContext = createContext(undefined);
 
 function measureLayout(id, name, ref) {
   let i = 0;
@@ -46,7 +46,7 @@ function resolveValue(value, def) {
  * 6. Show to component
  * 7. Remove MagicMove component
  */
-class MagicMoveAnimation extends React.Component {
+class MagicMoveAnimation extends PureComponent {
   static propTypes = {
     containerRef: PropTypes.object.isRequired,
     from: PropTypes.object.isRequired,
