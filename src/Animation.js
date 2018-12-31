@@ -9,7 +9,7 @@ function measureLayout(id, name, ref) {
   let i = 0;
   return new Promise((resolve, reject) => {
     function onMeasure(x, y, width, height, pageX, pageY) {
-      if (width || height || pageX || pageY) {
+      if (width || height) {
         return resolve({
           x: pageX,
           y: pageY,
