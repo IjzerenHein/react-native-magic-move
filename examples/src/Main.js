@@ -90,6 +90,16 @@ export default class Main extends React.Component {
             onPress: () => Actions.push("scene1")
           })}
         </View>
+        <View style={styles.row}>
+          {this.renderItem({
+            id: "scene5",
+            text: "Flip",
+            style: {
+              backgroundColor: "orange"
+            },
+            onPress: () => Actions.push("scene5")
+          })}
+        </View>
       </MagicMove.Scene>
     );
   }

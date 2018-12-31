@@ -4,11 +4,15 @@ Create magical move transitions between scenes in react-native 🐰🎩✨
 
 ![MagicMoveGif](magicmove3.gif)
 
+## [Try it with Expo](https://expo.io/@ijzerenhein/react-native-magic-move-demo)
+
+- [Try it with Expo](#try-it-with-expo)
 - [Usage](#usage)
 - [Documentation](#documentation)
   - [Components](#components)
   - [Props](#props)
   - [Scenes](#scenes)
+  - [Transitions](#transitions)
 - [Examples](#examples)
 - [Disclaimer 🐰🎩](#disclaimer-%F0%9F%90%B0%F0%9F%8E%A9)
 
@@ -86,7 +90,8 @@ MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
 | `duration`        | `number`   | `400`                       | Length of the animation (milliseconds)                              |
 | `delay`           | `number`   | `0`                         | Amount of msec to wait before starting the animation                |
 | `easing`          | `function` | `Easing.inOut(Easing.ease)` | Easing function to define the curve                                 |
-| `useNativeDriver` | `boolean`  | `false`                     | Enables the native-driver                                           |  |
+| `transition`      | `function` | **(default transition)**    | Transition effect                                                   |
+| `useNativeDriver` | `boolean`  | `false`                     | Enables the native-driver                                           |
 | `keepHidden`      | `boolean`  | `false`                     | Keeps the source component hidden after the animation has completed |
 | `debug`           | `boolean`  | `false`                     | Enables debug-mode to analyze animations                            |
 
@@ -95,6 +100,23 @@ MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
 Use `<MagicMove.Scene>` to mark the start of a scene within the rendering hierarchy.
 This is important so that Magic Move can correctly assess the destination-position of an animation.
 `MagicMove.Scene` is implemented using a regular `View` and supports all its properties.
+
+
+### Transitions
+
+Transitions are an experimental feature for which the API may change. At the moment only two transitions are supported `default` and `flip`.
+
+To use the experimental flip transition, use:
+
+```js
+const flipTransition = MagicMove.Transition.flip({
+  x: true,  // set to true for a flip over the horizontal axis
+  y: false, // set to true for a flip over the vertival axis
+  step: 0.5 // [0..1]
+});
+
+<MagicMove.View transition={flipTransition} .../>
+```
 
 
 ## Examples

@@ -6,6 +6,7 @@ import Scene1 from "./Scene1";
 import Scene2 from "./Scene2";
 import Scene3 from "./Scene3";
 import Scene4 from "./Scene4";
+import Scene5 from "./Scene5";
 import * as MagicMove from "./magic-move";
 
 const App = () => (
@@ -18,6 +19,7 @@ const App = () => (
           <Scene key="scene2" component={Scene2} title="ScrollView" />
           <Scene key="scene3" component={Scene3} title="Image" />
           <Scene key="scene4" component={Scene4} title="Magic Move" />
+          <Scene key="scene5" component={Scene5} title="Flip" />
         </Stack>
       </Router>
     </MagicMove.Provider>

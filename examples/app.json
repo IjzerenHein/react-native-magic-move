@@ -25,7 +25,7 @@
     "ios": {
       "supportsTablet": true
     },
-    "description": "",
+    "description": "Create magical move transitions between scenes in react-native 🐰🎩✨",
     "githubUrl": "https://github.com/IjzerenHein/react-native-magic-move"
   }
 }

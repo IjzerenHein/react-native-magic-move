@@ -38,7 +38,7 @@ const ANIMATABLE_PROPS = {
   color: "black"
 };
 
-export default function scaleTarget(props, state, Context) {
+export default function scaleTargetTransition(props, state, Context) {
   const { container, to, from, animValue } = state;
 
   function interpolate(from, to) {
