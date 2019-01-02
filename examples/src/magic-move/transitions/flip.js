@@ -1,6 +1,7 @@
+/* eslint react/prop-types: 0 */
 import React from "react";
 
-function flipTransition(config, { from, to, animValue, render }) {
+function flipTransition(config, { from, to, animValue, interpolate, render }) {
   const step = config.step || 0.5;
 
   function interpolateRotate(from, middle, to) {
@@ -11,7 +12,31 @@ function flipTransition(config, { from, to, animValue, render }) {
     });
   }
 
-  // Flip and fade-out
+  //
+  // Move & scale source component from start
+  // position/size to the ending position
+  //
+  from.style.transform = [
+    { translateX: interpolate(from.start.x, from.end.x) },
+    { translateY: interpolate(from.start.y, from.end.y) },
+    { scaleX: interpolate(from.start.scaleX, from.end.scaleX) },
+    { scaleY: interpolate(from.start.scaleY, from.end.scaleY) }
+  ];
+
+  //
+  // Move & scale target component from starting
+  // position/size to the ending position
+  //
+  to.style.transform = [
+    { translateX: interpolate(to.start.x, to.end.x) },
+    { translateY: interpolate(to.start.y, to.end.y) },
+    { scaleX: interpolate(to.start.scaleX, to.end.scaleX) },
+    { scaleY: interpolate(to.start.scaleY, to.end.scaleY) }
+  ];
+
+  //
+  // Flip and hide source component
+  //
   from.style.opacity = animValue.interpolate({
     inputRange: [0, step, step, 1],
     outputRange: [1, 1, 0, 0]
@@ -26,7 +51,9 @@ function flipTransition(config, { from, to, animValue, render }) {
     });
   from.props.backfaceVisibility = "hidden";
 
-  // Flip and fade-in
+  //
+  // Flip and show target component
+  //
   to.style.opacity = animValue.interpolate({
     inputRange: [0, step, step, 1],
     outputRange: [0, 0, 1, 1]
@@ -41,7 +68,9 @@ function flipTransition(config, { from, to, animValue, render }) {
     });
   to.props.backfaceVisibility = "hidden";
 
+  //
   // Render
+  //
   return (
     <React.Fragment>
       {render(from)}
@@ -49,6 +78,10 @@ function flipTransition(config, { from, to, animValue, render }) {
     </React.Fragment>
   );
 }
+
+flipTransition.defaultProps = {
+  useNativeDriver: true
+};
 
 export default function createFlipTransition(config) {
   return (props, state, Context) =>

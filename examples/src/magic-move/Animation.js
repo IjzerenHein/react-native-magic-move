@@ -295,7 +295,7 @@ class MagicMoveAnimation extends PureComponent {
     );
   }
 
-  createComponentStyle(a) {
+  createComponentStyle(a, x, y) {
     return {
       ...a.initial.style,
       position: "absolute",
@@ -303,12 +303,7 @@ class MagicMoveAnimation extends PureComponent {
       height: a.height,
       left: 0,
       top: 0,
-      transform: [
-        { translateX: this.interpolate(a.start.x, a.end.x) },
-        { translateY: this.interpolate(a.start.y, a.end.y) },
-        { scaleX: this.interpolate(a.start.scaleX, a.end.scaleX) },
-        { scaleY: this.interpolate(a.start.scaleY, a.end.scaleY) }
-      ],
+      transform: [{ translateX: x }, { translateY: y }],
       margin: 0,
       marginTop: 0,
       marginBottom: 0,
@@ -351,7 +346,11 @@ class MagicMoveAnimation extends PureComponent {
         ...this.props.from.props
       }
     };
-    source.style = this.createComponentStyle(source);
+    source.style = this.createComponentStyle(
+      source,
+      source.start.x,
+      source.start.y
+    );
 
     const dest = {
       width: to.width,
@@ -373,7 +372,7 @@ class MagicMoveAnimation extends PureComponent {
         ...this.props.to.props
       }
     };
-    dest.style = this.createComponentStyle(dest);
+    dest.style = this.createComponentStyle(dest, dest.end.x, dest.end.y);
 
     return this.props.to.props.transition({
       from: source,
@@ -413,21 +412,53 @@ class MagicMoveAnimation extends PureComponent {
     if (container && from && to && !this._isAnimationStarted) {
       this._isAnimationStarted = true;
       const toProps = this.props.to.props;
-      if (toProps.debug) {
+      const {
+        id,
+        debug,
+        duration,
+        transition,
+        easing,
+        delay,
+        useNativeDriver
+      } = toProps;
+      if (debug) {
         // eslint-disable-next-line
         console.debug(
-          '[MagicMove] Animating component with id "' + toProps.id + '"...'
+          '[MagicMove] Animating component with id "' + id + '"...'
         );
       }
+
       Animated.timing(animValue, {
         toValue: 1,
-        duration: toProps.debug ? 8000 : toProps.duration,
-        delay: toProps.delay,
-        easing: toProps.easing,
-        useNativeDriver: toProps.useNativeDriver
+        duration: debug
+          ? 8000
+          : resolveValue(
+              duration,
+              transition.defaultProps
+                ? transition.defaultProps.duration
+                : undefined,
+              400
+            ),
+        delay: resolveValue(
+          delay,
+          transition.defaultProps ? transition.defaultProps.delay : undefined,
+          0
+        ),
+        easing: resolveValue(
+          easing,
+          transition.defaultProps ? transition.defaultProps.easing : undefined,
+          defaultEasingFn
+        ),
+        useNativeDriver: resolveValue(
+          useNativeDriver,
+          transition.defaultProps
+            ? transition.defaultProps.useNativeDriver
+            : undefined,
+          false
+        )
       }).start(() => {
         const { to, from, onCompleted } = this.props;
-        if (to.props.debug) {
+        if (debug) {
           // eslint-disable-next-line
           console.debug(
             '[MagicMove] Animating component with id "' +
