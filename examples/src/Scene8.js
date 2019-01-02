@@ -7,9 +7,10 @@ import * as Animatable from "react-native-animatable";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "flex-start"
   },
   box: {
+    marginTop: 40,
     alignSelf: "center",
     backgroundColor: "steelblue",
     width: 260,
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     textAlign: "center",
     color: "white",
-    fontSize: 30
+    fontSize: 37
   },
   text: {
     color: "steelblue",
@@ -49,7 +50,7 @@ class Scene extends React.Component {
           transition={MagicMove.Transition.squashAndStretch}
           debug={debug}
         >
-          <Text style={styles.title}>Magic Move</Text>
+          <Text style={styles.title}>Squash & Stretch</Text>
         </MagicMove.View>
         <Animatable.Text
           style={styles.text}
