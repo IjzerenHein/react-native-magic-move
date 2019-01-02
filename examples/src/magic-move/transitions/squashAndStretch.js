@@ -9,7 +9,7 @@ export default function shrinkAndGrowTransition({
   render
 }) {
   //
-  // Calculate angle
+  // Calculate stuff
   //
   const fromCenterX = from.start.x + from.width / 2;
   const fromCenterY = from.start.y + from.height / 2;
@@ -17,32 +17,19 @@ export default function shrinkAndGrowTransition({
   const toCenterX = to.end.x + to.width / 2;
   const toCenterY = to.end.y + to.height / 2;
   const toVolume = to.width * to.height;
-  const distanceX = Math.abs(fromCenterX - toCenterX);
-  const distanceY = Math.abs(fromCenterY - toCenterY);
+  const distanceX = fromCenterX - toCenterX;
+  const distanceY = fromCenterY - toCenterY;
   const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-  // const fromStretch = Math.min(distance / (Math.sqrt(fromVolume) * 4), 0.75);
-  // const toStretch = Math.min(distance / (Math.sqrt(toVolume) * 4), 0.75);
-  const fromStretch = 0.5;
-  const toStretch = 0.5;
-
-  const stretchXY = Math.atan2(distanceY, distanceX) / Math.PI - 0.5;
-  console.log(
-    stretchXY,
-    distanceX,
-    distanceY,
-    distance,
-    Math.sqrt(fromVolume) * 4,
-    fromStretch,
-    toStretch
-  );
+  const fromStretch = Math.min(distance / (Math.sqrt(fromVolume) * 4), 0.75);
+  const toStretch = Math.min(distance / (Math.sqrt(toVolume) * 4), 0.75);
+  const stretchXY = (Math.atan2(distanceY, distanceX) / Math.PI) * 2 - 0.5;
 
   //
   // Move & scale target component from starting
   // position/size to the ending position
   //
   const step0 = 0.1;
-  const step1 = 0.7;
-  const step2 = 0.8;
+  const step1 = 0.95;
   to.style.transform = [
     {
       translateX: animValue.interpolate({
@@ -58,31 +45,29 @@ export default function shrinkAndGrowTransition({
     },
     {
       scaleX: animValue.interpolate({
-        inputRange: [0, step0, step1, step2, 1.0],
+        inputRange: [0, step0, step1, 1.0, 1.2],
         outputRange: [
           to.start.scaleX,
           (to.start.scaleX + (to.end.scaleX - to.start.scaleX) * step0) *
             (1 - stretchXY * (fromStretch + (toStretch - fromStretch) * step0)),
           (to.start.scaleX + (to.end.scaleX - to.start.scaleX) * step1) *
             (1 - stretchXY * (fromStretch + (toStretch - fromStretch) * step1)),
-          (to.start.scaleX + (to.end.scaleX - to.start.scaleX) * step2) *
-            (1 + stretchXY * (fromStretch + (toStretch - fromStretch) * step2)),
-          to.end.scaleX
+          to.end.scaleX,
+          1 + stretchXY
         ]
       })
     },
     {
       scaleY: animValue.interpolate({
-        inputRange: [0, step0, step1, step2, 1.0],
+        inputRange: [0, step0, step1, 1.0, 1.2],
         outputRange: [
           to.start.scaleY,
           (to.start.scaleY + (to.end.scaleY - to.start.scaleY) * step0) *
             (1 + stretchXY * (fromStretch + (toStretch - fromStretch) * step0)),
           (to.start.scaleY + (to.end.scaleY - to.start.scaleY) * step1) *
             (1 + stretchXY * (fromStretch + (toStretch - fromStretch) * step1)),
-          (to.start.scaleY + (to.end.scaleY - to.start.scaleY) * step2) *
-            (1 - stretchXY * (fromStretch + (toStretch - fromStretch) * step2)),
-          to.end.scaleY
+          to.end.scaleY,
+          1 - stretchXY
         ]
       })
     }
@@ -95,6 +80,7 @@ export default function shrinkAndGrowTransition({
 }
 
 shrinkAndGrowTransition.defaultProps = {
-  easing: Easing.bezier(0.175, 0.885, 0.32, 1.275),
-  useNativeDriver: true
+  easing: Easing.elastic(1.5),
+  useNativeDriver: true,
+  duration: 400
 };
