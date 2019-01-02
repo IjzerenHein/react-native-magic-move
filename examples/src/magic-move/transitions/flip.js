@@ -17,8 +17,8 @@ function flipTransition(config, { from, to, animValue, interpolate, render }) {
   // position/size to the ending position
   //
   from.style.transform = [
-    { translateX: interpolate(from.start.x, from.end.x) },
-    { translateY: interpolate(from.start.y, from.end.y) },
+    { translateX: interpolate(from.start.x, from.end.x, true) },
+    { translateY: interpolate(from.start.y, from.end.y, true) },
     { scaleX: interpolate(from.start.scaleX, from.end.scaleX) },
     { scaleY: interpolate(from.start.scaleY, from.end.scaleY) }
   ];
@@ -28,8 +28,8 @@ function flipTransition(config, { from, to, animValue, interpolate, render }) {
   // position/size to the ending position
   //
   to.style.transform = [
-    { translateX: interpolate(to.start.x, to.end.x) },
-    { translateY: interpolate(to.start.y, to.end.y) },
+    { translateX: interpolate(to.start.x, to.end.x, true) },
+    { translateY: interpolate(to.start.y, to.end.y, true) },
     { scaleX: interpolate(to.start.scaleX, to.end.scaleX) },
     { scaleY: interpolate(to.start.scaleY, to.end.scaleY) }
   ];
@@ -84,6 +84,9 @@ flipTransition.defaultProps = {
 };
 
 export default function createFlipTransition(config) {
-  return (props, state, Context) =>
-    flipTransition(config, props, state, Context);
+  const func = function(props, state, Context) {
+    return flipTransition(config, props, state, Context);
+  };
+  func.defaultProps = flipTransition.defaultProps;
+  return func;
 }

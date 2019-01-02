@@ -261,12 +261,19 @@ class MagicMoveAnimation extends PureComponent {
     );
   }
 
-  interpolate = (from, to) => {
+  interpolate = (from, to, clamp) => {
     if (to === from) return to;
-    return this.state.animValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [from, to]
-    });
+    if (clamp) {
+      return this.state.animValue.interpolate({
+        inputRange: [-0.1, 0, 1, 1.1],
+        outputRange: [from, from, to, to]
+      });
+    } else {
+      return this.state.animValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [from, to]
+      });
+    }
   };
 
   static renderComponent(a) {
