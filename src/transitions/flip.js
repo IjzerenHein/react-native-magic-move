@@ -1,16 +1,8 @@
+/* eslint react/prop-types: 0 */
 import React from "react";
 
-function flipTransition(config, props, state, Context) {
-  const { container, to, from, animValue } = state;
+function flipTransition(config, { from, to, animValue, interpolate, render }) {
   const step = config.step || 0.5;
-
-  function interpolate(from, to) {
-    if (to === from) return to;
-    return animValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [from, to]
-    });
-  }
 
   function interpolateRotate(from, middle, to) {
     if (to === from) return to;
@@ -20,175 +12,81 @@ function flipTransition(config, props, state, Context) {
     });
   }
 
-  const fromComponent = (function() {
-    const a = {
-      width: from.width,
-      height: from.height,
-      from: {
-        x: from.x - container.x,
-        y: from.y - container.y,
-        scaleX: 1,
-        scaleY: 1
-      },
-      to: {
-        x:
-          to.x -
-          to.scene.x +
-          from.scene.x -
-          container.x -
-          (from.width - to.width) / 2,
-        y:
-          to.y -
-          to.scene.y +
-          from.scene.y -
-          container.y -
-          (from.height - to.height) / 2,
-        scaleX: to.width / from.width,
-        scaleY: to.height / from.height
-      }
-    };
-    const newStyle = {
-      position: "absolute",
-      width: a.width,
-      height: a.height,
-      left: 0,
-      top: 0,
-      opacity: animValue.interpolate({
-        inputRange: [0, step, step, 1],
-        outputRange: [1, 1, 0, 0]
-      }),
-      transform: [
-        { translateX: interpolate(a.from.x, a.to.x) },
-        { translateY: interpolate(a.from.y, a.to.y) },
-        { scaleX: interpolate(a.from.scaleX, a.to.scaleX) },
-        { scaleY: interpolate(a.from.scaleY, a.to.scaleY) },
-        {
-          rotateX: config.x
-            ? interpolateRotate("0deg", "90deg", "180deg")
-            : "0deg"
-        },
-        {
-          rotateY: config.y
-            ? interpolateRotate("0deg", "90deg", "180deg")
-            : "0deg"
-        }
-      ],
-      margin: 0,
-      marginTop: 0,
-      marginBottom: 0,
-      marginLeft: 0,
-      marginRight: 0
-    };
-    const {
-      AnimatedComponent,
-      children,
-      style,
-      ...otherProps
-    } = props.from.props; //eslint-disable-line
-    delete otherProps.id;
-    delete otherProps.Component;
-    delete otherProps.useNativeDriver;
-    delete otherProps.keepHidden;
-    delete otherProps.duration;
-    delete otherProps.delay;
-    delete otherProps.easing;
-    delete otherProps.transition;
+  //
+  // Move & scale source component from start
+  // position/size to the ending position
+  //
+  from.style.transform = [
+    { translateX: interpolate(from.start.x, from.end.x, true) },
+    { translateY: interpolate(from.start.y, from.end.y, true) },
+    { scaleX: interpolate(from.start.scaleX, from.end.scaleX) },
+    { scaleY: interpolate(from.start.scaleY, from.end.scaleY) }
+  ];
 
-    return (
-      <AnimatedComponent
-        style={[style, newStyle]}
-        {...otherProps}
-        backfaceVisibility={"hidden"}
-      >
-        {children}
-      </AnimatedComponent>
-    );
-  })();
+  //
+  // Move & scale target component from starting
+  // position/size to the ending position
+  //
+  to.style.transform = [
+    { translateX: interpolate(to.start.x, to.end.x, true) },
+    { translateY: interpolate(to.start.y, to.end.y, true) },
+    { scaleX: interpolate(to.start.scaleX, to.end.scaleX) },
+    { scaleY: interpolate(to.start.scaleY, to.end.scaleY) }
+  ];
 
-  const toComponent = (function() {
-    const a = {
-      width: to.width,
-      height: to.height,
-      from: {
-        x: from.x - container.x - (to.width - from.width) / 2,
-        y: from.y - container.y - (to.height - from.height) / 2,
-        scaleX: from.width / to.width,
-        scaleY: from.height / to.height
-      },
-      to: {
-        x: to.x - to.scene.x + from.scene.x - container.x,
-        y: to.y - to.scene.y + from.scene.y - container.y,
-        scaleX: 1,
-        scaleY: 1
-      }
-    };
-    const newStyle = {
-      position: "absolute",
-      width: a.width,
-      height: a.height,
-      left: 0,
-      top: 0,
-      opacity: animValue.interpolate({
-        inputRange: [0, step, step, 1],
-        outputRange: [0, 0, 1, 1]
-      }),
-      transform: [
-        { translateX: interpolate(a.from.x, a.to.x) },
-        { translateY: interpolate(a.from.y, a.to.y) },
-        { scaleX: interpolate(a.from.scaleX, a.to.scaleX) },
-        { scaleY: interpolate(a.from.scaleY, a.to.scaleY) },
-        {
-          rotateX: config.x
-            ? interpolateRotate("180deg", "90deg", "0deg")
-            : "0deg"
-        },
-        {
-          rotateY: config.y
-            ? interpolateRotate("180deg", "90deg", "0deg")
-            : "0deg"
-        }
-      ],
-      margin: 0,
-      marginTop: 0,
-      marginBottom: 0,
-      marginLeft: 0,
-      marginRight: 0
-    };
-    const {
-      AnimatedComponent,
-      children,
-      style,
-      ...otherProps
-    } = props.to.props; //eslint-disable-line
-    delete otherProps.id;
-    delete otherProps.Component;
-    delete otherProps.useNativeDriver;
-    delete otherProps.keepHidden;
-    delete otherProps.duration;
-    delete otherProps.delay;
-    delete otherProps.easing;
-    delete otherProps.transition;
+  //
+  // Flip and hide source component
+  //
+  from.style.opacity = animValue.interpolate({
+    inputRange: [0, step, step, 1],
+    outputRange: [from.start.opacity, from.start.opacity, 0, 0]
+  });
+  if (config.x)
+    from.style.transform.push({
+      rotateX: interpolateRotate("0deg", "90deg", "180deg")
+    });
+  if (config.y)
+    from.style.transform.push({
+      rotateY: interpolateRotate("0deg", "90deg", "180deg")
+    });
+  from.props.backfaceVisibility = "hidden";
 
-    return (
-      <AnimatedComponent
-        style={[style, newStyle]}
-        {...otherProps}
-        backfaceVisibility={"hidden"}
-      >
-        {children}
-      </AnimatedComponent>
-    );
-  })();
+  //
+  // Flip and show target component
+  //
+  to.style.opacity = animValue.interpolate({
+    inputRange: [0, step, step, 1],
+    outputRange: [0, 0, to.end.opacity, to.end.opacity]
+  });
+  if (config.x)
+    to.style.transform.push({
+      rotateX: interpolateRotate("180deg", "90deg", "0deg")
+    });
+  if (config.y)
+    to.style.transform.push({
+      rotateY: interpolateRotate("180deg", "90deg", "0deg")
+    });
+  to.props.backfaceVisibility = "hidden";
 
+  //
+  // Render
+  //
   return (
-    <Context.Provider value={true}>
-      {fromComponent}
-      {toComponent}
-    </Context.Provider>
+    <React.Fragment>
+      {render(from)}
+      {render(to)}
+    </React.Fragment>
   );
 }
 
+flipTransition.defaultProps = {
+  useNativeDriver: true
+};
+
 export default function createFlipTransition(config) {
-  return (props, state, Context) =>
-    flipTransition(config, props, state, Context);
+  const func = function(props, state, Context) {
+    return flipTransition(config, props, state, Context);
+  };
+  func.defaultProps = flipTransition.defaultProps;
+  return func;
 }

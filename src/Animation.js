@@ -1,9 +1,11 @@
 /* globals Promise, __DEV__ */
 import React, { PureComponent, createContext } from "react";
-import { Animated } from "react-native";
+import { Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
 
 const MagicMoveAnimationContext = createContext(undefined);
+
+const defaultEasingFn = Easing.inOut(Easing.ease);
 
 function measureLayout(id, name, ref) {
   let i = 0;
@@ -32,9 +34,9 @@ function measureLayout(id, name, ref) {
   });
 }
 
-function resolveValue(value, def) {
+function resolveValue(value, def, other = 0) {
   if (value !== undefined) return value;
-  return def || 0;
+  return def || other;
 }
 
 /**
@@ -81,8 +83,8 @@ class MagicMoveAnimation extends PureComponent {
       } else {
         console.warn(err.message); //eslint-disable-line
       }
-      to.setOpacity(1);
-      from.setOpacity(1);
+      to.setOpacity(undefined);
+      from.setOpacity(undefined);
       onCompleted();
     }
     Promise.all([
@@ -94,8 +96,8 @@ class MagicMoveAnimation extends PureComponent {
         this.setState({
           container: layouts[0],
           from: {
-            ...from.getStyle(),
             ...layouts[1],
+            style: from.getStyle(),
             scene: layouts[2]
           }
         });
@@ -113,8 +115,8 @@ class MagicMoveAnimation extends PureComponent {
       .then(layouts => {
         this.setState({
           to: {
-            ...to.getStyle(),
             ...layouts[0],
+            style: to.getStyle(),
             scene: layouts[1]
           }
         });
@@ -144,28 +146,32 @@ class MagicMoveAnimation extends PureComponent {
           height: from.height,
           left: from.x - container.x,
           top: from.y - container.y,
-          backgroundColor: "blue",
-          borderColor: "darkblue",
+          backgroundColor: "rgba(0, 0, 255, 0.1)",
+          borderColor: "royalblue",
           borderWidth: 1,
+          borderStyle: "dashed",
           borderTopRightRadius: resolveValue(
-            from.borderTopRightRadius,
-            from.borderRadius
+            from.style.borderTopRightRadius,
+            from.style.borderRadius
           ),
           borderTopLeftRadius: resolveValue(
-            from.borderTopLeftRadius,
-            from.borderRadius
+            from.style.borderTopLeftRadius,
+            from.style.borderRadius
           ),
           borderBottomLeftRadius: resolveValue(
-            from.borderBottomLeftRadius,
-            from.borderRadius
+            from.style.borderBottomLeftRadius,
+            from.style.borderRadius
           ),
           borderBottomRightRadius: resolveValue(
-            from.borderBottomRightRadius,
-            from.borderRadius
+            from.style.borderBottomRightRadius,
+            from.style.borderRadius
           ),
-          opacity: 0.5
+          opacity: 0.8,
+          justifyContent: "center"
         }}
-      />
+      >
+        <Text style={{ color: "royalblue", textAlign: "center" }}>From</Text>
+      </Animated.View>
     );
   }
 
@@ -182,28 +188,32 @@ class MagicMoveAnimation extends PureComponent {
           height: to.height,
           left: to.x - to.scene.x + from.scene.x - container.x,
           top: to.y - to.scene.y + from.scene.y - container.y,
-          backgroundColor: "green",
-          borderColor: "darkgreen",
+          backgroundColor: "rgba(0, 255, 0, 0.1)",
+          borderColor: "green",
           borderWidth: 1,
+          borderStyle: "dashed",
           borderTopRightRadius: resolveValue(
-            to.borderTopRightRadius,
-            to.borderRadius
+            to.style.borderTopRightRadius,
+            to.style.borderRadius
           ),
           borderTopLeftRadius: resolveValue(
-            to.borderTopLeftRadius,
-            to.borderRadius
+            to.style.borderTopLeftRadius,
+            to.style.borderRadius
           ),
           borderBottomLeftRadius: resolveValue(
-            to.borderBottomLeftRadius,
-            to.borderRadius
+            to.style.borderBottomLeftRadius,
+            to.style.borderRadius
           ),
           borderBottomRightRadius: resolveValue(
-            to.borderBottomRightRadius,
-            to.borderRadius
+            to.style.borderBottomRightRadius,
+            to.style.borderRadius
           ),
-          opacity: 0.5
+          opacity: 0.8,
+          justifyContent: "center"
         }}
-      />
+      >
+        <Text style={{ color: "green", textAlign: "center" }}>To</Text>
+      </Animated.View>
     );
   }
 
@@ -251,14 +261,138 @@ class MagicMoveAnimation extends PureComponent {
     );
   }
 
-  renderAnimation() {
-    const { container, to, from } = this.state;
-    if (!container || !from || !to) return;
-    return this.props.to.props.transition(
-      this.props,
-      this.state,
-      MagicMoveAnimationContext
+  interpolate = (from, to, clamp) => {
+    if (to === from) return to;
+    if (clamp) {
+      return this.state.animValue.interpolate({
+        inputRange: [-0.1, 0, 1, 1.1],
+        outputRange: [from, from, to, to]
+      });
+    } else {
+      return this.state.animValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [from, to]
+      });
+    }
+  };
+
+  static renderComponent(a) {
+    const { AnimatedComponent, children, ...otherProps } = a.props;
+    delete otherProps.style;
+    delete otherProps.id;
+    delete otherProps.Component;
+    delete otherProps.useNativeDriver;
+    delete otherProps.keepHidden;
+    delete otherProps.duration;
+    delete otherProps.delay;
+    delete otherProps.easing;
+    delete otherProps.transition;
+    delete otherProps.debug;
+
+    return (
+      <AnimatedComponent style={a.style} {...otherProps}>
+        {children ? (
+          <MagicMoveAnimationContext.Provider value={true}>
+            {children}
+          </MagicMoveAnimationContext.Provider>
+        ) : (
+          undefined
+        )}
+      </AnimatedComponent>
     );
+  }
+
+  createComponentStyle(a, x, y) {
+    return {
+      ...a.initial.style,
+      position: "absolute",
+      width: a.width,
+      height: a.height,
+      left: 0,
+      top: 0,
+      transform: [{ translateX: x }, { translateY: y }],
+      margin: 0,
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0
+    };
+  }
+
+  renderAnimation() {
+    const { container, to, from, animValue } = this.state;
+    if (!container || !from || !to) return;
+
+    const source = {
+      width: from.width,
+      height: from.height,
+      start: {
+        x: from.x - container.x,
+        y: from.y - container.y,
+        scaleX: 1,
+        scaleY: 1,
+        opacity: from.style.opacity !== undefined ? from.style.opacity : 1
+      },
+      end: {
+        x:
+          to.x -
+          to.scene.x +
+          from.scene.x -
+          container.x -
+          (from.width - to.width) / 2,
+        y:
+          to.y -
+          to.scene.y +
+          from.scene.y -
+          container.y -
+          (from.height - to.height) / 2,
+        scaleX: to.width / from.width,
+        scaleY: to.height / from.height,
+        opacity: to.style.opacity !== undefined ? to.style.opacity : 1
+      },
+      initial: from,
+      props: {
+        ...this.props.from.props
+      }
+    };
+    source.style = this.createComponentStyle(
+      source,
+      source.start.x,
+      source.start.y
+    );
+
+    const dest = {
+      width: to.width,
+      height: to.height,
+      start: {
+        x: from.x - container.x - (to.width - from.width) / 2,
+        y: from.y - container.y - (to.height - from.height) / 2,
+        scaleX: from.width / to.width,
+        scaleY: from.height / to.height,
+        opacity: from.style.opacity !== undefined ? from.style.opacity : 1
+      },
+      end: {
+        x: to.x - to.scene.x + from.scene.x - container.x,
+        y: to.y - to.scene.y + from.scene.y - container.y,
+        scaleX: 1,
+        scaleY: 1,
+        opacity: to.style.opacity !== undefined ? to.style.opacity : 1
+      },
+      initial: to,
+      props: {
+        ...this.props.to.props
+      }
+    };
+    dest.style = this.createComponentStyle(dest, dest.end.x, dest.end.y);
+
+    return this.props.to.props.transition({
+      from: source,
+      to: dest,
+      animValue,
+      Context: MagicMoveAnimationContext,
+      render: MagicMoveAnimation.renderComponent,
+      interpolate: this.interpolate
+    });
   }
 
   render() {
@@ -289,21 +423,53 @@ class MagicMoveAnimation extends PureComponent {
     if (container && from && to && !this._isAnimationStarted) {
       this._isAnimationStarted = true;
       const toProps = this.props.to.props;
-      if (toProps.debug) {
+      const {
+        id,
+        debug,
+        duration,
+        transition,
+        easing,
+        delay,
+        useNativeDriver
+      } = toProps;
+      if (debug) {
         // eslint-disable-next-line
         console.debug(
-          '[MagicMove] Animating component with id "' + toProps.id + '"...'
+          '[MagicMove] Animating component with id "' + id + '"...'
         );
       }
+
       Animated.timing(animValue, {
         toValue: 1,
-        duration: toProps.debug ? 8000 : toProps.duration,
-        delay: toProps.delay,
-        easing: toProps.easing,
-        useNativeDriver: toProps.useNativeDriver
+        duration: debug
+          ? 8000
+          : resolveValue(
+              duration,
+              transition.defaultProps
+                ? transition.defaultProps.duration
+                : undefined,
+              400
+            ),
+        delay: resolveValue(
+          delay,
+          transition.defaultProps ? transition.defaultProps.delay : undefined,
+          0
+        ),
+        easing: resolveValue(
+          easing,
+          transition.defaultProps ? transition.defaultProps.easing : undefined,
+          defaultEasingFn
+        ),
+        useNativeDriver: resolveValue(
+          useNativeDriver,
+          transition.defaultProps
+            ? transition.defaultProps.useNativeDriver
+            : undefined,
+          false
+        )
       }).start(() => {
         const { to, from, onCompleted } = this.props;
-        if (to.props.debug) {
+        if (debug) {
           // eslint-disable-next-line
           console.debug(
             '[MagicMove] Animating component with id "' +
@@ -311,9 +477,9 @@ class MagicMoveAnimation extends PureComponent {
               '"... DONE'
           );
         }
-        to.setOpacity(1);
+        to.setOpacity(undefined);
         if (!from.props.keepHidden) {
-          from.setOpacity(1);
+          from.setOpacity(undefined);
         }
         onCompleted();
       });

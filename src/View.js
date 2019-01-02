@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Animated, Easing, StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import MagicMoveContext from "./Context";
 import MagicMoveScene from "./Scene";
 import MagicMoveAnimation from "./Animation";
-import scaleTargetTransition from "./transitions/scaleTarget";
+import morphTransition from "./transitions/morph";
 
 /**
  * An Animated view that is magically "moved" to the
@@ -28,10 +28,7 @@ class MagicMoveView extends Component {
     Component: View,
     AnimatedComponent: Animated.View,
     useNativeDriver: false,
-    duration: 400,
-    delay: 0,
-    easing: Easing.inOut(Easing.ease),
-    transition: scaleTargetTransition,
+    transition: morphTransition,
     keepHidden: false,
     debug: false
   };
@@ -118,7 +115,10 @@ class MagicMoveView extends Component {
                       return (
                         <Component
                           ref={this._setRef}
-                          style={[style, { opacity }]}
+                          style={[
+                            style,
+                            opacity !== undefined ? { opacity } : undefined
+                          ]}
                           {...otherProps}
                           collapsable={false}
                         />
