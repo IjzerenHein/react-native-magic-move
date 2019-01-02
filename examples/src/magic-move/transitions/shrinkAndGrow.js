@@ -1,5 +1,6 @@
 /* eslint react/prop-types: 0 */
 import React from "react";
+import { Easing } from "react-native";
 
 export default function shrinkAndGrowTransition({
   from,
@@ -17,7 +18,6 @@ export default function shrinkAndGrowTransition({
     { scaleX: interpolate(1, 0.01) },
     { scaleY: interpolate(1, 0.01) }
   ];
-  // from.style.opacity = interpolate(1, 0);
 
   //
   // Move & scale target component from starting
@@ -29,7 +29,6 @@ export default function shrinkAndGrowTransition({
     { scaleX: interpolate(0, 1) },
     { scaleY: interpolate(0, 1) }
   ];
-  // to.style.opacity = interpolate(0, 1);
 
   //
   // Render
@@ -43,5 +42,6 @@ export default function shrinkAndGrowTransition({
 }
 
 shrinkAndGrowTransition.defaultProps = {
+  easing: Easing.elastic(1),
   useNativeDriver: true
 };
