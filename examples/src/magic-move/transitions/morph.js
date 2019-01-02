@@ -1,3 +1,4 @@
+/* eslint react/prop-types: 0 */
 function resolveValue(value, def) {
   if (value !== undefined) return value;
   return def || 0;
@@ -30,13 +31,28 @@ const ANIMATABLE_STYLES = {
   // overlayColor: undefined
 };
 
-export default function scaleTargetTransition({
-  from,
-  to,
-  interpolate,
-  render
-}) {
+export default function morphTransition({ from, to, interpolate, render }) {
   const { borderRadius = 0 } = to.style;
+
+  //
+  // Move & scale target component from source
+  // position/size to the new position
+  //
+  to.style.transform = [
+    { translateX: interpolate(to.start.x, to.end.x) },
+    { translateY: interpolate(to.start.y, to.end.y) },
+    { scaleX: interpolate(to.start.scaleX, to.end.scaleX) },
+    { scaleY: interpolate(to.start.scaleY, to.end.scaleY) }
+  ];
+
+  //
+  // Change border-radius of target so that it looks
+  // like the the shape of the source component.
+  // The border-radius is calculated in such a way so
+  // that it takes the scaling of the view also into
+  // account in order to get as close as possible to the
+  // same shape as the source component.
+  //
   to.style.borderRadius = interpolate(
     Math.min((from.style.borderRadius || 0) / from.width, 0.5) *
       Math.max(to.height, to.width),
@@ -77,6 +93,9 @@ export default function scaleTargetTransition({
     resolveValue(to.style.borderBottomRightRadius, borderRadius)
   );
 
+  //
+  // Morph other styles
+  //
   Object.keys(ANIMATABLE_STYLES).forEach(styleName => {
     let toValue = to.style[styleName];
     let fromValue = from.style[styleName];
