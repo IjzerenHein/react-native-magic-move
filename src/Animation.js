@@ -93,6 +93,7 @@ class MagicMoveAnimation extends PureComponent {
       measureLayout(id, "fromScene", from.getSceneRef() || containerRef)
     ])
       .then(layouts => {
+        // console.log(layouts[1], layouts[2]);
         this.setState({
           container: layouts[0],
           from: {
@@ -385,15 +386,21 @@ class MagicMoveAnimation extends PureComponent {
     };
     dest.style = this.createComponentStyle(dest, dest.end.x, dest.end.y);
 
+    this._canUseNativeDriver = undefined;
     return this.props.to.props.transition({
       from: source,
       to: dest,
       animValue,
       Context: MagicMoveAnimationContext,
       render: MagicMoveAnimation.renderComponent,
-      interpolate: this.interpolate
+      interpolate: this.interpolate,
+      onCanUseNativeDriver: this.onCanUseNativeDriver
     });
   }
+
+  onCanUseNativeDriver = val => {
+    this._canUseNativeDriver = val;
+  };
 
   render() {
     const { to } = this.state;
@@ -423,20 +430,31 @@ class MagicMoveAnimation extends PureComponent {
     if (container && from && to && !this._isAnimationStarted) {
       this._isAnimationStarted = true;
       const toProps = this.props.to.props;
-      const {
-        id,
-        debug,
-        duration,
-        transition,
-        easing,
-        delay,
-        useNativeDriver
-      } = toProps;
+      const { id, debug, duration, transition, easing, delay } = toProps;
       if (debug) {
         // eslint-disable-next-line
         console.debug(
           '[MagicMove] Animating component with id "' + id + '"...'
         );
+      }
+
+      let { useNativeDriver } = toProps;
+      if (useNativeDriver === undefined) {
+        if (this._canUseNativeDriver === false) {
+          // eslint-disable-next-line
+          console.warn(
+            '[MagicMove] Warning, cannot use native animation for component with id "' +
+              id +
+              '" (set `useNativeDriver` to `false` to disable this warning)'
+          );
+          useNativeDriver = false;
+        } else if (this._canUseNativeDriver === true) {
+          useNativeDriver = true;
+        } else {
+          useNativeDriver = transition.defaultProps
+            ? transition.defaultProps.useNativeDriver
+            : false;
+        }
       }
 
       Animated.timing(animValue, {
@@ -460,13 +478,7 @@ class MagicMoveAnimation extends PureComponent {
           transition.defaultProps ? transition.defaultProps.easing : undefined,
           defaultEasingFn
         ),
-        useNativeDriver: resolveValue(
-          useNativeDriver,
-          transition.defaultProps
-            ? transition.defaultProps.useNativeDriver
-            : undefined,
-          false
-        )
+        useNativeDriver
       }).start(() => {
         const { to, from, onCompleted } = this.props;
         if (debug) {

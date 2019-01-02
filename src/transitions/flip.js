@@ -1,8 +1,28 @@
 /* eslint react/prop-types: 0 */
 import React from "react";
 
-function flipTransition(config, { from, to, animValue, interpolate, render }) {
-  const step = config.step || 0.5;
+export default function flipTransition(
+  { from, to, animValue, interpolate, render },
+  flipX,
+  flipY
+) {
+  //
+  // Calculate stuff
+  //
+  const step = 0.5;
+  if (flipX === undefined) {
+    const fromCenterX = from.start.x + from.width / 2;
+    const fromCenterY = from.start.y + from.height / 2;
+    const toCenterX = to.end.x + to.width / 2;
+    const toCenterY = to.end.y + to.height / 2;
+    const distanceX = Math.abs(fromCenterX - toCenterX);
+    const distanceY = Math.abs(fromCenterY - toCenterY);
+    flipX = distanceY >= distanceX ? 180 : 0;
+    flipY = flipX ? 0 : 180;
+  } else {
+    flipX = flipX ? 180 : 0;
+    flipY = flipY ? 180 : 0;
+  }
 
   function interpolateRotate(from, middle, to) {
     if (to === from) return to;
@@ -41,13 +61,13 @@ function flipTransition(config, { from, to, animValue, interpolate, render }) {
     inputRange: [0, step, step, 1],
     outputRange: [from.start.opacity, from.start.opacity, 0, 0]
   });
-  if (config.x)
+  if (flipX)
     from.style.transform.push({
-      rotateX: interpolateRotate("0deg", "90deg", "180deg")
+      rotateX: interpolateRotate("0deg", flipX / 2 + "deg", flipX + "deg")
     });
-  if (config.y)
+  if (flipY)
     from.style.transform.push({
-      rotateY: interpolateRotate("0deg", "90deg", "180deg")
+      rotateY: interpolateRotate("0deg", flipY / 2 + "deg", flipY + "180deg")
     });
   from.props.backfaceVisibility = "hidden";
 
@@ -58,13 +78,13 @@ function flipTransition(config, { from, to, animValue, interpolate, render }) {
     inputRange: [0, step, step, 1],
     outputRange: [0, 0, to.end.opacity, to.end.opacity]
   });
-  if (config.x)
+  if (flipX)
     to.style.transform.push({
-      rotateX: interpolateRotate("180deg", "90deg", "0deg")
+      rotateX: interpolateRotate(flipX + "deg", flipX / 2 + "deg", "0deg")
     });
-  if (config.y)
+  if (flipY)
     to.style.transform.push({
-      rotateY: interpolateRotate("180deg", "90deg", "0deg")
+      rotateY: interpolateRotate(flipY + "deg", flipY / 2 + "deg", "0deg")
     });
   to.props.backfaceVisibility = "hidden";
 
@@ -83,10 +103,14 @@ flipTransition.defaultProps = {
   useNativeDriver: true
 };
 
-export default function createFlipTransition(config) {
-  const func = function(props, state, Context) {
-    return flipTransition(config, props, state, Context);
+function createFlipTransition(x, y) {
+  const func = function(component) {
+    return flipTransition(component, x, y);
   };
   func.defaultProps = flipTransition.defaultProps;
   return func;
 }
+
+flipTransition.x = createFlipTransition(true, false);
+flipTransition.y = createFlipTransition(false, true);
+flipTransition.xy = createFlipTransition(true, true);

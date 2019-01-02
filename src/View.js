@@ -27,7 +27,6 @@ class MagicMoveView extends Component {
   static defaultProps = {
     Component: View,
     AnimatedComponent: Animated.View,
-    useNativeDriver: false,
     transition: morphTransition,
     keepHidden: false,
     debug: false
@@ -106,7 +105,12 @@ class MagicMoveView extends Component {
                   isInsideAnimation &&
                   this.getAdministration().isAnimatingComponent(this)
                 ) {
-                  return undefined;
+                  return (
+                    <Component
+                      style={[style, { opacity: 0 }]}
+                      {...otherProps}
+                    />
+                  );
                 }
                 return (
                   <MagicMoveScene.Context.Consumer>
