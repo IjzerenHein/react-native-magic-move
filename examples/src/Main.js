@@ -43,10 +43,19 @@ export default class Main extends React.Component {
     );
   }
 
-  renderImageItem({ id, source, onPress }) {
+  renderImageItem({ id, style, source, text, onPress }) {
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
-        <MagicMove.Image id={id} source={source} style={[styles.box]} />
+        <View style={styles.box}>
+          <MagicMove.Image
+            id={id}
+            source={source}
+            style={[styles.box, StyleSheet.absoluteFill]}
+          />
+          <MagicMove.Text id={`${id}.title`} style={[styles.text, style]}>
+            {text}
+          </MagicMove.Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -79,6 +88,9 @@ export default class Main extends React.Component {
             id: "image",
             source: require("./assets/waves.jpg"),
             text: "Image",
+            style: {
+              color: "black"
+            },
             onPress: () => Actions.push("scene3")
           })}
           {this.renderItem({
