@@ -7,16 +7,17 @@ import * as Animatable from "react-native-animatable";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "flex-end"
   },
   box: {
-    alignSelf: "center",
-    backgroundColor: "purple",
-    width: 260,
-    height: 260,
-    borderRadius: 130,
+    alignSelf: "flex-start",
+    backgroundColor: "steelblue",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     flexDirection: "column",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginLeft: 20
   },
   title: {
     alignSelf: "center",
@@ -25,18 +26,13 @@ const styles = StyleSheet.create({
     fontSize: 30
   },
   text: {
-    color: "purple",
+    color: "steelblue",
     margin: 24,
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 19,
     lineHeight: 24
   }
-});
-
-const flipTransition = MagicMove.Transition.flip({
-  x: true,
-  step: 0.6
 });
 
 class Scene extends React.Component {
@@ -48,13 +44,12 @@ class Scene extends React.Component {
     return (
       <MagicMove.Scene style={styles.container}>
         <MagicMove.View
-          id="scene5"
+          id="scene8"
           style={styles.box}
-          useNativeDriver
-          transition={flipTransition}
+          transition={MagicMove.Transition.squashAndStretch}
           debug={debug}
         >
-          <Text style={styles.title}>Magic Move Flip</Text>
+          {/*<Text style={styles.title}>Magic Move</Text>*/}
         </MagicMove.View>
         <Animatable.Text
           style={styles.text}
@@ -68,4 +63,5 @@ class Scene extends React.Component {
     );
   }
 }
+
 export default storeObserver(Scene);

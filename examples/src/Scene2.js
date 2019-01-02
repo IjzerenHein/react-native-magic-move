@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, ScrollView } from "react-native";
+import { storeObserver, StorePropType } from "./Store";
 import * as MagicMove from "./magic-move";
 import randomColor from "randomcolor";
 
@@ -22,8 +23,12 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class Scene2 extends React.Component {
+class Scene extends React.Component {
+  static propTypes = {
+    store: StorePropType
+  };
   render() {
+    const { debug } = this.props.store;
     const items = [];
     for (let i = 1; i < 100; i++) {
       items.push(
@@ -35,11 +40,13 @@ export default class Scene2 extends React.Component {
             { backgroundColor: i === 2 ? "purple" : randomColor() }
           ]}
           useNativeDriver
+          debug={debug}
         >
           <MagicMove.Text
             id={`list${i}.title`}
             style={styles.text}
             useNativeDriver
+            debug={debug}
           >
             {"Item " + i}
           </MagicMove.Text>
@@ -53,3 +60,5 @@ export default class Scene2 extends React.Component {
     );
   }
 }
+
+export default storeObserver(Scene);
