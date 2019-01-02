@@ -175,3 +175,7 @@ Magic-move creates the illusion of transitioning/morphing components from one sc
 ## License <!-- omit in toc -->
 
 [MIT](./LICENSE.txt)
+
+## Cool?
+
+Do you think this cool and useful? Consider buying me a coffee!<br/><a href="https://www.buymeacoffee.com/ijzerenhein" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
