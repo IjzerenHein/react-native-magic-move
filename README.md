@@ -2,11 +2,10 @@
 
 Create magical move transitions between scenes in react-native 🐰🎩✨
 
+### [Try it with Expo](https://expo.io/@ijzerenhein/react-native-magic-move-demo) <!-- omit in toc -->
+
 ![MagicMoveGif](magicmove3.gif)
 
-## [Try it with Expo](https://expo.io/@ijzerenhein/react-native-magic-move-demo)
-
-- [Try it with Expo](#try-it-with-expo)
 - [Usage](#usage)
 - [Documentation](#documentation)
   - [Components](#components)
@@ -84,16 +83,16 @@ MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
 
 ### Props
 
-| Property          | Type       | Default                     | Description                                                         |
-| ----------------- | ---------- | --------------------------- | ------------------------------------------------------------------- |
-| `id`              | `string`   | **(required)**              | Unique id of the magic-move instance                                |
-| `duration`        | `number`   | `400`                       | Length of the animation (milliseconds)                              |
-| `delay`           | `number`   | `0`                         | Amount of msec to wait before starting the animation                |
-| `easing`          | `function` | `Easing.inOut(Easing.ease)` | Easing function to define the curve                                 |
-| `transition`      | `function` | **(default transition)**    | Transition effect                                                   |
-| `useNativeDriver` | `boolean`  | `false`                     | Enables the native-driver                                           |
-| `keepHidden`      | `boolean`  | `false`                     | Keeps the source component hidden after the animation has completed |
-| `debug`           | `boolean`  | `false`                     | Enables debug-mode to analyze animations                            |
+| Property          | Type       | Default                      | Description                                                         |
+| ----------------- | ---------- | ---------------------------- | ------------------------------------------------------------------- |
+| `id`              | `string`   | **(required)**               | Unique id of the magic-move instance                                |
+| `transition`      | `function` | `MagicMove.Transition.morph` | Transition effect, see below                                        |
+| `duration`        | `number`   | `400`                        | Length of the animation (milliseconds)                              |
+| `delay`           | `number`   | `0`                          | Amount of msec to wait before starting the animation                |
+| `easing`          | `function` | `Easing.inOut(Easing.ease)`  | Easing function to define the curve                                 |
+| `useNativeDriver` | `boolean`  | `true`                       | Use the native-driver                                               |
+| `keepHidden`      | `boolean`  | `false`                      | Keeps the source component hidden after the animation has completed |
+| `debug`           | `boolean`  | `false`                      | Enables debug-mode to analyze animations                            |
 
 ### Scenes
 
@@ -104,19 +103,21 @@ This is important so that Magic Move can correctly assess the destination-positi
 
 ### Transitions
 
-Transitions are an experimental feature for which the API may change. At the moment only two transitions are supported `default` and `flip`.
+The following transition functions are available out of the box.
 
-To use the experimental flip transition, use:
+| Transition                                 | Description                                                                                                    |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `MagicMove.Transition.morph` **(default)** | Morphs the shape, size and colours  of the target to look like the source                                      |
+| `MagicMove.Transition.scale`               | Simple move that scales the target to the size of the source                                                   |
+| `MagicMove.Transition.dissolve`            | Cross fade the source into the target                                                                          |
+| `MagicMove.Transition.flip`                | Flip the source to reveal the target on the backside (auto choose axis)                                        |
+| `MagicMove.Transition.flip.x`              | Flip the source to reveal the target on the backside (over x-axis)                                             |
+| `MagicMove.Transition.flip.y`              | Flip the source to reveal the target on the backside (over y-axis)                                             |
+| `MagicMove.Transition.flip.xy`             | Flip the source to reveal the target on the backside (over x- and y-axes)                                      |
+| `MagicMove.Transition.shrinkAndGrow`       | Shrink and let the source disappear while letting the target appear and grow                                   |
+| `MagicMove.Transition.squashAndStretch`    | Scale the target to the size of the source and squash and stretch to give it the illusion of momentum and mass |
 
-```js
-const flipTransition = MagicMove.Transition.flip({
-  x: true,  // set to true for a flip over the horizontal axis
-  y: false, // set to true for a flip over the vertival axis
-  step: 0.5 // [0..1]
-});
-
-<MagicMove.View transition={flipTransition} .../>
-```
+You can also create your own transition functions, see [`src/transitions`](./src/transitions) for examples.
 
 
 ## Examples
