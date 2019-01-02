@@ -20,7 +20,6 @@ const ANIMATABLE_STYLES = {
   borderTopColor: "transparent",
   borderTopWidth: 0,
   borderWidth: 0,
-  opacity: 1,
   elevation: 0,
   // Text,
   color: "black"
@@ -44,6 +43,11 @@ export default function morphTransition({ from, to, interpolate, render }) {
     { scaleX: interpolate(to.start.scaleX, to.end.scaleX) },
     { scaleY: interpolate(to.start.scaleY, to.end.scaleY) }
   ];
+
+  //
+  // Update opacity
+  //
+  to.style.opacity = interpolate(to.start.opacity, to.end.opacity);
 
   //
   // Change border-radius of target so that it looks

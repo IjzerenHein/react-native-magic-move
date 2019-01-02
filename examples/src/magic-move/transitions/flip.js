@@ -39,7 +39,7 @@ function flipTransition(config, { from, to, animValue, interpolate, render }) {
   //
   from.style.opacity = animValue.interpolate({
     inputRange: [0, step, step, 1],
-    outputRange: [1, 1, 0, 0]
+    outputRange: [from.start.opacity, from.start.opacity, 0, 0]
   });
   if (config.x)
     from.style.transform.push({
@@ -56,7 +56,7 @@ function flipTransition(config, { from, to, animValue, interpolate, render }) {
   //
   to.style.opacity = animValue.interpolate({
     inputRange: [0, step, step, 1],
-    outputRange: [0, 0, 1, 1]
+    outputRange: [0, 0, to.end.opacity, to.end.opacity]
   });
   if (config.x)
     to.style.transform.push({

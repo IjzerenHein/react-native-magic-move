@@ -115,7 +115,10 @@ class MagicMoveView extends Component {
                       return (
                         <Component
                           ref={this._setRef}
-                          style={[style, { opacity }]}
+                          style={[
+                            style,
+                            opacity !== undefined ? { opacity } : undefined
+                          ]}
                           {...otherProps}
                           collapsable={false}
                         />

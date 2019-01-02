@@ -83,8 +83,8 @@ class MagicMoveAnimation extends PureComponent {
       } else {
         console.warn(err.message); //eslint-disable-line
       }
-      to.setOpacity(1);
-      from.setOpacity(1);
+      to.setOpacity(undefined);
+      from.setOpacity(undefined);
       onCompleted();
     }
     Promise.all([
@@ -330,7 +330,8 @@ class MagicMoveAnimation extends PureComponent {
         x: from.x - container.x,
         y: from.y - container.y,
         scaleX: 1,
-        scaleY: 1
+        scaleY: 1,
+        opacity: from.style.opacity !== undefined ? from.style.opacity : 1
       },
       end: {
         x:
@@ -346,7 +347,8 @@ class MagicMoveAnimation extends PureComponent {
           container.y -
           (from.height - to.height) / 2,
         scaleX: to.width / from.width,
-        scaleY: to.height / from.height
+        scaleY: to.height / from.height,
+        opacity: to.style.opacity !== undefined ? to.style.opacity : 1
       },
       initial: from,
       props: {
@@ -366,13 +368,15 @@ class MagicMoveAnimation extends PureComponent {
         x: from.x - container.x - (to.width - from.width) / 2,
         y: from.y - container.y - (to.height - from.height) / 2,
         scaleX: from.width / to.width,
-        scaleY: from.height / to.height
+        scaleY: from.height / to.height,
+        opacity: from.style.opacity !== undefined ? from.style.opacity : 1
       },
       end: {
         x: to.x - to.scene.x + from.scene.x - container.x,
         y: to.y - to.scene.y + from.scene.y - container.y,
         scaleX: 1,
-        scaleY: 1
+        scaleY: 1,
+        opacity: to.style.opacity !== undefined ? to.style.opacity : 1
       },
       initial: to,
       props: {
@@ -473,9 +477,9 @@ class MagicMoveAnimation extends PureComponent {
               '"... DONE'
           );
         }
-        to.setOpacity(1);
+        to.setOpacity(undefined);
         if (!from.props.keepHidden) {
-          from.setOpacity(1);
+          from.setOpacity(undefined);
         }
         onCompleted();
       });

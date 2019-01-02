@@ -12,7 +12,7 @@ export default function dissolveTransition({ from, to, interpolate, render }) {
     { scaleX: interpolate(from.start.scaleX, from.end.scaleX) },
     { scaleY: interpolate(from.start.scaleY, from.end.scaleY) }
   ];
-  from.style.opacity = interpolate(1, 0);
+  from.style.opacity = interpolate(from.start.opacity, 0);
 
   //
   // Move & scale target component from starting
@@ -24,7 +24,7 @@ export default function dissolveTransition({ from, to, interpolate, render }) {
     { scaleX: interpolate(to.start.scaleX, to.end.scaleX) },
     { scaleY: interpolate(to.start.scaleY, to.end.scaleY) }
   ];
-  to.style.opacity = interpolate(0, 1);
+  to.style.opacity = interpolate(0, from.end.opacity);
 
   //
   // Render
