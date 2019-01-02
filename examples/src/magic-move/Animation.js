@@ -1,9 +1,11 @@
 /* globals Promise, __DEV__ */
 import React, { PureComponent, createContext } from "react";
-import { Animated } from "react-native";
+import { Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
 
 const MagicMoveAnimationContext = createContext(undefined);
+
+const defaultEasingFn = Easing.inOut(Easing.ease);
 
 function measureLayout(id, name, ref) {
   let i = 0;
@@ -32,9 +34,9 @@ function measureLayout(id, name, ref) {
   });
 }
 
-function resolveValue(value, def) {
+function resolveValue(value, def, other = 0) {
   if (value !== undefined) return value;
-  return def || 0;
+  return def || other;
 }
 
 /**
@@ -144,9 +146,10 @@ class MagicMoveAnimation extends PureComponent {
           height: from.height,
           left: from.x - container.x,
           top: from.y - container.y,
-          backgroundColor: "blue",
-          borderColor: "darkblue",
+          backgroundColor: "rgba(0, 0, 255, 0.1)",
+          borderColor: "royalblue",
           borderWidth: 1,
+          borderStyle: "dashed",
           borderTopRightRadius: resolveValue(
             from.style.borderTopRightRadius,
             from.style.borderRadius
@@ -163,9 +166,12 @@ class MagicMoveAnimation extends PureComponent {
             from.style.borderBottomRightRadius,
             from.style.borderRadius
           ),
-          opacity: 0.5
+          opacity: 0.8,
+          justifyContent: "center"
         }}
-      />
+      >
+        <Text style={{ color: "royalblue", textAlign: "center" }}>From</Text>
+      </Animated.View>
     );
   }
 
@@ -182,9 +188,10 @@ class MagicMoveAnimation extends PureComponent {
           height: to.height,
           left: to.x - to.scene.x + from.scene.x - container.x,
           top: to.y - to.scene.y + from.scene.y - container.y,
-          backgroundColor: "green",
-          borderColor: "darkgreen",
+          backgroundColor: "rgba(0, 255, 0, 0.1)",
+          borderColor: "green",
           borderWidth: 1,
+          borderStyle: "dashed",
           borderTopRightRadius: resolveValue(
             to.style.borderTopRightRadius,
             to.style.borderRadius
@@ -201,9 +208,12 @@ class MagicMoveAnimation extends PureComponent {
             to.style.borderBottomRightRadius,
             to.style.borderRadius
           ),
-          opacity: 0.5
+          opacity: 0.8,
+          justifyContent: "center"
         }}
-      />
+      >
+        <Text style={{ color: "green", textAlign: "center" }}>To</Text>
+      </Animated.View>
     );
   }
 
