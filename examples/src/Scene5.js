@@ -50,7 +50,6 @@ class Scene extends React.Component {
         <MagicMove.View
           id="scene5"
           style={styles.box}
-          useNativeDriver
           transition={flipTransition}
           debug={debug}
         >

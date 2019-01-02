@@ -1,5 +1,5 @@
 import React from "react";
-import { Easing, Dimensions, StyleSheet, View, ScrollView } from "react-native";
+import { Easing, Dimensions, StyleSheet, ScrollView } from "react-native";
 import { storeObserver, StorePropType } from "./Store";
 import * as MagicMove from "./magic-move";
 import * as Animatable from "react-native-animatable";
@@ -12,16 +12,6 @@ const styles = StyleSheet.create({
   image: {
     width: Dimensions.get("window").width,
     height: 240
-  },
-  titleContainer: {
-    position: "absolute",
-    right: 20,
-    top: 16
-  },
-  title: {
-    fontSize: 24,
-    color: "black",
-    opacity: 0
   },
   text: {
     margin: 20,
@@ -53,19 +43,8 @@ class Scene extends React.Component {
             resizeMode="cover"
             easing={Easing.in(Easing.cubic)}
             duration={400}
-            useNativeDriver
             debug={debug}
           />
-          <View style={styles.titleContainer}>
-            <MagicMove.Text
-              id="image.title"
-              style={styles.title}
-              transition={MagicMove.Transition.shrinkAndGrow}
-              debug={debug}
-            >
-              Image
-            </MagicMove.Text>
-          </View>
           <Animatable.Text
             style={styles.text}
             animation="fadeInUp"

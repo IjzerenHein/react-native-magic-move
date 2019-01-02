@@ -30,7 +30,13 @@ const ANIMATABLE_STYLES = {
   // overlayColor: undefined
 };
 
-export default function morphTransition({ from, to, interpolate, render }) {
+export default function morphTransition({
+  from,
+  to,
+  interpolate,
+  render,
+  onCanUseNativeDriver
+}) {
   const { borderRadius = 0 } = to.style;
 
   //
@@ -100,6 +106,7 @@ export default function morphTransition({ from, to, interpolate, render }) {
   //
   // Morph other styles
   //
+  let canUseNativeDriver = true;
   Object.keys(ANIMATABLE_STYLES).forEach(styleName => {
     let toValue = to.style[styleName];
     let fromValue = from.style[styleName];
@@ -109,9 +116,14 @@ export default function morphTransition({ from, to, interpolate, render }) {
       defaultValue === undefined ? toValue || fromValue : defaultValue;
     toValue = toValue === undefined ? defaultValue : toValue;
     fromValue = fromValue === undefined ? defaultValue : fromValue;
-    to.style[styleName] =
-      toValue === fromValue ? toValue : interpolate(fromValue, toValue);
+    if (toValue !== fromValue) {
+      canUseNativeDriver = false;
+      to.style[styleName] = interpolate(fromValue, toValue);
+    } else {
+      to.style[styleName] = toValue;
+    }
   });
+  onCanUseNativeDriver(canUseNativeDriver);
 
   return render(to);
 }

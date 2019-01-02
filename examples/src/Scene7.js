@@ -45,7 +45,6 @@ class Scene extends React.Component {
         <MagicMove.View
           id="scene7"
           style={styles.box}
-          useNativeDriver
           transition={MagicMove.Transition.shrinkAndGrow}
           debug={debug}
         >

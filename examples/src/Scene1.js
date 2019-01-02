@@ -19,12 +19,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 50
   },
-  subTitle: {
-    textAlign: "center",
-    color: "rgba(255,255,255,0.5)",
-    fontWeight: "900",
-    fontSize: 19
-  },
   text: {
     margin: 24,
     textAlign: "center",
@@ -46,13 +40,13 @@ class Scene extends React.Component {
         <MagicMove.View
           id="scene1"
           style={styles.background}
-          useNativeDriver
+          transition={MagicMove.Transition.scale}
           debug={debug}
         >
           <MagicMove.Text
             id="scene1.title"
             style={styles.title}
-            useNativeDriver
+            transition={MagicMove.Transition.scale}
             debug={debug}
           >
             Magic Move

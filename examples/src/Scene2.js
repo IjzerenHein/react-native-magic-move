@@ -37,15 +37,13 @@ class Scene extends React.Component {
           id={`list${i}`}
           style={[
             styles.item,
-            { backgroundColor: i === 2 ? "purple" : randomColor() }
+            { backgroundColor: i === 5 ? "purple" : randomColor() }
           ]}
-          useNativeDriver
           debug={debug}
         >
           <MagicMove.Text
             id={`list${i}.title`}
             style={styles.text}
-            useNativeDriver
             debug={debug}
           >
             {"Item " + i}

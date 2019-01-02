@@ -45,7 +45,6 @@ class Scene extends React.Component {
         <MagicMove.View
           id="scene6"
           style={styles.box}
-          useNativeDriver
           transition={MagicMove.Transition.dissolve}
           debug={debug}
         >

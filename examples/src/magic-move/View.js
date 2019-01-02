@@ -27,7 +27,6 @@ class MagicMoveView extends Component {
   static defaultProps = {
     Component: View,
     AnimatedComponent: Animated.View,
-    useNativeDriver: false,
     transition: morphTransition,
     keepHidden: false,
     debug: false

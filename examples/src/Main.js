@@ -43,7 +43,7 @@ export default class Main extends React.Component {
     );
   }
 
-  renderImageItem({ id, style, source, text, onPress }) {
+  renderImageItem({ id, source, onPress }) {
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
         <View style={styles.box}>
@@ -52,9 +52,6 @@ export default class Main extends React.Component {
             source={source}
             style={[styles.box, StyleSheet.absoluteFill]}
           />
-          <MagicMove.Text id={`${id}.title`} style={[styles.text, style]}>
-            {text}
-          </MagicMove.Text>
         </View>
       </TouchableOpacity>
     );
@@ -65,42 +62,18 @@ export default class Main extends React.Component {
       <MagicMove.Scene style={styles.container}>
         <View style={styles.row}>
           {this.renderItem({
-            id: "scene1",
-            text: "Magic Move",
-            style: {
-              backgroundColor: "blueviolet",
-              borderBottomRightRadius: 0
-            },
-            onPress: () => Actions.push("scene1")
-          })}
-          {this.renderItem({
-            id: "list2",
+            id: "list5",
             text: "Morph",
             style: {
               backgroundColor: "purple",
-              borderBottomLeftRadius: 0
+              borderBottomRightRadius: 0
             },
             onPress: () => Actions.push("scene2")
           })}
-        </View>
-        <View style={styles.row}>
           {this.renderImageItem({
             id: "image",
             source: require("./assets/waves.jpg"),
-            text: "Image",
-            style: {
-              color: "black"
-            },
             onPress: () => Actions.push("scene3")
-          })}
-          {this.renderItem({
-            id: "scene4",
-            text: "Color Change",
-            style: {
-              backgroundColor: "orange",
-              borderTopLeftRadius: 0
-            },
-            onPress: () => Actions.push("scene4")
           })}
         </View>
         <View style={styles.row}>
@@ -137,6 +110,26 @@ export default class Main extends React.Component {
               backgroundColor: "steelblue"
             },
             onPress: () => Actions.push("scene8")
+          })}
+        </View>
+        <View style={styles.row}>
+          {this.renderItem({
+            id: "scene1",
+            text: "Scale",
+            style: {
+              backgroundColor: "blueviolet",
+              borderRadius: 0
+            },
+            onPress: () => Actions.push("scene1")
+          })}
+          {this.renderItem({
+            id: "scene4",
+            text: "Color Change",
+            style: {
+              backgroundColor: "orange",
+              borderTopLeftRadius: 0
+            },
+            onPress: () => Actions.push("scene4")
           })}
         </View>
       </MagicMove.Scene>

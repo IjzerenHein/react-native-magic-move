@@ -27,7 +27,7 @@ const App = () => (
               titleStyle={{ width: 300 }}
               renderRightButton={() => <DebugButton />}
             />
-            <Scene key="scene1" component={Scene1} title="Magic Move" />
+            <Scene key="scene1" component={Scene1} title="Scale" />
             <Scene key="scene2" component={Scene2} title="ScrollView" />
             <Scene key="scene3" component={Scene3} title="Image" />
             <Scene key="scene4" component={Scene4} title="Color Change" />
