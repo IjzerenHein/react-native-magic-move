@@ -54,7 +54,7 @@ class Scene extends React.Component {
           transition={flipTransition}
           debug={debug}
         >
-          <Text style={styles.title}>Magic Move Flip</Text>
+          <Text style={styles.title}>Magic Move</Text>
         </MagicMove.View>
         <Animatable.Text
           style={styles.text}

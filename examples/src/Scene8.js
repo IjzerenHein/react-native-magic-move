@@ -7,17 +7,16 @@ import * as Animatable from "react-native-animatable";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-end"
+    justifyContent: "center"
   },
   box: {
-    alignSelf: "flex-start",
+    alignSelf: "center",
     backgroundColor: "steelblue",
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
     flexDirection: "column",
-    justifyContent: "center",
-    marginLeft: 20
+    justifyContent: "center"
   },
   title: {
     alignSelf: "center",
@@ -46,10 +45,11 @@ class Scene extends React.Component {
         <MagicMove.View
           id="scene8"
           style={styles.box}
+          duration={600}
           transition={MagicMove.Transition.squashAndStretch}
           debug={debug}
         >
-          {/*<Text style={styles.title}>Magic Move</Text>*/}
+          <Text style={styles.title}>Magic Move</Text>
         </MagicMove.View>
         <Animatable.Text
           style={styles.text}

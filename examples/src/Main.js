@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginVertical: 20
+    marginVertical: 16
   },
   box: {
     width: 140,
@@ -96,7 +96,7 @@ export default class Main extends React.Component {
             id: "scene5",
             text: "Flip",
             style: {
-              backgroundColor: "orange"
+              backgroundColor: "goldenrod"
             },
             onPress: () => Actions.push("scene5")
           })}
