@@ -34,11 +34,6 @@ const styles = StyleSheet.create({
   }
 });
 
-const flipTransition = MagicMove.Transition.flip({
-  x: true,
-  step: 0.6
-});
-
 class Scene extends React.Component {
   static propTypes = {
     store: StorePropType
@@ -50,7 +45,7 @@ class Scene extends React.Component {
         <MagicMove.View
           id="scene5"
           style={styles.box}
-          transition={flipTransition}
+          transition={MagicMove.Transition.flip.x}
           debug={debug}
         >
           <Text style={styles.title}>Magic Move</Text>
