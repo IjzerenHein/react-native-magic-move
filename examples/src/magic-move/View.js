@@ -106,7 +106,12 @@ class MagicMoveView extends Component {
                   isInsideAnimation &&
                   this.getAdministration().isAnimatingComponent(this)
                 ) {
-                  return undefined;
+                  return (
+                    <Component
+                      style={[style, { opacity: 0 }]}
+                      {...otherProps}
+                    />
+                  );
                 }
                 return (
                   <MagicMoveScene.Context.Consumer>
