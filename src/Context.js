@@ -1,5 +1,5 @@
-import { createContext } from "react";
+import MagicMoveAnimation from "./Animation";
 
-const MagicMoveContext = createContext(undefined);
+const MagicMoveContext = MagicMoveAnimation.Context.Consumer;
 
 export default MagicMoveContext;

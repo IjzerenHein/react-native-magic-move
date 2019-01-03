@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import MagicMoveAdministration from "./Administration";
-import MagicMoveContext from "./Context";
 import MagicMoveRenderer from "./Renderer";
 
 /**
@@ -17,10 +16,10 @@ class MagicMoveProvider extends Component {
   render() {
     const { children } = this.props; //eslint-disable-line
     return (
-      <MagicMoveContext.Provider value={this._administration}>
+      <MagicMoveAdministration.Context.Provider value={this._administration}>
         {children}
         <MagicMoveRenderer administration={this._administration} />
-      </MagicMoveContext.Provider>
+      </MagicMoveAdministration.Context.Provider>
     );
   }
 }

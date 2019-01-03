@@ -12,6 +12,7 @@ Create magical move transitions between scenes in react-native 🐰🎩✨
   - [Props](#props)
   - [Scenes](#scenes)
   - [Transitions](#transitions)
+  - [Context](#context)
 - [Examples](#examples)
 - [Disclaimer 🐰🎩](#disclaimer-%F0%9F%90%B0%F0%9F%8E%A9)
 
@@ -120,6 +121,23 @@ The following transition functions are available out of the box.
 You can also create your own transition functions, see [`src/transitions`](./src/transitions) for examples.
 
 
+### Context
+
+When a magic-move is performend, a temporary clone of the source and/or target component is rendered onto the screen. Now imagine you have some animations that run when your component is mounted (e.g. `Animatable.View`), that would also mean these animations are run on the cloned component. This is probably not what you want and you probably want to hide those components entirely in the cloned component. To do so you can use the `<MagicMove.Context>` API. It allows you to detect whether the component is rendered as a clone and whether it is the source or target of a magic move animation.
+
+**Example**
+
+```js
+<MagicMove.View>
+  <MagicMove.Context>
+    {({isClone, isTarget}) => (
+      <Animatable.View animation={isClone ? undefined : 'zoomIn'} />
+    )}
+  </MagicMove.Context>
+</MagicMove.View>
+```
+
+
 ## Examples
 
 Example with scene transitions using `react-native-router-flux`.
@@ -176,6 +194,6 @@ Magic-move creates the illusion of transitioning/morphing components from one sc
 
 [MIT](./LICENSE.txt)
 
-## Cool?
+## Cool? <!-- omit in toc -->
 
 Do you think this cool and useful? Consider buying me a coffee!<br/><a href="https://www.buymeacoffee.com/ijzerenhein" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>

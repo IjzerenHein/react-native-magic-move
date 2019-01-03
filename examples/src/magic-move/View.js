@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
-import MagicMoveContext from "./Context";
+import MagicMoveAdministration from "./Administration";
 import MagicMoveScene from "./Scene";
 import MagicMoveAnimation from "./Animation";
 import morphTransition from "./transitions/morph";
@@ -60,12 +60,12 @@ class MagicMoveView extends Component {
   }
 
   getAdministration() {
-    return this._context || this.context;
+    return this._administration || this.context;
   }
 
   componentDidMount() {
     this._isMounted = true;
-    if (this._isInsideAnimation) return;
+    if (this._isClone) return;
     if (this.props.debug)
       //eslint-disable-next-line
       console.debug(
@@ -76,7 +76,7 @@ class MagicMoveView extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
-    if (this._isInsideAnimation) return;
+    if (this._isClone) return;
     if (this.props.debug)
       //eslint-disable-next-line
       console.debug(
@@ -86,7 +86,7 @@ class MagicMoveView extends Component {
   }
 
   componentDidUpdate() {
-    //if (this._isInsideAnimation) return;
+    //if (this._isClone) return;
     // this.getAdministration().updateComponentProps(this);
   }
 
@@ -95,14 +95,14 @@ class MagicMoveView extends Component {
     const { opacity } = this.state;
     return (
       <MagicMoveAnimation.Context.Consumer>
-        {isInsideAnimation => {
-          this._isInsideAnimation = isInsideAnimation;
+        {({ isClone }) => {
+          this._isClone = isClone;
           return (
-            <MagicMoveContext.Consumer>
-              {context => {
-                this._context = context;
+            <MagicMoveAdministration.Context.Consumer>
+              {administration => {
+                this._administration = administration;
                 if (
-                  isInsideAnimation &&
+                  isClone &&
                   this.getAdministration().isAnimatingComponent(this)
                 ) {
                   return (
@@ -131,7 +131,7 @@ class MagicMoveView extends Component {
                   </MagicMoveScene.Context.Consumer>
                 );
               }}
-            </MagicMoveContext.Consumer>
+            </MagicMoveAdministration.Context.Consumer>
           );
         }}
       </MagicMoveAnimation.Context.Consumer>

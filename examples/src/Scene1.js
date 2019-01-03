@@ -51,14 +51,22 @@ class Scene extends React.Component {
           >
             Magic Move
           </MagicMove.Text>
-          <Animatable.Text
-            style={styles.text}
-            animation="fadeInUp"
-            delay={400}
-            duration={500}
-          >
-            Magically animate your component from one scene to another.
-          </Animatable.Text>
+          <MagicMove.Context>
+            {({ isClone, isTarget }) =>
+              isClone && isTarget ? (
+                undefined
+              ) : (
+                <Animatable.Text
+                  style={styles.text}
+                  animation="fadeInUp"
+                  delay={debug ? 8000 : 400}
+                  duration={500}
+                >
+                  Magically animate your component from one scene to another.
+                </Animatable.Text>
+              )
+            }
+          </MagicMove.Context>
         </MagicMove.View>
       </MagicMove.Scene>
     );

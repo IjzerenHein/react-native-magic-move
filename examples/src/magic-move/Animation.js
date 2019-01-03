@@ -3,7 +3,10 @@ import React, { PureComponent, createContext } from "react";
 import { Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
 
-const MagicMoveAnimationContext = createContext(undefined);
+const MagicMoveAnimationContext = createContext({
+  isClone: false,
+  isTarget: false
+});
 
 const defaultEasingFn = Easing.inOut(Easing.ease);
 
@@ -123,15 +126,6 @@ class MagicMoveAnimation extends PureComponent {
         });
       })
       .catch(errorHandler);
-  }
-
-  renderChildren(children) {
-    if (!children) return;
-    return (
-      <MagicMoveAnimationContext.Provider value={true}>
-        {children}
-      </MagicMoveAnimationContext.Provider>
-    );
   }
 
   renderDebugFrom() {
@@ -257,7 +251,15 @@ class MagicMoveAnimation extends PureComponent {
         ]}
         {...otherProps}
       >
-        {this.renderChildren(children)}
+        {children ? (
+          <MagicMoveAnimationContext.Provider
+            value={{ isClone: true, isTarget: false }}
+          >
+            {children}
+          </MagicMoveAnimationContext.Provider>
+        ) : (
+          undefined
+        )}
       </AnimatedComponent>
     );
   }
@@ -293,7 +295,9 @@ class MagicMoveAnimation extends PureComponent {
     return (
       <AnimatedComponent style={a.style} {...otherProps}>
         {children ? (
-          <MagicMoveAnimationContext.Provider value={true}>
+          <MagicMoveAnimationContext.Provider
+            value={{ isClone: true, isTarget: a.isTarget }}
+          >
             {children}
           </MagicMoveAnimationContext.Provider>
         ) : (
@@ -325,6 +329,7 @@ class MagicMoveAnimation extends PureComponent {
     if (!container || !from || !to) return;
 
     const source = {
+      isTarget: false,
       width: from.width,
       height: from.height,
       start: {
@@ -363,6 +368,7 @@ class MagicMoveAnimation extends PureComponent {
     );
 
     const dest = {
+      isTarget: true,
       width: to.width,
       height: to.height,
       start: {

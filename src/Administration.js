@@ -1,3 +1,5 @@
+import { createContext } from "react";
+
 /**
  * The MagicMove administration keeps track of the
  * components that have been mounted/unmounted and
@@ -94,5 +96,7 @@ class MagicMoveAdministration {
     return this._animations;
   }
 }
+
+MagicMoveAdministration.Context = createContext(undefined);
 
 export default MagicMoveAdministration;
