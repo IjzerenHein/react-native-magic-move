@@ -22,44 +22,73 @@ class MagicMoveAdministration {
     this._listenerCallback = callback;
   }
 
-  addComponent(component) {
+  mountComponent(component, isActive) {
     const { id } = component.props;
     // console.log("mountComp: ", id);
-    let array = this._components[id];
-    if (!array) {
-      array = [];
-      this._components[id] = array;
+    const comps = this._components[id];
+    if (!comps) {
+      this._components[id] = {
+        active: isActive ? component : undefined,
+        mounts: [component]
+      };
+      return;
     }
-    array.push(component);
-    if (array.length >= 2) {
-      const prevComponent = array[array.length - 2];
-      this._animate(id, component, prevComponent);
+    comps.mounts.push(component);
+    if (isActive) {
+      const prevComp = comps.active;
+      comps.active = component;
+      if (prevComp) {
+        this._animate(id, component, prevComp);
+      }
     }
   }
 
-  removeComponent(component) {
+  unmountComponent(component) {
     const { id } = component.props;
-    // console.log("unmountComp: ", id);
-    let array = this._components[id];
-    if (!array)
+    const comps = this._components[id];
+    if (!comps)
       throw new Error(
         "MagicMove: Unmounting a component with id " +
           id +
           " that was not mounted"
       );
-    const idx = array.indexOf(component);
+    const idx = comps.mounts.indexOf(component);
     if (idx < 0)
       throw new Error(
         "MagicMove: Unmounting a component with id " +
           id +
           " that was not mounted"
       );
-    array.splice(idx, 1);
-    if (!array.length) {
+    comps.mounts.splice(idx, 1);
+    if (!comps.mounts.length) {
       delete this._components[id];
-    } else {
-      // const prevComponent = array[array.length - 2];
-      // this._animate(id, prevComponent, component);
+    } else if (comps.mounts.active === component) {
+      comps.mounts.active = comps.mounts[comps.mounts.length - 1];
+    }
+  }
+
+  updateComponent(component, isActive) {
+    const { id } = component.props;
+    const comps = this._components[id];
+    if (!comps)
+      throw new Error(
+        "MagicMove: Updating a component with id " +
+          id +
+          " that was not mounted"
+      );
+    const idx = comps.mounts.indexOf(component);
+    if (idx < 0)
+      throw new Error(
+        "MagicMove: Updating a component with id " +
+          id +
+          " that was not mounted"
+      );
+    if (isActive && comps.active !== component) {
+      const prevComp = comps.active;
+      comps.active = component;
+      if (prevComp) {
+        this._animate(id, component, prevComp);
+      }
     }
   }
 

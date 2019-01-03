@@ -6,22 +6,31 @@ import MagicMoveScene from "./Scene";
 import MagicMoveAnimation from "./Animation";
 import morphTransition from "./transitions/morph";
 
+const propTypes = {
+  Component: PropTypes.any.isRequired,
+  AnimatedComponent: PropTypes.any.isRequired,
+  id: PropTypes.string.isRequired,
+  useNativeDriver: PropTypes.bool,
+  keepHidden: PropTypes.bool,
+  duration: PropTypes.number,
+  delay: PropTypes.number,
+  easing: PropTypes.func,
+  debug: PropTypes.bool,
+  transition: PropTypes.func
+};
+
 /**
  * An Animated view that is magically "moved" to the
  * new position/size that it was mounted on.
  */
 class MagicMoveView extends Component {
   static propTypes = {
-    Component: PropTypes.any.isRequired,
-    AnimatedComponent: PropTypes.any.isRequired,
-    id: PropTypes.string.isRequired,
-    useNativeDriver: PropTypes.bool,
-    keepHidden: PropTypes.bool,
-    duration: PropTypes.number,
-    delay: PropTypes.number,
-    easing: PropTypes.func,
-    debug: PropTypes.bool,
-    transition: PropTypes.func
+    ...propTypes,
+    isClone: PropTypes.bool.isRequired,
+    isTarget: PropTypes.bool.isRequired,
+    administration: PropTypes.object.isRequired,
+    sceneRef: PropTypes.any,
+    isSceneActive: PropTypes.bool
   };
 
   static defaultProps = {
@@ -33,7 +42,7 @@ class MagicMoveView extends Component {
   };
 
   _ref = undefined;
-  _sceneRef = undefined;
+  _isMounted = false;
 
   constructor(props, context) {
     super(props, context);
@@ -60,81 +69,72 @@ class MagicMoveView extends Component {
   }
 
   getAdministration() {
-    return this._administration || this.context;
+    const { administration } = this.props;
+    if (!administration) {
+      //eslint-disable-next-line
+      console.error(
+        "[MagicMove] Component could not find Provider, did you forget to wrap your App in `<MagicMove.Provider>`?"
+      );
+    }
+    return administration;
   }
 
   componentDidMount() {
+    const { id, debug, isClone, isSceneActive } = this.props;
     this._isMounted = true;
-    if (this._isClone) return;
-    if (this.props.debug)
+    if (isClone) return;
+    if (debug)
       //eslint-disable-next-line
-      console.debug(
-        '[MagicMove] Mounted component with id "' + this.props.id + '"'
-      );
-    this.getAdministration().addComponent(this);
+      console.debug('[MagicMove] Mounted component with id "' + id + '"');
+    this.getAdministration().mountComponent(
+      this,
+      isSceneActive === undefined ? true : isSceneActive
+    );
   }
 
   componentWillUnmount() {
+    const { id, debug, isClone } = this.props;
     this._isMounted = false;
-    if (this._isClone) return;
-    if (this.props.debug)
+    if (isClone) return;
+    if (debug)
       //eslint-disable-next-line
-      console.debug(
-        '[MagicMove] Unmounted component with id "' + this.props.id + '"'
-      );
-    this.getAdministration().removeComponent(this);
+      console.debug('[MagicMove] Unmounted component with id "' + id + '"');
+    this.getAdministration().unmountComponent(this);
   }
 
   componentDidUpdate() {
-    //if (this._isClone) return;
-    // this.getAdministration().updateComponentProps(this);
+    const { id, debug, isClone, isSceneActive } = this.props;
+    if (!this._isMounted || isClone || isSceneActive === undefined) return;
+    if (debug)
+      //eslint-disable-next-line
+      console.debug('[MagicMove] Updated component with id "' + id + '"');
+    this.getAdministration().updateComponent(this, isSceneActive);
   }
 
   render() {
-    const { id, style, Component, ...otherProps } = this.props; // eslint-disable-line
+    const {
+      id, // eslint-disable-line
+      style,
+      Component,
+      isClone,
+      isTarget, // eslint-disable-line
+      administration, // eslint-disable-line
+      sceneRef, // eslint-disable-line
+      isSceneActive, // eslint-disable-line
+      ...otherProps
+    } = this.props;
     const { opacity } = this.state;
+    if (isClone && this.getAdministration().isAnimatingComponent(this)) {
+      return <Component style={[style, { opacity: 0 }]} {...otherProps} />;
+    }
+
     return (
-      <MagicMoveAnimation.Context.Consumer>
-        {({ isClone }) => {
-          this._isClone = isClone;
-          return (
-            <MagicMoveAdministration.Context.Consumer>
-              {administration => {
-                this._administration = administration;
-                if (
-                  isClone &&
-                  this.getAdministration().isAnimatingComponent(this)
-                ) {
-                  return (
-                    <Component
-                      style={[style, { opacity: 0 }]}
-                      {...otherProps}
-                    />
-                  );
-                }
-                return (
-                  <MagicMoveScene.Context.Consumer>
-                    {sceneRef => {
-                      this._sceneRef = sceneRef;
-                      return (
-                        <Component
-                          ref={this._setRef}
-                          style={[
-                            style,
-                            opacity !== undefined ? { opacity } : undefined
-                          ]}
-                          {...otherProps}
-                          collapsable={false}
-                        />
-                      );
-                    }}
-                  </MagicMoveScene.Context.Consumer>
-                );
-              }}
-            </MagicMoveAdministration.Context.Consumer>
-          );
-        }}
-      </MagicMoveAnimation.Context.Consumer>
+      <Component
+        ref={this._setRef}
+        style={[style, opacity !== undefined ? { opacity } : undefined]}
+        {...otherProps}
+        collapsable={false}
+      />
     );
   }
 
@@ -147,18 +147,19 @@ class MagicMoveView extends Component {
   }
 
   getSceneRef() {
-    return this._sceneRef;
+    return this.props.sceneRef;
   }
 
   setOpacity(val) {
+    const { debug, id } = this.props;
     if (this.state.opacity !== val && this._isMounted) {
-      if (this.props.debug) {
+      if (debug) {
         //eslint-disable-next-line
         console.debug(
           "[MagicMove] " +
             (val ? "Showing" : "Hiding") +
             ' component with id "' +
-            this.props.id +
+            id +
             '"'
         );
       }
@@ -173,4 +174,31 @@ class MagicMoveView extends Component {
   }
 }
 
-export default MagicMoveView;
+const MagicMoveWrappedView = props => {
+  return (
+    <MagicMoveAnimation.Context.Consumer>
+      {({ isClone, isTarget }) => (
+        <MagicMoveAdministration.Context.Consumer>
+          {administration => (
+            <MagicMoveScene.Context.Consumer>
+              {scene => (
+                <MagicMoveView
+                  {...props}
+                  isClone={isClone}
+                  isTarget={isTarget}
+                  administration={administration}
+                  sceneRef={scene ? scene.ref : undefined}
+                  isSceneActive={scene ? scene.active : undefined}
+                />
+              )}
+            </MagicMoveScene.Context.Consumer>
+          )}
+        </MagicMoveAdministration.Context.Consumer>
+      )}
+    </MagicMoveAnimation.Context.Consumer>
+  );
+};
+MagicMoveWrappedView.propTypes = propTypes;
+MagicMoveWrappedView.defaultProps = MagicMoveView.defaultProps;
+
+export default MagicMoveWrappedView;
