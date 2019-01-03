@@ -1,7 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import * as MagicMove from "./magic-move";
 import { Actions } from "react-native-router-flux";
+import NavigationScene from "./NavigationScene";
+import { storeObserver, StorePropType } from "./Store";
 
 const styles = StyleSheet.create({
   container: {
@@ -30,12 +32,17 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class Main extends React.Component {
+class Main extends Component {
+  static propTypes = {
+    store: StorePropType
+  };
+
   renderItem({ id, style, text, onPress }) {
+    const { debug } = this.props.store;
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
-        <MagicMove.View id={id} style={[styles.box, style]}>
-          <MagicMove.Text id={`${id}.title`} style={styles.text}>
+        <MagicMove.View id={id} style={[styles.box, style]} debug={debug}>
+          <MagicMove.Text id={`${id}.title`} style={styles.text} debug={debug}>
             {text}
           </MagicMove.Text>
         </MagicMove.View>
@@ -44,6 +51,7 @@ export default class Main extends React.Component {
   }
 
   renderImageItem({ id, source, onPress }) {
+    const { debug } = this.props.store;
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
         <View style={styles.box}>
@@ -51,6 +59,7 @@ export default class Main extends React.Component {
             id={id}
             source={source}
             style={[styles.box, StyleSheet.absoluteFill]}
+            debug={debug}
           />
         </View>
       </TouchableOpacity>
@@ -59,7 +68,7 @@ export default class Main extends React.Component {
 
   render() {
     return (
-      <MagicMove.Scene style={styles.container}>
+      <NavigationScene style={styles.container}>
         <View style={styles.row}>
           {this.renderItem({
             id: "list5",
@@ -132,7 +141,9 @@ export default class Main extends React.Component {
             onPress: () => Actions.push("scene4")
           })}
         </View>
-      </MagicMove.Scene>
+      </NavigationScene>
     );
   }
 }
+
+export default storeObserver(Main);
