@@ -17,7 +17,7 @@ Create magical move transitions between scenes in react-native
 - Fixed `shrinkAndGrow` transition not disappearing entirely
 - Fixed `squashAndStretch` transition when animating from top-left to right-bottom
 - Fixed end opacity not always correct on `dissolve` transition
-- Fixed border-radius on `morph` transition to better reflex the source shape
+- Fixed border-radius on `morph` transition to better look like the source shape
 
 ## [0.3.0] - 2019-01-02
 
