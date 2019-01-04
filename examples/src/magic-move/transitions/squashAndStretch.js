@@ -17,8 +17,8 @@ export default function shrinkAndGrowTransition({
   const toCenterX = to.end.x + to.width / 2;
   const toCenterY = to.end.y + to.height / 2;
   const toVolume = to.width * to.height;
-  const distanceX = fromCenterX - toCenterX;
-  const distanceY = fromCenterY - toCenterY;
+  const distanceX = Math.abs(fromCenterX - toCenterX);
+  const distanceY = Math.abs(fromCenterY - toCenterY);
   const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
   const fromStretch = Math.min(distance / (Math.sqrt(fromVolume) * 4), 0.75);
   const toStretch = Math.min(distance / (Math.sqrt(toVolume) * 4), 0.75);
