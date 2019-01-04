@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import MagicMoveAdministration from "./Administration";
 import MagicMoveScene from "./Scene";
 import MagicMoveAnimation from "./Animation";
-import morphTransition from "./transitions/morph";
 
 const propTypes = {
   Component: PropTypes.any.isRequired,
@@ -36,7 +35,6 @@ class MagicMoveView extends Component {
   static defaultProps = {
     Component: View,
     AnimatedComponent: Animated.View,
-    transition: morphTransition,
     keepHidden: false,
     debug: false
   };

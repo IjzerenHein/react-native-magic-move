@@ -2,6 +2,7 @@
 import React, { PureComponent, createContext } from "react";
 import { Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
+import defaultTransition from "./transitions/morph";
 
 const MagicMoveAnimationContext = createContext({
   isClone: false,
@@ -324,6 +325,14 @@ class MagicMoveAnimation extends PureComponent {
     };
   }
 
+  getTransition() {
+    return (
+      this.props.to.props.transition ||
+      this.props.from.props.transition ||
+      defaultTransition
+    );
+  }
+
   renderAnimation() {
     const { container, to, from, animValue } = this.state;
     if (!container || !from || !to) return;
@@ -393,7 +402,7 @@ class MagicMoveAnimation extends PureComponent {
     dest.style = this.createComponentStyle(dest, dest.end.x, dest.end.y);
 
     this._canUseNativeDriver = undefined;
-    return this.props.to.props.transition({
+    return this.getTransition()({
       from: source,
       to: dest,
       animValue,
@@ -436,7 +445,8 @@ class MagicMoveAnimation extends PureComponent {
     if (container && from && to && !this._isAnimationStarted) {
       this._isAnimationStarted = true;
       const toProps = this.props.to.props;
-      const { id, debug, duration, transition, easing, delay } = toProps;
+      const { id, debug, duration, easing, delay } = toProps;
+      const transition = this.getTransition();
       if (debug) {
         // eslint-disable-next-line
         console.debug(
