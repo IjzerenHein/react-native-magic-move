@@ -27,7 +27,10 @@ class Scene extends React.Component {
   render() {
     const { debug } = this.props.store;
     return (
-      <MagicMove.Scene style={styles.container}>
+      <MagicMove.Scene
+        style={styles.container}
+        animate={({ isTarget }) => isTarget}
+      >
         <MagicMove.View
           id="scene4"
           style={styles.background}
