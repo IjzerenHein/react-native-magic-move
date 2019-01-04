@@ -1,4 +1,4 @@
-/* globals Promise, __DEV__ */
+/* globals Promise */
 import React, { PureComponent, createContext } from "react";
 import { Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
@@ -82,11 +82,7 @@ class MagicMoveAnimation extends PureComponent {
     const { to, from, containerRef, onCompleted } = this.props;
     const { id } = to.props;
     function errorHandler(err) {
-      if (__DEV__) {
-        console.error(err.message); //eslint-disable-line
-      } else {
-        console.warn(err.message); //eslint-disable-line
-      }
+      console.error(err.message); //eslint-disable-line
       to.setOpacity(undefined);
       from.setOpacity(undefined);
       onCompleted();
