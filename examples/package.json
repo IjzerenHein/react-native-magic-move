@@ -7,7 +7,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "expo": "^31.0.2",
+    "expo": "31.0.6",
     "mobx": "^5.8.0",
     "mobx-react": "^5.4.3",
     "randomcolor": "^0.5.3",
