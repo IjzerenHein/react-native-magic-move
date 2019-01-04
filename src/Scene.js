@@ -13,7 +13,7 @@ class MagicMoveScene extends Component {
   };
 
   static defaultProps = {
-    animated: true
+    animate: true
   };
 
   state = {
@@ -46,6 +46,21 @@ class MagicMoveScene extends Component {
   };
 }
 
-MagicMoveScene.Context = MagicMoveSceneContext;
+let HookedComponent;
+function addHook(Component) {
+  HookedComponent = Component;
+}
 
-export default MagicMoveScene;
+const MagicMoveSceneWrapper = props => {
+  const scene = <MagicMoveScene {...props} />;
+  if (HookedComponent) {
+    return <HookedComponent>{scene}</HookedComponent>;
+  } else {
+    return scene;
+  }
+};
+
+MagicMoveSceneWrapper.Context = MagicMoveSceneContext;
+MagicMoveSceneWrapper.addHook = addHook;
+
+export default MagicMoveSceneWrapper;
