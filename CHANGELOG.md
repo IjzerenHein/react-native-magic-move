@@ -10,7 +10,8 @@ Create magical move transitions between scenes in react-native
 
 - Added Context API for checking whether content is rendered inside a cloned component
 - Added Scene props `animate` and `id` to control whether animations should be run or not
-- Added Scene prop `active` for controlling which scene is active (allows closer integration with react-navigation)
+- Added support for integrating with 3rd party navigation libraries such as `react-navigation`.
+- Added compatibility with `react-native-web`
 
 ### Fixed
 
