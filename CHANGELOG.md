@@ -4,6 +4,21 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+## [0.4.0] - 2019-01-xx
+
+### Added
+
+- Added Context API for checking whether content is rendered inside a cloned component
+- Added Scene props `animate` and `id` to control whether animations should be run or not
+- Added Scene prop `active` for controlling which scene is active (allows closer integration with react-navigation)
+
+### Fixed
+
+- Fixed `shrinkAndGrow` transition not disappearing entirely
+- Fixed `squashAndStretch` transition when animating from top-left to right-bottom
+- Fixed end opacity not always correct on `dissolve` transition
+- Fixed border-radius on `morph` transition to better reflex the source shape
+
 ## [0.3.0] - 2019-01-02
 
 ### Added
