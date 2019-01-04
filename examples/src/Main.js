@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import * as MagicMove from "./magic-move";
 import { Actions } from "react-native-router-flux";
-import NavigationScene from "./NavigationScene";
+import "./NavigationScene";
 import { storeObserver, StorePropType } from "./Store";
 
 const styles = StyleSheet.create({
@@ -68,7 +68,7 @@ class Main extends Component {
 
   render() {
     return (
-      <NavigationScene style={styles.container}>
+      <MagicMove.Scene style={styles.container} animated={false}>
         <View style={styles.row}>
           {this.renderItem({
             id: "list5",
@@ -141,7 +141,7 @@ class Main extends Component {
             onPress: () => Actions.push("scene4")
           })}
         </View>
-      </NavigationScene>
+      </MagicMove.Scene>
     );
   }
 }

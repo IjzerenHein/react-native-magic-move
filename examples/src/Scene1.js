@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 import { storeObserver, StorePropType } from "./Store";
 import * as MagicMove from "./magic-move";
 import * as Animatable from "react-native-animatable";
-import NavigationScene from "./NavigationScene";
 
 const styles = StyleSheet.create({
   container: {
@@ -37,7 +36,10 @@ class Scene extends React.Component {
   render() {
     const { debug } = this.props.store;
     return (
-      <NavigationScene style={styles.container}>
+      <MagicMove.Scene
+        style={styles.container}
+        animate={({ isTarget }) => isTarget}
+      >
         <MagicMove.View
           id="scene1"
           style={styles.background}
@@ -69,7 +71,7 @@ class Scene extends React.Component {
             }
           </MagicMove.Context>
         </MagicMove.View>
-      </NavigationScene>
+      </MagicMove.Scene>
     );
   }
 }
