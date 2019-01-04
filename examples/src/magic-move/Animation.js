@@ -420,11 +420,11 @@ class MagicMoveAnimation extends PureComponent {
   render() {
     const { to } = this.state;
     return (
-      <>
+      <React.Fragment>
         {this.renderDebugFrom()}
         {this.renderDebugTo()}
         {to ? this.renderAnimation() : this.renderInitialFrom()}
-      </>
+      </React.Fragment>
     );
   }
 
