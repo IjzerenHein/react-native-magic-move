@@ -24,7 +24,7 @@ export default function dissolveTransition({ from, to, interpolate, render }) {
     { scaleX: interpolate(to.start.scaleX, to.end.scaleX) },
     { scaleY: interpolate(to.start.scaleY, to.end.scaleY) }
   ];
-  to.style.opacity = interpolate(0, from.end.opacity);
+  to.style.opacity = interpolate(0, to.end.opacity);
 
   //
   // Render

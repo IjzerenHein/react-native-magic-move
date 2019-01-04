@@ -1,21 +1,38 @@
 import React, { Component, createContext } from "react";
 import { View } from "react-native";
+import { PropTypes } from "prop-types";
 
 const MagicMoveSceneContext = createContext(undefined);
 
 class MagicMoveScene extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ref: undefined
-    };
-  }
+  static propTypes = {
+    children: PropTypes.any,
+    id: PropTypes.string,
+    animate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+    active: PropTypes.bool
+  };
+
+  static defaultProps = {
+    animated: true
+  };
+
+  state = {
+    ref: undefined
+  };
 
   render() {
-    const { children, ...otherProps } = this.props; //eslint-disable-line
+    const { children, id, animate, active, ...otherProps } = this.props;
+    const { ref } = this.state;
     return (
       <View ref={this._setRef} {...otherProps} collapsable={false}>
-        <MagicMoveSceneContext.Provider value={this.state.ref}>
+        <MagicMoveSceneContext.Provider
+          value={{
+            ref,
+            id,
+            animate,
+            active
+          }}
+        >
           {children}
         </MagicMoveSceneContext.Provider>
       </View>

@@ -37,8 +37,6 @@ export default function morphTransition({
   render,
   onCanUseNativeDriver
 }) {
-  const { borderRadius = 0 } = to.style;
-
   //
   // Move & scale target component from source
   // position/size to the new position
@@ -58,49 +56,32 @@ export default function morphTransition({
   //
   // Change border-radius of target so that it looks
   // like the the shape of the source component.
-  // The border-radius is calculated in such a way so
-  // that it takes the scaling of the view also into
+  // The border-radius is calculated using a volumetric
+  // approach that takes the scaling of the view into
   // account in order to get as close as possible to the
   // same shape as the source component.
   //
-  to.style.borderRadius = interpolate(
-    Math.min((from.style.borderRadius || 0) / from.width, 0.5) *
-      Math.max(to.height, to.width),
-    borderRadius
+  const toBorderRadius = to.style.borderRadius;
+  const interpolateBorderRadius = name => {
+    const sR = resolveValue(from.style[name], from.style.borderRadius);
+    const eR = resolveValue(to.style[name], toBorderRadius);
+    const p4 = Math.PI / 4;
+    const sR2 = sR * sR;
+    const sV = sR2 - p4 * sR2;
+    const eV = sV / (to.start.scaleX * to.start.scaleY);
+    const cR = Math.sqrt(eV / ((p4 - 1) * -1));
+    return interpolate(cR, eR);
+  };
+  to.style.borderRadius = interpolateBorderRadius("borderRadius");
+  to.style.borderTopLeftRadius = interpolateBorderRadius("borderTopLeftRadius");
+  to.style.borderTopRightRadius = interpolateBorderRadius(
+    "borderTopRightRadius"
   );
-  to.style.borderTopLeftRadius = interpolate(
-    Math.min(
-      resolveValue(from.style.borderTopLeftRadius, from.style.borderRadius) /
-        Math.min(from.width, from.height),
-      0.5
-    ) * Math.max(to.height, to.width),
-    resolveValue(to.style.borderTopLeftRadius, borderRadius)
+  to.style.borderBottomLeftRadius = interpolateBorderRadius(
+    "borderBottomLeftRadius"
   );
-  to.style.borderTopRightRadius = interpolate(
-    Math.min(
-      resolveValue(from.style.borderTopRightRadius, from.style.borderRadius) /
-        Math.min(from.width, from.height),
-      0.5
-    ) * Math.max(to.height, to.width),
-    resolveValue(to.style.borderTopRightRadius, borderRadius)
-  );
-  to.style.borderBottomLeftRadius = interpolate(
-    Math.min(
-      resolveValue(from.style.borderBottomLeftRadius, from.style.borderRadius) /
-        Math.min(from.width, from.height),
-      0.5
-    ) * Math.max(to.height, to.width),
-    resolveValue(to.style.borderBottomLeftRadius, borderRadius)
-  );
-  to.style.borderBottomRightRadius = interpolate(
-    Math.min(
-      resolveValue(
-        from.style.borderBottomRightRadius,
-        from.style.borderRadius
-      ) / Math.min(from.width, from.height),
-      0.5
-    ) * Math.max(to.height, to.width),
-    resolveValue(to.style.borderBottomRightRadius, borderRadius)
+  to.style.borderBottomRightRadius = interpolateBorderRadius(
+    "borderBottomRightRadius"
   );
 
   //
