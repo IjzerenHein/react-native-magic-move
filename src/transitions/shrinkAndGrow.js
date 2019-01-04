@@ -15,8 +15,8 @@ export default function shrinkAndGrowTransition({
   from.style.transform = [
     { translateX: from.start.x },
     { translateY: from.start.y },
-    { scaleX: interpolate(1, 0.01) },
-    { scaleY: interpolate(1, 0.01) }
+    { scaleX: interpolate(1, 0) },
+    { scaleY: interpolate(1, 0) }
   ];
 
   //
