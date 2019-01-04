@@ -1,5 +1,18 @@
 import { createContext } from "react";
 
+function shouldAnimateComponent(comp, sceneId, isTarget) {
+  const { shouldSceneAnimate } = comp.props;
+  if (typeof shouldSceneAnimate === "function") {
+    return shouldSceneAnimate({
+      sceneId: sceneId || "",
+      isTarget
+    });
+  } else if (shouldSceneAnimate === undefined) {
+    return true;
+  }
+  return !!shouldSceneAnimate;
+}
+
 /**
  * The MagicMove administration keeps track of the
  * components that have been mounted/unmounted and
@@ -22,8 +35,9 @@ class MagicMoveAdministration {
     this._listenerCallback = callback;
   }
 
-  mountComponent(component, isActive) {
-    const { id } = component.props;
+  mountComponent(component) {
+    const { id, isSceneActive } = component.props;
+    const isActive = isSceneActive === undefined ? true : isSceneActive;
     // console.log("mountComp: ", id);
     const comps = this._components[id];
     if (!comps) {
@@ -34,11 +48,16 @@ class MagicMoveAdministration {
       return;
     }
     comps.mounts.push(component);
-    if (isActive) {
+    if (isActive && comps.active !== component) {
       const prevComp = comps.active;
       comps.active = component;
       if (prevComp) {
-        this._animate(id, component, prevComp);
+        if (
+          shouldAnimateComponent(component, prevComp.props.sceneId, true) &&
+          shouldAnimateComponent(prevComp, component.props.sceneId, false)
+        ) {
+          this._animate(id, component, prevComp);
+        }
       }
     }
   }
@@ -67,8 +86,9 @@ class MagicMoveAdministration {
     }
   }
 
-  updateComponent(component, isActive) {
-    const { id } = component.props;
+  updateComponent(component) {
+    const { id, isSceneActive } = component.props;
+    if (isSceneActive === undefined) return;
     const comps = this._components[id];
     if (!comps)
       throw new Error(
@@ -83,11 +103,16 @@ class MagicMoveAdministration {
           id +
           " that was not mounted"
       );
-    if (isActive && comps.active !== component) {
+    if (isSceneActive && comps.active !== component) {
       const prevComp = comps.active;
       comps.active = component;
       if (prevComp) {
-        this._animate(id, component, prevComp);
+        if (
+          shouldAnimateComponent(component, prevComp.props.sceneId, true) &&
+          shouldAnimateComponent(prevComp, component.props.sceneId, false)
+        ) {
+          this._animate(id, component, prevComp);
+        }
       }
     }
   }

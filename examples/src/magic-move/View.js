@@ -29,7 +29,9 @@ class MagicMoveView extends Component {
     isTarget: PropTypes.bool.isRequired,
     administration: PropTypes.object.isRequired,
     sceneRef: PropTypes.any,
-    isSceneActive: PropTypes.bool
+    sceneId: PropTypes.string,
+    isSceneActive: PropTypes.bool,
+    shouldSceneAnimate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
   };
 
   static defaultProps = {
@@ -78,16 +80,13 @@ class MagicMoveView extends Component {
   }
 
   componentDidMount() {
-    const { id, debug, isClone, isSceneActive } = this.props;
+    const { id, debug, isClone } = this.props;
     this._isMounted = true;
     if (isClone) return;
     if (debug)
       //eslint-disable-next-line
       console.debug('[MagicMove] Mounted component with id "' + id + '"');
-    this.getAdministration().mountComponent(
-      this,
-      isSceneActive === undefined ? true : isSceneActive
-    );
+    this.getAdministration().mountComponent(this);
   }
 
   componentWillUnmount() {
@@ -101,12 +100,12 @@ class MagicMoveView extends Component {
   }
 
   componentDidUpdate() {
-    const { id, debug, isClone, isSceneActive } = this.props;
-    if (!this._isMounted || isClone || isSceneActive === undefined) return;
+    const { id, debug, isClone } = this.props;
+    if (!this._isMounted || isClone) return;
     if (debug)
       //eslint-disable-next-line
       console.debug('[MagicMove] Updated component with id "' + id + '"');
-    this.getAdministration().updateComponent(this, isSceneActive);
+    this.getAdministration().updateComponent(this);
   }
 
   render() {
@@ -118,6 +117,8 @@ class MagicMoveView extends Component {
       isTarget, // eslint-disable-line
       administration, // eslint-disable-line
       sceneRef, // eslint-disable-line
+      sceneId, // eslint-disable-line
+      shouldSceneAnimate, // eslint-disable-line
       isSceneActive, // eslint-disable-line
       ...otherProps
     } = this.props;
@@ -186,6 +187,8 @@ const MagicMoveWrappedView = props => {
                   isTarget={isTarget}
                   administration={administration}
                   sceneRef={scene ? scene.ref : undefined}
+                  sceneId={scene ? scene.id : undefined}
+                  shouldSceneAnimate={scene ? scene.animate : undefined}
                   isSceneActive={scene ? scene.active : undefined}
                 />
               )}

@@ -10,8 +10,8 @@ Create magical move transitions between scenes in react-native 🐰🎩✨
 - [Documentation](#documentation)
   - [Components](#components)
   - [Props](#props)
-  - [Scenes](#scenes)
   - [Transitions](#transitions)
+  - [Scenes](#scenes)
   - [Context](#context)
 - [Examples](#examples)
 - [Disclaimer 🐰🎩](#disclaimer-%F0%9F%90%B0%F0%9F%8E%A9)
@@ -26,7 +26,7 @@ $ yarn add react-native-magic-move
 
 Wrap your app with the `<MagicMove.Provider>` context.
 
-```js
+```jsx
 import * as MagicMove from 'react-native-magic-move';
 
 const App = () => (
@@ -39,7 +39,7 @@ const App = () => (
 Add the `<MagicMove.{View|Image|Text}>` component to your views. Whenever the Magic Move component
 is mounted while another Magic Move component with the same `id` is already mounted, then a magic transition between the components is performed.
 
-```js
+```jsx
 import * as MagicMove from 'react-native-magic-move';
 
 const Scene1 = () => (
@@ -95,13 +95,6 @@ MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
 | `keepHidden`      | `boolean`  | `false`                      | Keeps the source component hidden after the animation has completed |
 | `debug`           | `boolean`  | `false`                      | Enables debug-mode to analyze animations                            |
 
-### Scenes
-
-Use `<MagicMove.Scene>` to mark the start of a scene within the rendering hierarchy.
-This is important so that Magic Move can correctly assess the destination-position of an animation.
-`MagicMove.Scene` is implemented using a regular `View` and supports all its properties.
-
-
 ### Transitions
 
 The following transition functions are available out of the box.
@@ -120,14 +113,50 @@ The following transition functions are available out of the box.
 
 You can also create your own transition functions, see [`src/transitions`](./src/transitions) for examples.
 
+### Scenes
+
+Use `<MagicMove.Scene>` to mark the start of a scene within the rendering hierarchy.
+This is important so that Magic Move can correctly assess the destination-position of an animation.
+`MagicMove.Scene` is implemented using a regular `View` and supports all its properties.
+
+| Property  | Type              | Default | Description                                                                                                                                                                                                                                                                                                                                                                                                                |
+| --------- | ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `animate` | `bool | function` | `true`  | Controls whether the scene is animated or not. You can specify either `true` or `false` or provide a function. The function receives the scene-id of the other scene and whether this scene is the target or source of the animation. See examples below.                                                                                                                                                                  |
+| `id`      | `string`          |         | Optional unique id of the scene, which you can use in the `animated` function to enable/disable animations on a scene.                                                                                                                                                                                                                                                                                                     |
+| `active`  | `bool`            |         | This special prop is intended for integrating magic-move with 3rd party navigators such as `react-navigation`. Do not use it unless you know what you are doing. By setting it to `true` or `false` the navigation package can control which scene is active and which is no longer active. See [react-navigation-magic-move](https://github.com/IjzerenHein/react-navigation-magic-move) for an example on how to use it. |
+
+**Examples**
+
+```jsx
+// Animate only when a transition from `todoDetail` is performed
+<MagicMove.Scene id='todoMaster' animate={({sceneId, isTarget}) => sceneId === 'todoDetail'}>
+  {...}
+</MagicMove.Scene>
+
+// Disable animations on the scene entirely
+<MagicMove.Scene animate={false}>
+  {...}
+</MagicMove.Scene>
+
+// Animate when possible, and provide an id
+<MagicMove.Scene id='todoDetail'>
+  {...}
+</MagicMove.Scene>
+
+// Animate only when navigating away from this scene
+<MagicMove.Scene animate={({isTarget}) => !isTarget}>
+  {...}
+</MagicMove.Scene>
+```
+
 
 ### Context
 
-When a magic-move is performend, a temporary clone of the source and/or target component is rendered onto the screen. Now imagine you have some animations that run when your component is mounted (e.g. `Animatable.View`), that would also mean these animations are run on the cloned component. This is probably not what you want and you probably want to hide those components entirely in the cloned component. To do so you can use the `<MagicMove.Context>` API. It allows you to detect whether the component is rendered as a clone and whether it is the source or target of a magic move animation.
+When a magic-move is performend, a temporary clone of the source and/or target component is rendered onto the screen. Now imagine you have some animations that run when your component is mounted (e.g. `Animatable.View`), that would also mean these animations are run on the cloned component. This is probably not what you want and you might want to hide those components entirely in the cloned component. To do so you can use the `<MagicMove.Context>` API. It allows you to detect whether the component is rendered as a clone and whether it is the source or target of a magic move animation.
 
 **Example**
 
-```js
+```jsx
 <MagicMove.View>
   <MagicMove.Context>
     {({isClone, isTarget}) => (

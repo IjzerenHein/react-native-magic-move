@@ -7,7 +7,13 @@ const MagicMoveSceneContext = createContext(undefined);
 class MagicMoveScene extends Component {
   static propTypes = {
     children: PropTypes.any,
+    id: PropTypes.string,
+    animate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
     active: PropTypes.bool
+  };
+
+  static defaultProps = {
+    animated: true
   };
 
   state = {
@@ -15,14 +21,16 @@ class MagicMoveScene extends Component {
   };
 
   render() {
-    const { children, active, ...otherProps } = this.props;
+    const { children, id, animate, active, ...otherProps } = this.props;
     const { ref } = this.state;
     return (
       <View ref={this._setRef} {...otherProps} collapsable={false}>
         <MagicMoveSceneContext.Provider
           value={{
-            active,
-            ref
+            ref,
+            id,
+            animate,
+            active
           }}
         >
           {children}
