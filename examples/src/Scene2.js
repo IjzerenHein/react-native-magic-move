@@ -46,9 +46,10 @@ class Scene extends React.Component {
           id={`list${i}`}
           style={[
             styles.item,
-            isEnabled ? { backgroundColor: "purple" } : getColor(i)
+            { backgroundColor: isEnabled ? "purple" : getColor(i) }
           ]}
           debug={debug}
+          enabled={isEnabled}
         >
           <MagicMove.Text
             id={`list${i}.title`}

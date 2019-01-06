@@ -68,7 +68,7 @@ class Main extends Component {
 
   render() {
     return (
-      <MagicMove.Scene style={styles.container} animated={false}>
+      <MagicMove.Scene style={styles.container}>
         <View style={styles.row}>
           {this.renderItem({
             id: "list5",

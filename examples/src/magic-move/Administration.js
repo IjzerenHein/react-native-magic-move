@@ -1,6 +1,20 @@
 import { createContext } from "react";
 
-function shouldAnimateComponent(comp, sceneId, isTarget) {
+function resolveEnabled(enabled, id, isTarget, sceneId, currentSceneId) {
+  if (typeof enabled === "function") {
+    return enabled({
+      id,
+      isTarget,
+      sceneId: sceneId || "",
+      currentSceneId: currentSceneId || ""
+    });
+  } else if (enabled === undefined) {
+    return true;
+  }
+  return !!enabled;
+}
+/*
+  comp, sceneId, isTarget) {
   const { shouldSceneAnimate } = comp.props;
   if (typeof shouldSceneAnimate === "function") {
     return shouldSceneAnimate({
@@ -11,7 +25,7 @@ function shouldAnimateComponent(comp, sceneId, isTarget) {
     return true;
   }
   return !!shouldSceneAnimate;
-}
+  }*/
 
 /**
  * The MagicMove administration keeps track of the
@@ -36,47 +50,38 @@ class MagicMoveAdministration {
   }
 
   mountComponent(component) {
-    const { id, isSceneActive } = component.props;
+    const { id, debug, isSceneActive } = component.props;
     const isActive = isSceneActive === undefined ? true : isSceneActive;
-    // console.log("mountComp: ", id);
+    if (debug)
+      //eslint-disable-next-line
+      console.debug(`[MagicMove] Mounted ${component.debugName}`);
     const comps = this._components[id];
     if (!comps) {
       this._components[id] = {
-        active: isActive ? component : undefined,
+        active: undefined,
         mounts: [component]
       };
-      return;
+    } else {
+      comps.mounts.push(component);
     }
-    comps.mounts.push(component);
     if (isActive && comps.active !== component) {
       const prevComp = comps.active;
       comps.active = component;
-      if (prevComp) {
-        if (
-          shouldAnimateComponent(component, prevComp.props.sceneId, true) &&
-          shouldAnimateComponent(prevComp, component.props.sceneId, false)
-        ) {
-          this._animate(id, component, prevComp);
-        }
-      }
+      this._checkForAnimate(component, prevComp);
     }
   }
 
   unmountComponent(component) {
-    const { id } = component.props;
+    const { id, debug } = component.props;
     const comps = this._components[id];
     if (!comps)
       throw new Error(
-        "MagicMove: Unmounting a component with id " +
-          id +
-          " that was not mounted"
+        `[MagicMove] Unmounting ${component.debugName} that was not mounted`
       );
     const idx = comps.mounts.indexOf(component);
     if (idx < 0)
       throw new Error(
-        "MagicMove: Unmounting a component with id " +
-          id +
-          " that was not mounted"
+        `[MagicMove] Unmounting ${component.debugName} that was not mounted`
       );
     comps.mounts.splice(idx, 1);
     if (!comps.mounts.length) {
@@ -84,6 +89,9 @@ class MagicMoveAdministration {
     } else if (comps.mounts.active === component) {
       comps.mounts.active = comps.mounts[comps.mounts.length - 1];
     }
+    if (debug)
+      //eslint-disable-next-line
+      console.debug(`[MagicMove] Unmounted ${component.debugName}`);
   }
 
   updateComponent(component) {
@@ -92,28 +100,20 @@ class MagicMoveAdministration {
     const comps = this._components[id];
     if (!comps)
       throw new Error(
-        "MagicMove: Updating a component with id " +
-          id +
-          " that was not mounted"
+        `[MagicMove] Updating ${component.debugName} that was not mounted`
       );
     const idx = comps.mounts.indexOf(component);
     if (idx < 0)
       throw new Error(
-        "MagicMove: Updating a component with id " +
-          id +
-          " that was not mounted"
+        `[MagicMove] Updating ${component.debugName} that was not mounted`
       );
+    /*if (debug)
+      //eslint-disable-next-line
+      console.debug(`[MagicMove] Updated component with id "${id}"`);*/
     if (isSceneActive && comps.active !== component) {
       const prevComp = comps.active;
       comps.active = component;
-      if (prevComp) {
-        if (
-          shouldAnimateComponent(component, prevComp.props.sceneId, true) &&
-          shouldAnimateComponent(prevComp, component.props.sceneId, false)
-        ) {
-          this._animate(id, component, prevComp);
-        }
-      }
+      this._checkForAnimate(component, prevComp);
     }
   }
 
@@ -131,6 +131,84 @@ class MagicMoveAdministration {
     if (this._listenerCallback) {
       this._listenerCallback();
     }
+  }
+
+  _checkForAnimate(component, prevComp) {
+    const { id, debug, enabled, sceneId, sceneEnabled } = component.props;
+    if (!prevComp) {
+      if (debug) {
+        // eslint-disable-next-line
+        console.debug(
+          `[MagicMove] Not animating ${
+            component.debugName
+          } (no other component found)`
+        );
+      }
+      return;
+    }
+    if (!resolveEnabled(enabled, id, true, prevComp.props.sceneId, sceneId)) {
+      if (debug) {
+        // eslint-disable-next-line
+        console.debug(
+          `[MagicMove] Not animating ${
+            component.debugName
+          } (target component is disabled)`
+        );
+      }
+      return;
+    }
+    if (
+      !resolveEnabled(sceneEnabled, id, true, prevComp.props.sceneId, sceneId)
+    ) {
+      if (debug) {
+        // eslint-disable-next-line
+        console.debug(
+          `[MagicMove] Not animating ${
+            component.debugName
+          } (target scene is disabled)`
+        );
+      }
+      return;
+    }
+    if (
+      !resolveEnabled(
+        prevComp.props.enabled,
+        id,
+        false,
+        sceneId,
+        prevComp.props.sceneId
+      )
+    ) {
+      if (debug) {
+        // eslint-disable-next-line
+        console.debug(
+          `[MagicMove] Not animating ${
+            component.debugName
+          } (source component is disabled)`
+        );
+      }
+      return;
+    }
+    if (
+      !resolveEnabled(
+        prevComp.props.sceneEnabled,
+        id,
+        false,
+        sceneId,
+        prevComp.props.sceneId
+      )
+    ) {
+      if (debug) {
+        // eslint-disable-next-line
+        console.debug(
+          `[MagicMove] Not animating ${
+            component.debugName
+          } (source scene is disabled)`
+        );
+      }
+      return;
+    }
+    this._animate(id, component, prevComp);
   }
 
   _animate(id, to, from) {

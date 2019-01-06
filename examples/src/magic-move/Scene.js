@@ -8,12 +8,12 @@ class MagicMoveScene extends Component {
   static propTypes = {
     children: PropTypes.any,
     id: PropTypes.string,
-    animate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+    enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
     active: PropTypes.bool
   };
 
   static defaultProps = {
-    animate: true
+    enabled: true
   };
 
   state = {
@@ -21,7 +21,7 @@ class MagicMoveScene extends Component {
   };
 
   render() {
-    const { children, id, animate, active, ...otherProps } = this.props;
+    const { children, id, enabled, active, ...otherProps } = this.props;
     const { ref } = this.state;
     return (
       <View ref={this._setRef} {...otherProps} collapsable={false}>
@@ -29,7 +29,7 @@ class MagicMoveScene extends Component {
           value={{
             ref,
             id,
-            animate,
+            enabled,
             active
           }}
         >

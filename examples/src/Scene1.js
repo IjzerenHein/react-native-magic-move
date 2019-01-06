@@ -38,7 +38,7 @@ class Scene extends React.Component {
     return (
       <MagicMove.Scene
         style={styles.container}
-        animate={({ isTarget }) => isTarget}
+        enabled={({ isTarget }) => isTarget}
       >
         <MagicMove.View
           id="scene1"
