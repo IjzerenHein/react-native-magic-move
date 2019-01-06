@@ -46,7 +46,6 @@ class Scene extends React.Component {
         <MagicMove.View
           id="scene8"
           style={styles.box}
-          duration={600}
           transition={MagicMove.Transition.squashAndStretch}
           debug={debug}
         >
