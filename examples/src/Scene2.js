@@ -23,6 +23,14 @@ const styles = StyleSheet.create({
   }
 });
 
+const colors = [];
+function getColor(idx) {
+  while (idx >= colors.length) {
+    colors.push(randomColor());
+  }
+  return colors[idx];
+}
+
 class Scene extends React.Component {
   static propTypes = {
     store: StorePropType
@@ -31,13 +39,14 @@ class Scene extends React.Component {
     const { debug } = this.props.store;
     const items = [];
     for (let i = 1; i < 100; i++) {
+      const isEnabled = i === 5;
       items.push(
         <MagicMove.View
           key={i}
           id={`list${i}`}
           style={[
             styles.item,
-            { backgroundColor: i === 5 ? "purple" : randomColor() }
+            isEnabled ? { backgroundColor: "purple" } : getColor(i)
           ]}
           debug={debug}
         >
