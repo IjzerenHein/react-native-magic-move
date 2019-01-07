@@ -119,7 +119,6 @@ class MagicMoveAdministration {
   unmountComponent(component) {
     const { id, debug, scene } = component.props;
 
-    console.log("unmount");
     // Unregister component with scene
     if (scene) {
       const sceneId = scene.getId();
