@@ -7,6 +7,7 @@ class ReactNavigationScene extends Component {
     active: false,
     id: undefined
   };
+
   render() {
     const { active, id } = this.state;
     return (
@@ -27,7 +28,6 @@ class ReactNavigationScene extends Component {
   }
 
   onWillFocus = event => {
-    console.log("onWillFocus", event);
     this.setState({
       id: event.state.routeName,
       active: true
@@ -35,7 +35,6 @@ class ReactNavigationScene extends Component {
   };
 
   onWillBlur = event => {
-    console.log("onWillBlur", event);
     this.setState({
       active: false
     });
