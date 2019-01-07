@@ -21,7 +21,7 @@ class ReactNavigationScene extends Component {
         {// eslint-disable-next-line
         React.cloneElement(this.props.children, {
           active,
-          id
+          id: this.props.children.props.id || id // eslint-disable-line
         })}
       </React.Fragment>
     );
@@ -34,7 +34,7 @@ class ReactNavigationScene extends Component {
     });
   };
 
-  onWillBlur = event => {
+  onWillBlur = () => {
     this.setState({
       active: false
     });
