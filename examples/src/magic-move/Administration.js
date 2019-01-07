@@ -1,10 +1,5 @@
 import { createContext } from "react";
-
-/**
- * - Animate on mount (when sceneActive === undefined)
- * - Animate on mount (when sceneActive = true) (+ set activeSceneId & prevSceneId)
- * - Animate on update (when sceneActive = true && prevComponent.sceneId === ) (+ set activeSceneId & prevSceneId)
- */
+import findLast from "lodash.findlast";
 
 function resolveEnabled(enabled, id, isTarget, scene, currentScene) {
   if (typeof enabled === "function") {
@@ -19,30 +14,15 @@ function resolveEnabled(enabled, id, isTarget, scene, currentScene) {
   }
   return !!enabled;
 }
-/*
-  comp, sceneId, isTarget) {
-  const { shouldSceneAnimate } = comp.props;
-  if (typeof shouldSceneAnimate === "function") {
-    return shouldSceneAnimate({
-      sceneId: sceneId || "",
-      isTarget
-    });
-  } else if (shouldSceneAnimate === undefined) {
-    return true;
-  }
-  return !!shouldSceneAnimate;
-  }*/
-
 /**
  * The MagicMove administration keeps track of the
  * components that have been mounted/unmounted and
  * between which magic move transitions should be performed.
  * The general use is:
  *
- * - When a component is mounted with the same id of an already
- *   mounted component, then transition to the new component
- * - When a component is unmounted with the same id of an earlier
- *   mounted component, then transition to the previous component
+ * - Animate on mount (when sceneActive === undefined)
+ * - Animate on mount (when sceneActive = true) (+ set activeSceneId & prevSceneId)
+ * - Animate on update (when sceneActive = true && prevComponent.sceneId === ) (+ set activeSceneId & prevSceneId)
  */
 class MagicMoveAdministration {
   constructor() {
@@ -63,18 +43,33 @@ class MagicMoveAdministration {
       this._prevScene = this._activeScene || this._prevScene;
       this._activeScene = scene;
 
-      if (this._activeScene && this._prevScene) {
-        const sceneComps = this._sceneComponents[this._activeScene.getId()];
-        const prevSceneComps = this._sceneComponents[this._prevScene.getId()];
-        if (sceneComps && prevSceneComps) {
-          sceneComps.forEach(comp => {
-            const { id } = comp.props;
-            const prevComp = prevSceneComps.find(
-              prevComp => prevComp.props.id === id
-            );
-            this._checkForAnimate(comp, prevComp);
-          });
-        }
+      // Start animations for all components on this scene
+      const sceneComps = this._activeScene
+        ? this._sceneComponents[this._activeScene.getId()]
+        : undefined;
+      if (sceneComps) {
+        sceneComps.forEach(comp => {
+          const { id } = comp.props;
+          const comps = this._components[id];
+          const prevComp = comps.active;
+          comps.active = comp;
+          this._checkForAnimate(comp, prevComp);
+        });
+      }
+
+      // Reset active state on all non-animated components of the
+      // previous scene
+      const prevSceneComps = this._prevScene
+        ? this._sceneComponents[this._prevScene.getId()]
+        : undefined;
+      if (prevSceneComps) {
+        prevSceneComps.forEach(comp => {
+          const { id } = comp.props;
+          const comps = this._components[id];
+          if (comps.active === comp) {
+            comps.active = undefined;
+          }
+        });
       }
     } else if (!isActive && this._activeScene === scene) {
       this._prevScene = this._activeScene;
@@ -93,12 +88,13 @@ class MagicMoveAdministration {
       );
 
     // Register component
-    const comps = this._components[id];
+    let comps = this._components[id];
     if (!comps) {
-      this._components[id] = {
+      comps = {
         active: undefined,
         mounts: [component]
       };
+      this._components[id] = comps;
     } else {
       comps.mounts.push(component);
     }
@@ -114,7 +110,6 @@ class MagicMoveAdministration {
       }
     }
     if (isActive && comps.active !== component) {
-      // TODO - handling when not using scenes
       const prevComp = comps.active;
       comps.active = component;
       this._checkForAnimate(component, prevComp);
@@ -124,6 +119,7 @@ class MagicMoveAdministration {
   unmountComponent(component) {
     const { id, debug, scene } = component.props;
 
+    console.log("unmount");
     // Unregister component with scene
     if (scene) {
       const sceneId = scene.getId();
@@ -157,10 +153,15 @@ class MagicMoveAdministration {
     comps.mounts.splice(idx, 1);
     if (!comps.mounts.length) {
       delete this._components[id];
-    } else if (comps.mounts.active === component) {
-      // TODO - handling when not using scenes
-
-      comps.mounts.active = comps.mounts[comps.mounts.length - 1];
+    } else if (comps.active === component) {
+      const prevComp = findLast(
+        comps.mounts,
+        ({ props }) =>
+          !props.scene ||
+          props.scene.props.active === undefined ||
+          props.scene.props.active === true
+      );
+      comps.active = prevComp;
     }
     if (debug)
       //eslint-disable-next-line

@@ -99,7 +99,8 @@ class MagicMoveAnimation extends PureComponent {
       measureLayout(
         id,
         "fromScene",
-        from.props.scene ? from.props.scene.getRef() : containerRef
+        (from.props.scene ? from.props.scene.getRef() : undefined) ||
+          containerRef
       )
     ])
       .then(layouts => {
@@ -124,7 +125,7 @@ class MagicMoveAnimation extends PureComponent {
       measureLayout(
         id,
         "toScene",
-        to.props.scene ? to.props.scene.getRef() : containerRef
+        (to.props.scene ? to.props.scene.getRef() : undefined) || containerRef
       )
     ])
       .then(layouts => {
