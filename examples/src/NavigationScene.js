@@ -4,10 +4,11 @@ import { NavigationEvents } from "react-navigation";
 
 class ReactNavigationScene extends Component {
   state = {
-    active: false
+    active: false,
+    id: undefined
   };
   render() {
-    const { active } = this.state;
+    const { active, id } = this.state;
     return (
       <React.Fragment>
         <NavigationEvents
@@ -18,19 +19,23 @@ class ReactNavigationScene extends Component {
         />
         {// eslint-disable-next-line
         React.cloneElement(this.props.children, {
-          active
+          active,
+          id
         })}
       </React.Fragment>
     );
   }
 
-  onWillFocus = () => {
+  onWillFocus = event => {
+    console.log("onWillFocus", event);
     this.setState({
+      id: event.state.routeName,
       active: true
     });
   };
 
-  onWillBlur = () => {
+  onWillBlur = event => {
+    console.log("onWillBlur", event);
     this.setState({
       active: false
     });

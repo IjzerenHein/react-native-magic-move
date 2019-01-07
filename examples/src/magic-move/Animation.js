@@ -96,7 +96,11 @@ class MagicMoveAnimation extends PureComponent {
     Promise.all([
       measureLayout(id, "container", containerRef),
       measureLayout(id, "from", from.getRef()),
-      measureLayout(id, "fromScene", from.getSceneRef() || containerRef)
+      measureLayout(
+        id,
+        "fromScene",
+        from.props.scene ? from.props.scene.getRef() : containerRef
+      )
     ])
       .then(layouts => {
         // console.log(layouts[1], layouts[2]);
@@ -117,7 +121,11 @@ class MagicMoveAnimation extends PureComponent {
     //
     Promise.all([
       measureLayout(id, "to", to.getRef()),
-      measureLayout(id, "toScene", to.getSceneRef() || containerRef)
+      measureLayout(
+        id,
+        "toScene",
+        to.props.scene ? to.props.scene.getRef() : containerRef
+      )
     ])
       .then(layouts => {
         this.setState({

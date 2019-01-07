@@ -29,10 +29,7 @@ class MagicMoveView extends Component {
     isClone: PropTypes.bool.isRequired,
     isTarget: PropTypes.bool.isRequired,
     administration: PropTypes.object.isRequired,
-    sceneRef: PropTypes.any,
-    sceneId: PropTypes.string,
-    isSceneActive: PropTypes.bool,
-    sceneEnabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
+    scene: PropTypes.any
   };
 
   static defaultProps = {
@@ -97,12 +94,6 @@ class MagicMoveView extends Component {
     }
   }
 
-  componentDidUpdate() {
-    const { isClone } = this.props;
-    if (!this._isMounted || isClone) return;
-    this.getAdministration().updateComponent(this);
-  }
-
   render() {
     const {
       id, // eslint-disable-line
@@ -111,10 +102,7 @@ class MagicMoveView extends Component {
       isClone,
       isTarget, // eslint-disable-line
       administration, // eslint-disable-line
-      sceneRef, // eslint-disable-line
-      sceneId, // eslint-disable-line
-      sceneEnabled, // eslint-disable-line
-      isSceneActive, // eslint-disable-line
+      scene, // eslint-disable-line
       ...otherProps
     } = this.props;
     const { opacity } = this.state;
@@ -145,10 +133,6 @@ class MagicMoveView extends Component {
     return this._ref;
   }
 
-  getSceneRef() {
-    return this.props.sceneRef;
-  }
-
   setOpacity(val) {
     if (this.state.opacity !== val && this._isMounted) {
       this.setState({
@@ -175,10 +159,7 @@ const MagicMoveWrappedView = props => {
                   isClone={isClone}
                   isTarget={isTarget}
                   administration={administration}
-                  sceneRef={scene ? scene.ref : undefined}
-                  sceneId={scene ? scene.id : undefined}
-                  sceneEnabled={scene ? scene.enabled : undefined}
-                  isSceneActive={scene ? scene.active : undefined}
+                  scene={scene}
                 />
               )}
             </MagicMoveScene.Context.Consumer>

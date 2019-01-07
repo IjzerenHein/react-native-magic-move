@@ -1,12 +1,18 @@
 import { createContext } from "react";
 
-function resolveEnabled(enabled, id, isTarget, sceneId, currentSceneId) {
+/**
+ * - Animate on mount (when sceneActive === undefined)
+ * - Animate on mount (when sceneActive = true) (+ set activeSceneId & prevSceneId)
+ * - Animate on update (when sceneActive = true && prevComponent.sceneId === ) (+ set activeSceneId & prevSceneId)
+ */
+
+function resolveEnabled(enabled, id, isTarget, scene, currentScene) {
   if (typeof enabled === "function") {
     return enabled({
       id,
       isTarget,
-      sceneId: sceneId || "",
-      currentSceneId: currentSceneId || ""
+      sceneId: (scene ? scene.props.id : undefined) || "",
+      currentSceneId: (currentScene ? currentScene.props.id : undefined) || ""
     });
   } else if (enabled === undefined) {
     return true;
@@ -40,21 +46,53 @@ function resolveEnabled(enabled, id, isTarget, sceneId, currentSceneId) {
  */
 class MagicMoveAdministration {
   constructor() {
-    this._components = {}; // registered components
+    this._components = {}; // registered components (by id)
+    this._sceneComponents = {}; // registered components (by scene)
     this._animations = []; // running animations
     this._listenerCallback = undefined;
+    this._prevScene = undefined;
+    this._activeScene = undefined;
   }
 
   addListener(callback) {
     this._listenerCallback = callback;
   }
 
+  activateScene(scene, isActive) {
+    if (isActive && this._activeScene !== scene) {
+      this._prevScene = this._activeScene || this._prevScene;
+      this._activeScene = scene;
+
+      if (this._activeScene && this._prevScene) {
+        const sceneComps = this._sceneComponents[this._activeScene.getId()];
+        const prevSceneComps = this._sceneComponents[this._prevScene.getId()];
+        if (sceneComps && prevSceneComps) {
+          sceneComps.forEach(comp => {
+            const { id } = comp.props;
+            const prevComp = prevSceneComps.find(
+              prevComp => prevComp.props.id === id
+            );
+            this._checkForAnimate(comp, prevComp);
+          });
+        }
+      }
+    } else if (!isActive && this._activeScene === scene) {
+      this._prevScene = this._activeScene;
+      this._activeScene = undefined;
+    }
+  }
+
   mountComponent(component) {
-    const { id, debug, isSceneActive } = component.props;
-    const isActive = isSceneActive === undefined ? true : isSceneActive;
+    const { id, scene, debug } = component.props;
+    const isActive =
+      !scene || scene.props.active === undefined ? true : scene.props.active;
     if (debug)
       //eslint-disable-next-line
-      console.debug(`[MagicMove] Mounted ${component.debugName}`);
+      console.debug(
+        `[MagicMove] Mounted ${component.debugName} (active = ${isActive})`
+      );
+
+    // Register component
     const comps = this._components[id];
     if (!comps) {
       this._components[id] = {
@@ -64,7 +102,19 @@ class MagicMoveAdministration {
     } else {
       comps.mounts.push(component);
     }
+
+    // Register within scene
+    if (scene) {
+      const sceneId = scene.getId();
+      const sceneComps = this._sceneComponents[sceneId];
+      if (!sceneComps) {
+        this._sceneComponents[sceneId] = [component];
+      } else {
+        sceneComps.push(component);
+      }
+    }
     if (isActive && comps.active !== component) {
+      // TODO - handling when not using scenes
       const prevComp = comps.active;
       comps.active = component;
       this._checkForAnimate(component, prevComp);
@@ -72,7 +122,28 @@ class MagicMoveAdministration {
   }
 
   unmountComponent(component) {
-    const { id, debug } = component.props;
+    const { id, debug, scene } = component.props;
+
+    // Unregister component with scene
+    if (scene) {
+      const sceneId = scene.getId();
+      const sceneComps = this._sceneComponents[sceneId];
+      if (!sceneComps)
+        throw new Error(
+          `[MagicMove] Unmounting ${component.debugName} that was not mounted`
+        );
+      const idx = sceneComps.indexOf(component);
+      if (idx < 0)
+        throw new Error(
+          `[MagicMove] Unmounting ${component.debugName} that was not mounted`
+        );
+      sceneComps.splice(idx, 1);
+      if (!sceneComps.length) {
+        delete this._sceneComponents[sceneId];
+      }
+    }
+
+    // Unregister component
     const comps = this._components[id];
     if (!comps)
       throw new Error(
@@ -87,34 +158,13 @@ class MagicMoveAdministration {
     if (!comps.mounts.length) {
       delete this._components[id];
     } else if (comps.mounts.active === component) {
+      // TODO - handling when not using scenes
+
       comps.mounts.active = comps.mounts[comps.mounts.length - 1];
     }
     if (debug)
       //eslint-disable-next-line
       console.debug(`[MagicMove] Unmounted ${component.debugName}`);
-  }
-
-  updateComponent(component) {
-    const { id, isSceneActive } = component.props;
-    if (isSceneActive === undefined) return;
-    const comps = this._components[id];
-    if (!comps)
-      throw new Error(
-        `[MagicMove] Updating ${component.debugName} that was not mounted`
-      );
-    const idx = comps.mounts.indexOf(component);
-    if (idx < 0)
-      throw new Error(
-        `[MagicMove] Updating ${component.debugName} that was not mounted`
-      );
-    /*if (debug)
-      //eslint-disable-next-line
-      console.debug(`[MagicMove] Updated component with id "${id}"`);*/
-    if (isSceneActive && comps.active !== component) {
-      const prevComp = comps.active;
-      comps.active = component;
-      this._checkForAnimate(component, prevComp);
-    }
   }
 
   isAnimatingComponent(component) {
@@ -134,7 +184,7 @@ class MagicMoveAdministration {
   }
 
   _checkForAnimate(component, prevComp) {
-    const { id, debug, enabled, sceneId, sceneEnabled } = component.props;
+    const { id, debug, enabled, scene } = component.props;
     if (!prevComp) {
       if (debug) {
         // eslint-disable-next-line
@@ -146,7 +196,8 @@ class MagicMoveAdministration {
       }
       return;
     }
-    if (!resolveEnabled(enabled, id, true, prevComp.props.sceneId, sceneId)) {
+    const prevScene = prevComp.props.scene;
+    if (!resolveEnabled(enabled, id, true, prevScene, scene)) {
       if (debug) {
         // eslint-disable-next-line
         console.debug(
@@ -158,7 +209,8 @@ class MagicMoveAdministration {
       return;
     }
     if (
-      !resolveEnabled(sceneEnabled, id, true, prevComp.props.sceneId, sceneId)
+      scene &&
+      !resolveEnabled(scene.props.enabled, id, true, prevScene, scene)
     ) {
       if (debug) {
         // eslint-disable-next-line
@@ -170,15 +222,7 @@ class MagicMoveAdministration {
       }
       return;
     }
-    if (
-      !resolveEnabled(
-        prevComp.props.enabled,
-        id,
-        false,
-        sceneId,
-        prevComp.props.sceneId
-      )
-    ) {
+    if (!resolveEnabled(prevComp.props.enabled, id, false, scene, prevScene)) {
       if (debug) {
         // eslint-disable-next-line
         console.debug(
@@ -190,13 +234,8 @@ class MagicMoveAdministration {
       return;
     }
     if (
-      !resolveEnabled(
-        prevComp.props.sceneEnabled,
-        id,
-        false,
-        sceneId,
-        prevComp.props.sceneId
-      )
+      prevScene &&
+      !resolveEnabled(prevScene.props.enabled, id, false, scene, prevScene)
     ) {
       if (debug) {
         // eslint-disable-next-line
@@ -212,7 +251,6 @@ class MagicMoveAdministration {
   }
 
   _animate(id, to, from) {
-    // console.log("animate: ", id);
     const anim = this._animations.find(anim => anim.id === id);
     if (anim) {
       anim.to = to;

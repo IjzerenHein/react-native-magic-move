@@ -1,8 +1,11 @@
 import React, { Component, createContext } from "react";
 import { View } from "react-native";
 import { PropTypes } from "prop-types";
+import MagicMoveAdministration from "./Administration";
 
 const MagicMoveSceneContext = createContext(undefined);
+
+let autoId = 0;
 
 class MagicMoveScene extends Component {
   static propTypes = {
@@ -16,34 +19,45 @@ class MagicMoveScene extends Component {
     enabled: true
   };
 
-  state = {
-    ref: undefined
-  };
+  _ref = undefined;
+  _uniqueId = "__autoSceneId" + autoId++;
 
   render() {
+    // eslint-disable-next-line
     const { children, id, enabled, active, ...otherProps } = this.props;
-    const { ref } = this.state;
     return (
       <View ref={this._setRef} {...otherProps} collapsable={false}>
-        <MagicMoveSceneContext.Provider
-          value={{
-            ref,
-            id,
-            enabled,
-            active
+        <MagicMoveAdministration.Context.Consumer>
+          {administration => {
+            this._administration = administration;
+            return (
+              <MagicMoveSceneContext.Provider value={this}>
+                {children}
+              </MagicMoveSceneContext.Provider>
+            );
           }}
-        >
-          {children}
-        </MagicMoveSceneContext.Provider>
+        </MagicMoveAdministration.Context.Consumer>
       </View>
     );
   }
 
-  _setRef = ref => {
-    if (this.state.ref !== ref) {
-      this.setState({ ref });
+  componentDidUpdate() {
+    if (this.props.active !== undefined) {
+      this._administration.activateScene(this, this.props.active);
     }
+  }
+
+  _setRef = ref => {
+    this._ref = ref;
   };
+
+  getRef() {
+    return this._ref;
+  }
+
+  getId() {
+    return this._uniqueId;
+  }
 }
 
 let HookedComponent;
