@@ -132,23 +132,28 @@ This is important so that Magic Move can correctly assess the destination-positi
 Magic-move animations are automatically activated when a scene switch or component
 mount is detected. You can opt-out of this behaviour by using the `enabled` prop on the MagicMove component or Scene. The `enabled` prop can be either a boolean or a function. When the `enabled` prop of either the source or target component evaluates to `false`, then the transition is not triggered. The same is true for the `enabled` prop on Scenes, which allows for disabling all transitions to and from that scene.
 
-**Examples**
+**Component examples**
 
 ```jsx
-// TODO component examples
+// Disable animations on view entirely
+<MagicMove.View id='avatar' enabled={false} />
 
-// Only animate when transitioning to or from scene "todoDetail"
-<MagicMove.Scene id='todoMaster' enabled={({sceneId}) => sceneId === 'todoDetail'}>
-  {...}
-</MagicMove.Scene>
+// Only animate when transitioning to this view (not away from it)
+<MagicMove.View id='avatar' enabled={({isTarget}) => isTarget} />
+
+// Only animate when transitioning to or from scene "profile"
+<MagicMove.View id='avatar' enabled={({sceneId}) => sceneId === 'profile'} />
+
+// Only animate when this component is inside scene "account"
+<MagicMove.View id='avatar' enabled={({currentSceneId}) => currentSceneId === 'account'} />
+```
+
+**Scene examples**
+
+```jsx
 
 // Disable to and from animations on this scene entirely
 <MagicMove.Scene enabled={false}>
-  {...}
-</MagicMove.Scene>
-
-// Only animate the "avatar" component within this scene
-<MagicMove.Scene enabled={({id}) => id === 'avatar'}>
   {...}
 </MagicMove.Scene>
 
@@ -156,8 +161,17 @@ mount is detected. You can opt-out of this behaviour by using the `enabled` prop
 <MagicMove.Scene enabled={({isTarget}) => !isTarget}>
   {...}
 </MagicMove.Scene>
-```
 
+// Only animate when transitioning to or from scene "todoDetail"
+<MagicMove.Scene id='todoMaster' enabled={({sceneId}) => sceneId === 'todoDetail'}>
+  {...}
+</MagicMove.Scene>
+
+// Only animate the "avatar" component within this scene
+<MagicMove.Scene enabled={({id}) => id === 'avatar'}>
+  {...}
+</MagicMove.Scene>
+```
 
 ### Context
 
