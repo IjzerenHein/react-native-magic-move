@@ -26,9 +26,7 @@ function measureLayout(id, name, ref) {
       i++;
       if (x === undefined || i >= 3)
         return reject(
-          new Error(
-            'Failed to measure MagicMove component "' + id + '" (' + name + ")"
-          )
+          new Error(`[MagicMove] Failed to measure component "${id}" (${name})`)
         );
       requestAnimationFrame(() => {
         ref.measure(onMeasure);
@@ -72,7 +70,15 @@ class MagicMoveAnimation extends PureComponent {
     //
     // 1. Hide real to component
     //
+    if (this.debug) {
+      //eslint-disable-next-line
+      console.debug(`[MagicMove] Hiding target ${props.to.debugName}`);
+    }
     props.to.setOpacity(0.0);
+  }
+
+  get debug() {
+    return this.props.from.props.debug || this.props.to.props.debug;
   }
 
   componentDidMount() {
@@ -90,7 +96,12 @@ class MagicMoveAnimation extends PureComponent {
     Promise.all([
       measureLayout(id, "container", containerRef),
       measureLayout(id, "from", from.getRef()),
-      measureLayout(id, "fromScene", from.getSceneRef() || containerRef)
+      measureLayout(
+        id,
+        "fromScene",
+        (from.props.scene ? from.props.scene.getRef() : undefined) ||
+          containerRef
+      )
     ])
       .then(layouts => {
         // console.log(layouts[1], layouts[2]);
@@ -111,7 +122,11 @@ class MagicMoveAnimation extends PureComponent {
     //
     Promise.all([
       measureLayout(id, "to", to.getRef()),
-      measureLayout(id, "toScene", to.getSceneRef() || containerRef)
+      measureLayout(
+        id,
+        "toScene",
+        (to.props.scene ? to.props.scene.getRef() : undefined) || containerRef
+      )
     ])
       .then(layouts => {
         this.setState({
@@ -432,6 +447,10 @@ class MagicMoveAnimation extends PureComponent {
     //
     if (container && from && !this._isFromHidden) {
       this._isFromHidden = true;
+      if (this.debug) {
+        //eslint-disable-next-line
+        console.debug(`[MagicMove] Hiding source ${this.props.from.debugName}`);
+      }
       this.props.from.setOpacity(0);
     }
 
@@ -441,13 +460,11 @@ class MagicMoveAnimation extends PureComponent {
     if (container && from && to && !this._isAnimationStarted) {
       this._isAnimationStarted = true;
       const toProps = this.props.to.props;
-      const { id, debug, duration, easing, delay } = toProps;
+      const { duration, easing, delay } = toProps;
       const transition = this.getTransition();
-      if (debug) {
+      if (this.debug) {
         // eslint-disable-next-line
-        console.debug(
-          '[MagicMove] Animating component with id "' + id + '"...'
-        );
+        console.debug(`[MagicMove] Animating ${this.props.to.debugName}...`);
       }
 
       let { useNativeDriver } = toProps;
@@ -455,9 +472,9 @@ class MagicMoveAnimation extends PureComponent {
         if (this._canUseNativeDriver === false) {
           // eslint-disable-next-line
           console.warn(
-            '[MagicMove] Warning, cannot use native animation for component with id "' +
-              id +
-              '" (set `useNativeDriver` to `false` to disable this warning)'
+            `[MagicMove] Warning, cannot use native animation for ${
+              this.props.to.debugName
+            } (set 'useNativeDriver' to 'false' to disable this warning)`
           );
           useNativeDriver = false;
         } else if (this._canUseNativeDriver === true) {
@@ -471,7 +488,7 @@ class MagicMoveAnimation extends PureComponent {
 
       Animated.timing(animValue, {
         toValue: 1,
-        duration: debug
+        duration: this.debug
           ? 8000
           : resolveValue(
               duration,
@@ -493,16 +510,26 @@ class MagicMoveAnimation extends PureComponent {
         useNativeDriver
       }).start(() => {
         const { to, from, onCompleted } = this.props;
-        if (debug) {
+        if (this.debug) {
           // eslint-disable-next-line
           console.debug(
-            '[MagicMove] Animating component with id "' +
-              to.props.id +
-              '"... DONE'
+            `[MagicMove] Animating ${this.props.to.debugName}... DONE`
+          );
+        }
+        if (this.debug) {
+          //eslint-disable-next-line
+          console.debug(
+            `[MagicMove] Showing target ${this.props.to.debugName}`
           );
         }
         to.setOpacity(undefined);
         if (!from.props.keepHidden) {
+          if (this.debug) {
+            //eslint-disable-next-line
+            console.debug(
+              `[MagicMove] Showing source ${this.props.from.debugName}`
+            );
+          }
           from.setOpacity(undefined);
         }
         onCompleted();
