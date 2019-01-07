@@ -85,17 +85,17 @@ MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
 
 ### Props
 
-| Property          | Type              | Default                      | Description                                                         |
-| ----------------- | ----------------- | ---------------------------- | ------------------------------------------------------------------- |
-| `id`              | `string`          | **(required)**               | Unique id of the magic-move instance                                |
-| `transition`      | `function`        | `MagicMove.Transition.morph` | Transition effect, see below                                        |
-| `duration`        | `number`          | `400`                        | Length of the animation (milliseconds)                              |
-| `delay`           | `number`          | `0`                          | Amount of msec to wait before starting the animation                |
-| `easing`          | `function`        | `Easing.inOut(Easing.ease)`  | Easing function to define the curve                                 |
-| `enabled`         | `bool | function` | `true`                       | Disable or enable transitions                                       |
-| `useNativeDriver` | `boolean`         | `true`                       | Use the native-driver                                               |
-| `keepHidden`      | `boolean`         | `false`                      | Keeps the source component hidden after the animation has completed |
-| `debug`           | `boolean`         | `false`                      | Enables debug-mode to analyze animations                            |
+| Property          | Type                              | Default                      | Description                                                         |
+| ----------------- | --------------------------------- | ---------------------------- | ------------------------------------------------------------------- |
+| `id`              | `string`                          | **(required)**               | Unique id of the magic-move instance                                |
+| `transition`      | `function`                        | `MagicMove.Transition.morph` | Transition effect, see below                                        |
+| `duration`        | `number`                          | `400`                        | Length of the animation (milliseconds)                              |
+| `delay`           | `number`                          | `0`                          | Amount of msec to wait before starting the animation                |
+| `easing`          | `function`                        | `Easing.inOut(Easing.ease)`  | Easing function to define the curve                                 |
+| `enabled`         | <code>bool &#124; function</code> | `true`                       | Disable or enable transitions                                       |
+| `useNativeDriver` | `boolean`                         | `true`                       | Use the native-driver                                               |
+| `keepHidden`      | `boolean`                         | `false`                      | Keeps the source component hidden after the animation has completed |
+| `debug`           | `boolean`                         | `false`                      | Enables debug-mode to analyze animations                            |
 
 ### Transitions
 
@@ -121,16 +121,16 @@ Use `<MagicMove.Scene>` to mark the start of a scene within the rendering hierar
 This is important so that Magic Move can correctly assess the destination-position of an animation.
 `MagicMove.Scene` is implemented using a regular `View` and supports all its properties.
 
-| Property  | Type              | Default | Description                                                                                                                                                                                                                                                                                                                                                                                                                |
-| --------- | ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `enabled` | `bool | function` | `true`  | Disable or enable transitions                                                                                                                                                                                                                                                                                                                                                                                              |
-| `id`      | `string`          |         | Optional unique id of the scene, which you can use in the `enabled` function to enable/disable transitions on a scene or component.                                                                                                                                                                                                                                                                                        |
-| `active`  | `bool`            |         | This special prop is intended for integrating magic-move with 3rd party navigators such as `react-navigation`. Do not use it unless you know what you are doing. By setting it to `true` or `false` the navigation package can control which scene is active and which is no longer active. See [react-navigation-magic-move](https://github.com/IjzerenHein/react-navigation-magic-move) for an example on how to use it. |
+| Property  | Type                              | Default | Description                                                                                                                                                                                                                                                                                                                                                                                                                |
+| --------- | --------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled` | <code>bool &#124; function</code> | `true`  | Disable or enable transitions                                                                                                                                                                                                                                                                                                                                                                                              |
+| `id`      | `string`                          |         | Optional unique id of the scene, which you can use in the `enabled` function to enable/disable transitions on a scene or component.                                                                                                                                                                                                                                                                                        |
+| `active`  | `bool`                            |         | This special prop is intended for integrating magic-move with 3rd party navigators such as `react-navigation`. Do not use it unless you know what you are doing. By setting it to `true` or `false` the navigation package can control which scene is active and which is no longer active. See [react-navigation-magic-move](https://github.com/IjzerenHein/react-navigation-magic-move) for an example on how to use it. |
 
 ### Disabling transitions
 
 Magic-move animations are automatically activated when a scene switch or component
-mount is detected. You can opt-out of this behaviour by using the `enabled` prop on the MagicMove component or Scene. The `enabled` prop can be either a boolean or a function. When the `enabled` prop of either the source or target component evaluates to `false`, then the transition is not triggered. The same is true for the `enabled` prop on Scenes, which allows for disabling all transitions to and from that scene.
+mount is detected. You can opt-out of this behaviour by using the `enabled` prop on the MagicMove component or Scene. When the `enabled` prop of either the source or target component evaluates to `false`, then the transition is not triggered. The same is true for the `enabled` prop on Scenes, which allows for disabling all transitions to and from that scene.
 
 **Component examples**
 
