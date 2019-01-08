@@ -21,6 +21,7 @@ class MagicMoveScene extends Component {
 
   _ref = undefined;
   _uniqueId = "__autoSceneId" + autoId++;
+  _active = undefined;
 
   render() {
     // eslint-disable-next-line
@@ -42,8 +43,12 @@ class MagicMoveScene extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.active !== undefined) {
-      this._administration.activateScene(this, this.props.active);
+    const { active } = this.props;
+    if (active !== undefined) {
+      if (this._active !== active) {
+        this._active = active;
+        this._administration.activateScene(this, active);
+      }
     }
   }
 

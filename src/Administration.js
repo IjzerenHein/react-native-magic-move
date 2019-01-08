@@ -29,6 +29,9 @@ class MagicMoveAdministration {
     if (isActive && this._activeScene !== scene) {
       this._prevScene = this._activeScene || this._prevScene;
       this._activeScene = scene;
+      if (this._prevScene === this._activeScene) {
+        this._prevScene = undefined;
+      }
 
       // Start animations for all components on this scene
       const sceneComps = this._activeScene
@@ -172,13 +175,14 @@ class MagicMoveAdministration {
 
   _checkForAnimate(component, prevComp) {
     const { id, debug, disabled, scene } = component.props;
+    if (component === prevComp) return;
     if (!prevComp) {
       if (debug) {
         // eslint-disable-next-line
         console.debug(
           `[MagicMove] Not animating ${
             component.debugName
-          } (no other component found)`
+          } (no previous component found)`
         );
       }
       return;
@@ -189,7 +193,7 @@ class MagicMoveAdministration {
         console.debug(
           `[MagicMove] Not animating ${
             component.debugName
-          } (target component is disabled)`
+          } (component is disabled)`
         );
       }
       return;
@@ -198,9 +202,7 @@ class MagicMoveAdministration {
       if (debug) {
         // eslint-disable-next-line
         console.debug(
-          `[MagicMove] Not animating ${
-            component.debugName
-          } (target scene is disabled)`
+          `[MagicMove] Not animating ${component.debugName} (scene is disabled)`
         );
       }
       return;
