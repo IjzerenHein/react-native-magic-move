@@ -15,7 +15,7 @@ const propTypes = {
   delay: PropTypes.number,
   easing: PropTypes.func,
   debug: PropTypes.bool,
-  enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+  disabled: PropTypes.bool,
   transition: PropTypes.func
 };
 
@@ -35,7 +35,7 @@ class MagicMoveView extends Component {
   static defaultProps = {
     Component: View,
     AnimatedComponent: Animated.View,
-    enabled: true,
+    disabled: false,
     keepHidden: false,
     debug: false
   };
@@ -96,15 +96,25 @@ class MagicMoveView extends Component {
 
   render() {
     const {
-      id, // eslint-disable-line
-      style,
       Component,
+      style,
       isClone,
+      id, // eslint-disable-line
+      AnimatedComponent, // eslint-disable-line
+      useNativeDriver, // eslint-disable-line
+      keepHidden, // eslint-disable-line
+      duration, // eslint-disable-line
+      delay, // eslint-disable-line
+      easing, // eslint-disable-line
+      debug, // eslint-disable-line
+      disabled, // eslint-disable-line
+      transition, // eslint-disable-line
       isTarget, // eslint-disable-line
       administration, // eslint-disable-line
       scene, // eslint-disable-line
       ...otherProps
     } = this.props;
+
     const { opacity } = this.state;
     if (isClone && this.getAdministration().isAnimatingComponent(this)) {
       return <Component style={[style, { opacity: 0 }]} {...otherProps} />;

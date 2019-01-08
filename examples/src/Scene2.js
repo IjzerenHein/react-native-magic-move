@@ -49,7 +49,7 @@ class Scene extends React.Component {
             { backgroundColor: isEnabled ? "purple" : getColor(i) }
           ]}
           debug={debug}
-          enabled={isEnabled}
+          disabled={!isEnabled}
         >
           <MagicMove.Text
             id={`list${i}.title`}

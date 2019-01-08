@@ -12,9 +12,10 @@ import Scene5 from "./Scene5";
 import Scene6 from "./Scene6";
 import Scene7 from "./Scene7";
 import Scene8 from "./Scene8";
-import ModalScene from "./ModalScene";
 import MultiScene from "./MultiScene";
 import MultiScene2 from "./MultiScene2";
+import ModalScene from "./ModalScene";
+import ModalScene2 from "./ModalScene2";
 import * as MagicMove from "./magic-move";
 
 const App = () => (
@@ -44,7 +45,7 @@ const App = () => (
             <Scene key="tab3" component={MultiScene2} title="Multi" />
             <Modal title="Modal">
               <Scene key="tab3" component={ModalScene} title="Modal" />
-              <Scene key="modal" component={Scene6} title="Dissolve" />
+              <Scene key="modal" component={ModalScene2} title="Modal" />
             </Modal>
           </Tabs>
         </Router>

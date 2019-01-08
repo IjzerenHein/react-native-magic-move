@@ -1,19 +1,6 @@
 import { createContext } from "react";
 import findLast from "lodash.findlast";
 
-function resolveEnabled(enabled, id, isTarget, scene, currentScene) {
-  if (typeof enabled === "function") {
-    return enabled({
-      id,
-      isTarget,
-      sceneId: (scene ? scene.props.id : undefined) || "",
-      currentSceneId: (currentScene ? currentScene.props.id : undefined) || ""
-    });
-  } else if (enabled === undefined) {
-    return true;
-  }
-  return !!enabled;
-}
 /**
  * The MagicMove administration keeps track of the
  * components that have been mounted/unmounted and
@@ -184,7 +171,7 @@ class MagicMoveAdministration {
   }
 
   _checkForAnimate(component, prevComp) {
-    const { id, debug, enabled, scene } = component.props;
+    const { id, debug, disabled, scene } = component.props;
     if (!prevComp) {
       if (debug) {
         // eslint-disable-next-line
@@ -196,8 +183,7 @@ class MagicMoveAdministration {
       }
       return;
     }
-    const prevScene = prevComp.props.scene;
-    if (!resolveEnabled(enabled, id, true, prevScene, scene)) {
+    if (disabled) {
       if (debug) {
         // eslint-disable-next-line
         console.debug(
@@ -208,41 +194,13 @@ class MagicMoveAdministration {
       }
       return;
     }
-    if (
-      scene &&
-      !resolveEnabled(scene.props.enabled, id, true, prevScene, scene)
-    ) {
+    if (scene && scene.disabled) {
       if (debug) {
         // eslint-disable-next-line
         console.debug(
           `[MagicMove] Not animating ${
             component.debugName
           } (target scene is disabled)`
-        );
-      }
-      return;
-    }
-    if (!resolveEnabled(prevComp.props.enabled, id, false, scene, prevScene)) {
-      if (debug) {
-        // eslint-disable-next-line
-        console.debug(
-          `[MagicMove] Not animating ${
-            component.debugName
-          } (source component is disabled)`
-        );
-      }
-      return;
-    }
-    if (
-      prevScene &&
-      !resolveEnabled(prevScene.props.enabled, id, false, scene, prevScene)
-    ) {
-      if (debug) {
-        // eslint-disable-next-line
-        console.debug(
-          `[MagicMove] Not animating ${
-            component.debugName
-          } (source scene is disabled)`
         );
       }
       return;

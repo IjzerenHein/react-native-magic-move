@@ -11,12 +11,12 @@ class MagicMoveScene extends Component {
   static propTypes = {
     children: PropTypes.any,
     id: PropTypes.string,
-    enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+    disabled: PropTypes.bool,
     active: PropTypes.bool
   };
 
   static defaultProps = {
-    enabled: true
+    disabled: false
   };
 
   _ref = undefined;
@@ -24,7 +24,7 @@ class MagicMoveScene extends Component {
 
   render() {
     // eslint-disable-next-line
-    const { children, id, enabled, active, ...otherProps } = this.props;
+    const { children, id, disabled, active, ...otherProps } = this.props;
     return (
       <View ref={this._setRef} {...otherProps} collapsable={false}>
         <MagicMoveAdministration.Context.Consumer>

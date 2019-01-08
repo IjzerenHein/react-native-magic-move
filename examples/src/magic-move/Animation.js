@@ -467,7 +467,15 @@ class MagicMoveAnimation extends PureComponent {
         console.debug(`[MagicMove] Animating ${this.props.to.debugName}...`);
       }
 
-      let { useNativeDriver } = toProps;
+      // Determine whether the native driver should be used
+      const toND = toProps.useNativeDriver;
+      const fromND = this.props.from.props.useNativeDriver;
+      let useNativeDriver =
+        toND === false || fromND === false
+          ? false
+          : toND === undefined && fromND === undefined
+          ? undefined
+          : true;
       if (useNativeDriver === undefined) {
         if (this._canUseNativeDriver === false) {
           // eslint-disable-next-line

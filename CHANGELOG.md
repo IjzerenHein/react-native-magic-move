@@ -8,8 +8,7 @@ Create magical move transitions between scenes in react-native
 
 ### Added
 
-- Added `enabled` prop for disabling transitions on scenes and components
-- Added `id` prop to scene, so the `enabled` function can identify a scene
+- Added `disabled` prop for disabling transitions on scenes and components
 - Added support for integrating with 3rd party navigation libraries such as `react-navigation`
 - Added Context API for checking whether content is rendered inside a cloned component
 - Added compatibility with `react-native-web`
