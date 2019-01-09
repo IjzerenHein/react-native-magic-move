@@ -136,7 +136,8 @@ class MagicMoveView extends Component {
 
   get debugName() {
     const { Component, id } = this.props;
-    return `${Component.render.name || "component"} "${id}"`;
+    return `${(Component.render ? Component.render.name : undefined) ||
+      "component"} "${id}"`;
   }
 
   getRef() {
