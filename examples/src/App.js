@@ -59,7 +59,7 @@ const App = () => (
             <Scene
               key="tab2"
               component={MultiScene}
-              title="Multi"
+              title="Tab"
               icon={MultiIcon}
             />
             <Scene
