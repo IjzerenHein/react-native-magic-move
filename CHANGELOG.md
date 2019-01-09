@@ -8,13 +8,15 @@ Create magical move transitions between scenes in react-native
 
 ### Added
 
+- Added support for integration with 3rd party navigation libraries such as `react-navigation` (see `react-navigation-magic-move` on how to enable it)
 - Added `disabled` prop for disabling transitions on scenes and components
-- Added support for integrating with 3rd party navigation libraries such as `react-navigation`
 - Added Context API for checking whether content is rendered inside a cloned component
 - Added compatibility with `react-native-web`
 
 ### Fixed
 
+- Reduced transition glitches when animating a component that is on a scene that slides away
+- Fixed older animation re-shown when starting an animation while the previous hadn't finished
 - Fixed `shrinkAndGrow` transition not disappearing entirely
 - Fixed `squashAndStretch` transition when animating from top-left to right-bottom
 - Fixed end opacity not always correct on `dissolve` transition
