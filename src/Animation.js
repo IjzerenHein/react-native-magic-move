@@ -133,7 +133,7 @@ class MagicMoveAnimation extends PureComponent {
   }
 
   get debug() {
-    return this.props.from.props.debug || this.props.to.props.debug;
+    return this.props.to.props.debug;
   }
 
   componentDidMount() {
