@@ -7,6 +7,7 @@ Create magical move transitions between scenes in react-native 🐰🎩✨
 ![MagicMoveGif](magicmove4.gif)
 
 - [Usage](#usage)
+- [react-navigation](#react-navigation)
 - [Documentation](#documentation)
   - [Components](#components)
   - [Props](#props)
@@ -64,6 +65,12 @@ const Scene2 = () => (
   </MagicMove.Scene>
 );
 ```
+
+## react-navigation
+
+When you are using [react-navigation](https://reactnavigation.org/) (or [react-native-router-flux](https://github.com/aksonov/react-native-router-flux)), then also install the following binding:
+
+- [react-navigation-magic-move](https://github.com/IjzerenHein/react-navigation-magic-move)
 
 
 ## Documentation
