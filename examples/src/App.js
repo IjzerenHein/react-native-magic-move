@@ -24,7 +24,7 @@ const App = () => (
       <StoreProvider>
         <Router>
           <Tabs>
-            <Stack key="tab1" tabBarLabel={"First"}>
+            <Stack key="tab1" tabBarLabel={"Stack"}>
               <Scene
                 key="main"
                 component={Main}
@@ -41,8 +41,8 @@ const App = () => (
               <Scene key="scene7" component={Scene7} title="Shrink & Grow" />
               <Scene key="scene8" component={Scene8} title="Squash & Stretch" />
             </Stack>
-            <Scene key="tab2" component={MultiScene} title="Multi Move" />
-            <Scene key="tab3" component={MultiScene2} title="Multi" />
+            <Scene key="tab2" component={MultiScene} title="Multi" />
+            <Scene key="tab3" component={MultiScene2} title="Debug" />
             <Modal title="Modal">
               <Scene key="tab3" component={ModalScene} title="Modal" />
               <Scene key="modal" component={ModalScene2} title="Modal" />

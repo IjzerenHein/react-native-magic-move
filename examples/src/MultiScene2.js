@@ -46,13 +46,13 @@ class Scene extends React.Component {
     const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
-        <Bar hideId="scene8" />
+        <Bar hideId="scene8" debug={true} />
         <View style={styles.content}>
           <MagicMove.View
             id="scene8"
             style={styles.box}
             transition={MagicMove.Transition.squashAndStretch}
-            debug={debug}
+            debug={debug || true}
           >
             <Text style={styles.title}>Magic Move</Text>
           </MagicMove.View>
