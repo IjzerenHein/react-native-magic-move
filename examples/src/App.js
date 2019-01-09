@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Platform } from "react-native";
 import { Router, Stack, Scene, Tabs, Modal } from "react-native-router-flux";
 import { StoreProvider } from "./Store";
 import DebugButton from "./DebugButton";
@@ -17,6 +17,21 @@ import MultiScene2 from "./MultiScene2";
 import ModalScene from "./ModalScene";
 import ModalScene2 from "./ModalScene2";
 import * as MagicMove from "./magic-move";
+import { Ionicons } from "@expo/vector-icons";
+
+// eslint-disable-next-line
+const TabBarIcon = ({ name, tintColor }) => (
+  <Ionicons
+    name={(Platform.OS === "android" ? "md-" : "ios-") + name}
+    size={24}
+    color={tintColor}
+  />
+);
+
+const StackIcon = props => <TabBarIcon name="color-wand" {...props} />;
+const MultiIcon = props => <TabBarIcon name="microphone" {...props} />;
+const DebugIcon = props => <TabBarIcon name="bug" {...props} />;
+const ModalIcon = props => <TabBarIcon name="arrow-round-up" {...props} />;
 
 const App = () => (
   <View style={{ margin: 0, flex: 1 }}>
@@ -24,7 +39,7 @@ const App = () => (
       <StoreProvider>
         <Router>
           <Tabs>
-            <Stack key="tab1" tabBarLabel={"Stack"}>
+            <Stack key="tab1" tabBarLabel={"Stack"} icon={StackIcon}>
               <Scene
                 key="main"
                 component={Main}
@@ -41,9 +56,19 @@ const App = () => (
               <Scene key="scene7" component={Scene7} title="Shrink & Grow" />
               <Scene key="scene8" component={Scene8} title="Squash & Stretch" />
             </Stack>
-            <Scene key="tab2" component={MultiScene} title="Multi" />
-            <Scene key="tab3" component={MultiScene2} title="Debug" />
-            <Modal title="Modal">
+            <Scene
+              key="tab2"
+              component={MultiScene}
+              title="Multi"
+              icon={MultiIcon}
+            />
+            <Scene
+              key="tab3"
+              component={MultiScene2}
+              title="Debug"
+              icon={DebugIcon}
+            />
+            <Modal title="Modal" icon={ModalIcon}>
               <Scene key="tab3" component={ModalScene} title="Modal" />
               <Scene key="modal" component={ModalScene2} title="Modal" />
             </Modal>
