@@ -1,6 +1,6 @@
 /* globals Promise */
 import React, { PureComponent, createContext } from "react";
-import { Animated, Text, Easing } from "react-native";
+import { Animated, Text, Easing, findNodeHandle } from "react-native";
 import PropTypes from "prop-types";
 import defaultTransition from "./transitions/morph";
 
@@ -36,6 +36,60 @@ function measureLayout(id, name, ref) {
   });
 }
 
+async function measureRelativeLayout(component, sceneRef, fallbackLayout) {
+  // Fallback when no sceneRef is available
+  if (!sceneRef) {
+    const { x, y, width, height } = await measureLayout(
+      component.props.id,
+      "fallback",
+      component.getRef()
+    );
+    return {
+      x: x - fallbackLayout.x,
+      y: y - fallbackLayout.y,
+      width,
+      height
+    };
+  }
+
+  let i = 0;
+  return new Promise((resolve, reject) => {
+    function onSuccess(x, y, width, height) {
+      if (width || height) {
+        return resolve({
+          x,
+          y,
+          width,
+          height
+        });
+      }
+      if (i++ >= 3)
+        return reject(
+          new Error(`[MagicMove] Failed to measure ${component.debugName}`)
+        );
+      requestAnimationFrame(() => {
+        component
+          .getRef()
+          .measureLayout(findNodeHandle(sceneRef), onSuccess, onFail);
+      });
+    }
+    function onFail() {
+      if (i++ >= 3)
+        return reject(
+          new Error(`[MagicMove] Failed to measure ${component.debugName}`)
+        );
+      requestAnimationFrame(() => {
+        component
+          .getRef()
+          .measureLayout(findNodeHandle(sceneRef), onSuccess, onFail);
+      });
+    }
+    component
+      .getRef()
+      .measureLayout(findNodeHandle(sceneRef), onSuccess, onFail);
+  });
+}
+
 function resolveValue(value, def, other = 0) {
   if (value !== undefined) return value;
   return def || other;
@@ -52,6 +106,7 @@ function resolveValue(value, def, other = 0) {
  */
 class MagicMoveAnimation extends PureComponent {
   static propTypes = {
+    containerLayout: PropTypes.object.isRequired,
     containerRef: PropTypes.object.isRequired,
     from: PropTypes.object.isRequired,
     to: PropTypes.object.isRequired,
@@ -85,32 +140,51 @@ class MagicMoveAnimation extends PureComponent {
     //
     // 2a. Get layout for from position
     //
-    const { to, from, containerRef, onCompleted } = this.props;
-    const { id } = to.props;
+    const { to, from, containerRef, containerLayout, onCompleted } = this.props;
     function errorHandler(err) {
       console.error(err.message); //eslint-disable-line
       to.setOpacity(undefined);
       from.setOpacity(undefined);
       onCompleted();
     }
+    if (this.debug) {
+      //eslint-disable-next-line
+      console.debug(
+        `[MagicMove] Measuring source ${this.props.from.debugName}...`
+      );
+    }
     Promise.all([
-      measureLayout(id, "container", containerRef),
-      measureLayout(id, "from", from.getRef()),
-      measureLayout(
-        id,
-        "fromScene",
-        (from.props.scene ? from.props.scene.getRef() : undefined) ||
-          containerRef
-      )
+      Promise.resolve(containerLayout),
+      measureRelativeLayout(
+        from,
+        from.props.scene ? from.props.scene.getRef() : undefined,
+        containerLayout
+      ),
+      from.props.scene
+        ? measureRelativeLayout(from.props.scene, containerRef)
+        : Promise.resolve(containerLayout)
     ])
       .then(layouts => {
-        // console.log(layouts[1], layouts[2]);
+        if (this.debug) {
+          //eslint-disable-next-line
+          console.debug(
+            `[MagicMove] Measuring source ${this.props.from.debugName}... DONE`
+          );
+        }
         this.setState({
           container: layouts[0],
           from: {
-            ...layouts[1],
+            x: layouts[1].x + layouts[2].x,
+            y: layouts[1].y + layouts[2].y,
+            width: layouts[1].width,
+            height: layouts[1].height,
             style: from.getStyle(),
-            scene: layouts[2]
+            scene: {
+              x: layouts[2].x + layouts[0].x,
+              y: layouts[2].y + layouts[0].y,
+              width: layouts[2].width,
+              height: layouts[2].height
+            }
           }
         });
       })
@@ -120,20 +194,20 @@ class MagicMoveAnimation extends PureComponent {
     // 2b. Get layout for to position (this may take slightly longer as the
     //     new component has not been fully rendered/mounted yet.
     //
-    Promise.all([
-      measureLayout(id, "to", to.getRef()),
-      measureLayout(
-        id,
-        "toScene",
-        (to.props.scene ? to.props.scene.getRef() : undefined) || containerRef
-      )
-    ])
-      .then(layouts => {
+    measureRelativeLayout(
+      to,
+      to.props.scene ? to.props.scene.getRef() : undefined,
+      containerLayout
+    )
+      .then(layout => {
         this.setState({
           to: {
-            ...layouts[0],
+            ...layout,
             style: to.getStyle(),
-            scene: layouts[1]
+            scene: {
+              x: 0,
+              y: 0
+            }
           }
         });
       })
@@ -193,8 +267,8 @@ class MagicMoveAnimation extends PureComponent {
           position: "absolute",
           width: to.width,
           height: to.height,
-          left: to.x - to.scene.x + from.scene.x - container.x,
-          top: to.y - to.scene.y + from.scene.y - container.y,
+          left: to.x + from.scene.x - container.x,
+          top: to.y + from.scene.y - container.y,
           backgroundColor: "rgba(0, 255, 0, 0.1)",
           borderColor: "green",
           borderWidth: 1,
@@ -360,18 +434,8 @@ class MagicMoveAnimation extends PureComponent {
         opacity: from.style.opacity !== undefined ? from.style.opacity : 1
       },
       end: {
-        x:
-          to.x -
-          to.scene.x +
-          from.scene.x -
-          container.x -
-          (from.width - to.width) / 2,
-        y:
-          to.y -
-          to.scene.y +
-          from.scene.y -
-          container.y -
-          (from.height - to.height) / 2,
+        x: to.x + from.scene.x - container.x - (from.width - to.width) / 2,
+        y: to.y + from.scene.y - container.y - (from.height - to.height) / 2,
         scaleX: to.width / from.width,
         scaleY: to.height / from.height,
         opacity: to.style.opacity !== undefined ? to.style.opacity : 1
@@ -399,8 +463,8 @@ class MagicMoveAnimation extends PureComponent {
         opacity: from.style.opacity !== undefined ? from.style.opacity : 1
       },
       end: {
-        x: to.x - to.scene.x + from.scene.x - container.x,
-        y: to.y - to.scene.y + from.scene.y - container.y,
+        x: to.x + from.scene.x - container.x,
+        y: to.y + from.scene.y - container.y,
         scaleX: 1,
         scaleY: 1,
         opacity: to.style.opacity !== undefined ? to.style.opacity : 1
