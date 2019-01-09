@@ -14,25 +14,27 @@ const styles = StyleSheet.create({
 
 class MagicMoveRenderer extends PureComponent {
   state = {
-    ref: undefined
+    layout: {}
   };
 
   componentDidMount() {
     const { administration } = this.props; //eslint-disable-line
     administration.addListener(() => this.forceUpdate());
   }
+
   render() {
     const { administration } = this.props; //eslint-disable-line
     return (
       <View
         style={styles.container}
         pointerEvents="none"
-        ref={this._setRef}
         collapsable={false}
+        onLayout={this._onLayout}
       >
         {administration.animations.map(({ id, from, to }) => (
           <MagicMoveAnimation
             containerRef={this.state.ref}
+            containerLayout={this.state.layout}
             key={id}
             from={from}
             to={to}
@@ -43,8 +45,28 @@ class MagicMoveRenderer extends PureComponent {
     );
   }
 
-  _setRef = ref => {
+  setContainerRef = ref => {
     this.setState({ ref: ref });
+  };
+
+  _onLayout = event => {
+    const { x, y, width, height } = event.nativeEvent.layout;
+    const { layout } = this.state;
+    if (
+      layout.x !== x ||
+      layout.y !== y ||
+      layout.width !== width ||
+      layout.height !== height
+    ) {
+      this.setState({
+        layout: {
+          x,
+          y,
+          width,
+          height
+        }
+      });
+    }
   };
 }
 
