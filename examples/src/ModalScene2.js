@@ -6,6 +6,7 @@ import * as Animatable from "react-native-animatable";
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "white",
     flex: 1
   },
   box: {

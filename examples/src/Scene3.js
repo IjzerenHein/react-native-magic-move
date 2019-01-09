@@ -6,8 +6,8 @@ import * as Animatable from "react-native-animatable";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "white",
+    flex: 1
   },
   image: {
     width: Dimensions.get("window").width,

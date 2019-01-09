@@ -5,6 +5,7 @@ import * as MagicMove from "./magic-move";
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "white",
     flex: 1
   },
   background: {

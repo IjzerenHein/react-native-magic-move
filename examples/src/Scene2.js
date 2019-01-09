@@ -6,8 +6,8 @@ import randomColor from "randomcolor";
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "white",
     flex: 1,
-    backgroundColor: "#fff",
     flexDirection: "column",
     padding: 20
   },

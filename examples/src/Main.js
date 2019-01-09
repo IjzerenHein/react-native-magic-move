@@ -8,7 +8,7 @@ import { storeObserver, StorePropType } from "./Store";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
     flexDirection: "column",
     padding: 10
   },

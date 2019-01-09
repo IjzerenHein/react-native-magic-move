@@ -7,6 +7,7 @@ import Bar from "./Bar";
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "white",
     flex: 1
   },
   content: {
