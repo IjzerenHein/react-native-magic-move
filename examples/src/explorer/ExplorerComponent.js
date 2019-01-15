@@ -29,7 +29,8 @@ class ExplorerComponent extends React.Component {
   };
 
   render() {
-    const { componentStore } = this.props;
+    const { store, componentStore } = this.props;
+    const { debug } = store;
     const header = (
       <View style={styles.header}>
         <View style={styles.headerRow}>
@@ -90,7 +91,7 @@ class ExplorerComponent extends React.Component {
     return (
       <View style={styles.container}>
         {header}
-        <TransitionComponent componentStore={componentStore} />
+        <TransitionComponent componentStore={componentStore} debug={debug} />
       </View>
     );
   }
