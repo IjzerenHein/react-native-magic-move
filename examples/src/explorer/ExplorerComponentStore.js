@@ -139,7 +139,7 @@ const POSITIONS = [
 const TRANSITIONS = [
   { label: "Morph", transition: Transition.morph },
   { label: "Dissolve", transition: Transition.dissolve },
-  { label: "Flip (auto)", transition: Transition.flip },
+  { label: "Flip", transition: Transition.flip },
   { label: "Flip X", transition: Transition.flip.x },
   { label: "Flip Y", transition: Transition.flip.y },
   { label: "Scale", transition: Transition.scale },
@@ -158,6 +158,7 @@ const EASINGS = [
 const DURATIONS = [
   { label: "Ludicrous", duration: 100 },
   { label: "Very Fast", duration: 200 },
+  { label: "Fast", duration: 300 },
   {
     label: "Regular",
     duration: 400
