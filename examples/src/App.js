@@ -1,23 +1,24 @@
 import React from "react";
 import { View, Platform } from "react-native";
 import { Router, Stack, Scene, Tabs, Modal } from "react-native-router-flux";
-import { StoreProvider } from "./Store";
-import DebugButton from "./DebugButton";
-import Main from "./Main";
-import Scene1 from "./Scene1";
-import Scene2 from "./Scene2";
-import Scene3 from "./Scene3";
-import Scene4 from "./Scene4";
-import Scene5 from "./Scene5";
-import Scene6 from "./Scene6";
-import Scene7 from "./Scene7";
-import Scene8 from "./Scene8";
-import MultiScene from "./MultiScene";
-import MultiScene2 from "./MultiScene2";
-import ModalScene from "./ModalScene";
-import ModalScene2 from "./ModalScene2";
-import * as MagicMove from "./magic-move";
 import { Ionicons } from "@expo/vector-icons";
+import * as MagicMove from "react-native-magic-move";
+import "react-navigation-magic-move";
+import { StoreProvider } from "./Store";
+import DebugButton from "./components/DebugButton";
+import Main from "./stack/Main";
+import Scene1 from "./stack/Scene1";
+import Scene2 from "./stack/Scene2";
+import Scene3 from "./stack/Scene3";
+import Scene4 from "./stack/Scene4";
+import Scene5 from "./stack/Scene5";
+import Scene6 from "./stack/Scene6";
+import Scene7 from "./stack/Scene7";
+import Scene8 from "./stack/Scene8";
+import MultiScene from "./multi/MultiScene";
+import DebugScene from "./debug/DebugScene";
+import ModalScene from "./modal/ModalScene";
+import ModalScene2 from "./modal/ModalScene2";
 
 // eslint-disable-next-line
 const TabBarIcon = ({ name, tintColor }) => (
@@ -61,14 +62,19 @@ const App = () => (
               component={MultiScene}
               title="Tab"
               icon={MultiIcon}
+              renderRightButton={() => <DebugButton />}
             />
             <Scene
               key="tab3"
-              component={MultiScene2}
+              component={DebugScene}
               title="Debug"
               icon={DebugIcon}
             />
-            <Modal title="Modal" icon={ModalIcon}>
+            <Modal
+              title="Modal"
+              icon={ModalIcon}
+              renderRightButton={() => <DebugButton />}
+            >
               <Scene key="tab3" component={ModalScene} title="Modal" />
               <Scene key="modal" component={ModalScene2} title="Modal" />
             </Modal>

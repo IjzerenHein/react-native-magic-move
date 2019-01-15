@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
-import { storeObserver, StorePropType } from "./Store";
-import * as MagicMove from "./magic-move";
+import { storeObserver, StorePropType } from "../Store";
+import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 
 const styles = StyleSheet.create({
@@ -44,9 +44,9 @@ class Scene extends React.Component {
     return (
       <MagicMove.Scene style={styles.container}>
         <MagicMove.View
-          id="scene6"
+          id="scene5"
           style={styles.box}
-          transition={MagicMove.Transition.dissolve}
+          transition={MagicMove.Transition.flip.x}
           debug={debug}
         >
           <Text style={styles.title}>Magic Move</Text>

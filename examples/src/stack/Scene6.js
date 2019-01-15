@@ -1,17 +1,21 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
-import { storeObserver, StorePropType } from "./Store";
-import * as MagicMove from "./magic-move";
+import { storeObserver, StorePropType } from "../Store";
+import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    flex: 1
+    flex: 1,
+    justifyContent: "center"
   },
   box: {
-    backgroundColor: "seagreen",
-    height: 320,
+    alignSelf: "center",
+    backgroundColor: "purple",
+    width: 260,
+    height: 260,
+    borderRadius: 130,
     flexDirection: "column",
     justifyContent: "center"
   },
@@ -19,10 +23,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     textAlign: "center",
     color: "white",
-    fontSize: 37
+    fontSize: 30
   },
   text: {
-    color: "seagreen",
+    color: "purple",
     margin: 24,
     textAlign: "center",
     fontWeight: "bold",
@@ -42,7 +46,7 @@ class Scene extends React.Component {
         <MagicMove.View
           id="scene6"
           style={styles.box}
-          transition={MagicMove.Transition.morph}
+          transition={MagicMove.Transition.dissolve}
           debug={debug}
         >
           <Text style={styles.title}>Magic Move</Text>
@@ -59,5 +63,4 @@ class Scene extends React.Component {
     );
   }
 }
-
 export default storeObserver(Scene);

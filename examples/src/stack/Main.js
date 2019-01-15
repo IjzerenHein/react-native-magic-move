@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import * as MagicMove from "./magic-move";
+import * as MagicMove from "react-native-magic-move";
 import { Actions } from "react-native-router-flux";
-import "./NavigationScene";
-import { storeObserver, StorePropType } from "./Store";
+import { storeObserver, StorePropType } from "../Store";
 
 const styles = StyleSheet.create({
   container: {
@@ -81,7 +80,7 @@ class Main extends Component {
           })}
           {this.renderImageItem({
             id: "image",
-            source: require("./assets/waves.jpg"),
+            source: require("../assets/waves.jpg"),
             onPress: () => Actions.push("scene3")
           })}
         </View>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Easing, Dimensions, StyleSheet, ScrollView } from "react-native";
-import { storeObserver, StorePropType } from "./Store";
-import * as MagicMove from "./magic-move";
+import { storeObserver, StorePropType } from "../Store";
+import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 
 const styles = StyleSheet.create({
@@ -39,7 +39,7 @@ class Scene extends React.Component {
           <MagicMove.Image
             id="image"
             style={styles.image}
-            source={require("./assets/waves.jpg")}
+            source={require("../assets/waves.jpg")}
             resizeMode="cover"
             easing={Easing.in(Easing.cubic)}
             duration={400}

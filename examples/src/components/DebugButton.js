@@ -1,6 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
-import { storeObserver, StorePropType } from "./Store";
+import { storeObserver, StorePropType } from "../Store";
 
 const DebugButton = ({ store }) => {
   const { debug } = store;

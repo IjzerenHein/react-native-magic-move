@@ -1,22 +1,17 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
-import { storeObserver, StorePropType } from "./Store";
-import * as MagicMove from "./magic-move";
+import { storeObserver, StorePropType } from "../Store";
+import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    flex: 1,
-    justifyContent: "flex-start"
+    flex: 1
   },
   box: {
-    marginTop: 40,
-    alignSelf: "center",
-    backgroundColor: "steelblue",
-    width: 260,
-    height: 260,
-    borderRadius: 130,
+    backgroundColor: "seagreen",
+    height: 320,
     flexDirection: "column",
     justifyContent: "center"
   },
@@ -27,7 +22,7 @@ const styles = StyleSheet.create({
     fontSize: 37
   },
   text: {
-    color: "steelblue",
+    color: "seagreen",
     margin: 24,
     textAlign: "center",
     fontWeight: "bold",
@@ -45,12 +40,12 @@ class Scene extends React.Component {
     return (
       <MagicMove.Scene style={styles.container}>
         <MagicMove.View
-          id="scene8"
+          id="scene6"
           style={styles.box}
-          transition={MagicMove.Transition.squashAndStretch}
+          transition={MagicMove.Transition.morph}
           debug={debug}
         >
-          <Text style={styles.title}>Squash & Stretch</Text>
+          <Text style={styles.title}>Magic Move</Text>
         </MagicMove.View>
         <Animatable.Text
           style={styles.text}

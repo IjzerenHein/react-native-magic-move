@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { storeObserver, StorePropType } from "./Store";
-import * as MagicMove from "./magic-move";
+import { storeObserver, StorePropType } from "../Store";
+import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 import Bar from "./Bar";
 
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
   box: {
     alignSelf: "center",
-    backgroundColor: "steelblue",
+    backgroundColor: "goldenrod",
     width: 260,
     height: 260,
     borderRadius: 130,
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     fontSize: 30
   },
   text: {
-    color: "steelblue",
+    color: "goldenrod",
     margin: 24,
     textAlign: "center",
     fontWeight: "bold",
@@ -47,13 +47,13 @@ class Scene extends React.Component {
     const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
-        <Bar hideId="scene8" debug={true} />
+        <Bar hideId="scene5" />
         <View style={styles.content}>
           <MagicMove.View
-            id="scene8"
+            id="scene5"
             style={styles.box}
-            transition={MagicMove.Transition.squashAndStretch}
-            debug={debug || true}
+            transition={MagicMove.Transition.flip.x}
+            debug={debug}
           >
             <Text style={styles.title}>Magic Move</Text>
           </MagicMove.View>

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { PropTypes } from "prop-types";
-import * as MagicMove from "./magic-move";
+import * as MagicMove from "react-native-magic-move";
 
 const styles = StyleSheet.create({
   container: {

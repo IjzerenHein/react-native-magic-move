@@ -1,22 +1,19 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
-import { storeObserver, StorePropType } from "./Store";
-import * as MagicMove from "./magic-move";
+import { storeObserver, StorePropType } from "../Store";
+import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
-import { Actions } from "react-native-router-flux";
-import Button from "./Button";
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: "flex-start"
   },
   box: {
     marginTop: 40,
     alignSelf: "center",
-    backgroundColor: "seagreen",
+    backgroundColor: "steelblue",
     width: 260,
     height: 260,
     borderRadius: 130,
@@ -30,7 +27,7 @@ const styles = StyleSheet.create({
     fontSize: 37
   },
   text: {
-    color: "seagreen",
+    color: "steelblue",
     margin: 24,
     textAlign: "center",
     fontWeight: "bold",
@@ -47,20 +44,13 @@ class Scene extends React.Component {
     const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
-        <Animatable.View
-          iterationCount="infinite"
-          iterationDelay={10000}
-          animation="rubberBand"
-        >
-          <Button onPress={this.onPressShow} label="Show Modal" />
-        </Animatable.View>
         <MagicMove.View
-          id="scene6"
+          id="scene8"
           style={styles.box}
-          transition={MagicMove.Transition.flip.x}
+          transition={MagicMove.Transition.squashAndStretch}
           debug={debug}
         >
-          <Text style={styles.title}>Magic Move</Text>
+          <Text style={styles.title}>Squash & Stretch</Text>
         </MagicMove.View>
         <Animatable.Text
           style={styles.text}
@@ -73,10 +63,6 @@ class Scene extends React.Component {
       </MagicMove.Scene>
     );
   }
-
-  onPressShow = () => {
-    Actions.modal();
-  };
 }
 
 export default storeObserver(Scene);
