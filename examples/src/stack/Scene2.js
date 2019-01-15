@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import { storeObserver, StorePropType } from "../Store";
+import { storeObserver, StorePropType } from "../store";
 import * as MagicMove from "react-native-magic-move";
 import randomColor from "randomcolor";
 

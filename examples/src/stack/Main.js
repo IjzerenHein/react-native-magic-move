@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import * as MagicMove from "react-native-magic-move";
 import { Actions } from "react-native-router-flux";
-import { storeObserver, StorePropType } from "../Store";
+import { storeObserver, StorePropType } from "../store";
 
 const styles = StyleSheet.create({
   container: {

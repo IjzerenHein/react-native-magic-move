@@ -11,7 +11,6 @@ class Store {
   get debug() {
     return this._debug.get();
   }
-
   set debug(val) {
     this._debug.set(val);
   }

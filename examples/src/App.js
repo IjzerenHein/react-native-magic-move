@@ -4,7 +4,7 @@ import { Router, Stack, Scene, Tabs, Modal } from "react-native-router-flux";
 import { Ionicons } from "@expo/vector-icons";
 import * as MagicMove from "react-native-magic-move";
 import "react-navigation-magic-move";
-import { StoreProvider } from "./Store";
+import { StoreProvider } from "./store";
 import DebugButton from "./components/DebugButton";
 import Main from "./stack/Main";
 import Scene1 from "./stack/Scene1";
@@ -19,6 +19,7 @@ import MultiScene from "./multi/MultiScene";
 import DebugScene from "./debug/DebugScene";
 import ModalScene from "./modal/ModalScene";
 import ModalScene2 from "./modal/ModalScene2";
+import ExplorerView from "./explorer/ExplorerView";
 
 // eslint-disable-next-line
 const TabBarIcon = ({ name, tintColor }) => (
@@ -33,6 +34,7 @@ const StackIcon = props => <TabBarIcon name="color-wand" {...props} />;
 const MultiIcon = props => <TabBarIcon name="microphone" {...props} />;
 const DebugIcon = props => <TabBarIcon name="bug" {...props} />;
 const ModalIcon = props => <TabBarIcon name="arrow-round-up" {...props} />;
+const ExplorerIcon = props => <TabBarIcon name="rocket" {...props} />;
 
 const App = () => (
   <View style={{ margin: 0, flex: 1 }}>
@@ -57,6 +59,14 @@ const App = () => (
               <Scene key="scene7" component={Scene7} title="Shrink & Grow" />
               <Scene key="scene8" component={Scene8} title="Squash & Stretch" />
             </Stack>
+            <Scene
+              key="explorer"
+              component={ExplorerView}
+              title="Transition Explorer"
+              tabBarLabel="Explorer"
+              icon={ExplorerIcon}
+              renderRightButton={() => <DebugButton />}
+            />
             <Scene
               key="tab2"
               component={MultiScene}

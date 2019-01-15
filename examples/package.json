@@ -14,10 +14,12 @@
     "randomcolor": "^0.5.3",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-actionsheet": "^2.4.2",
     "react-native-animatable": "^1.3.0",
-    "react-native-magic-move": "*",
+    "react-native-magic-move": "file:.yalc/react-native-magic-move",
     "react-native-router-flux": "^4.0.6",
-    "react-navigation-magic-move": "*"
+    "react-native-segmented-control-tab": "^3.3.1",
+    "react-navigation-magic-move": "file:.yalc/react-navigation-magic-move"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0"
