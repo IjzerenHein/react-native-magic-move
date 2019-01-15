@@ -29,18 +29,8 @@ class Scene extends React.Component {
     const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
-        <MagicMove.View
-          id="scene4"
-          style={styles.background}
-          debug={debug}
-          useNativeDriver={false}
-        >
-          <MagicMove.Text
-            id="scene4.title"
-            style={styles.text}
-            debug={debug}
-            useNativeDriver={false}
-          >
+        <MagicMove.View id="scene4" style={styles.background} debug={debug}>
+          <MagicMove.Text id="scene4.title" style={styles.text} debug={debug}>
             Color Change
           </MagicMove.Text>
         </MagicMove.View>
