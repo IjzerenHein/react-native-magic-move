@@ -210,12 +210,12 @@ class MagicMoveAdministration {
     this._animate(id, component, prevComp);
   }
 
-  _animate(id, to, from) {
+  _animate(id, target, source) {
     const anim = this._animations.find(anim => anim.id === id);
     if (anim) {
-      anim.to = to;
+      anim.source = source;
     } else {
-      this._animations.unshift({ id, from, to });
+      this._animations.unshift({ id, source, target });
     }
     if (this._listenerCallback) {
       this._listenerCallback();

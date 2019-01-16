@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import { Animated, View } from "react-native";
 import PropTypes from "prop-types";
 import MagicMoveAdministration from "./Administration";
 import MagicMoveScene from "./Scene";
-import MagicMoveAnimation from "./Animation";
+import MagicMoveContext from "./Context";
 
 const propTypes = {
   Component: PropTypes.any.isRequired,
@@ -151,15 +151,11 @@ class MagicMoveView extends Component {
       });
     }
   }
-
-  getStyle() {
-    return StyleSheet.flatten([this.props.style]);
-  }
 }
 
 const MagicMoveWrappedView = props => {
   return (
-    <MagicMoveAnimation.Context.Consumer>
+    <MagicMoveContext>
       {({ isClone, isTarget }) => (
         <MagicMoveAdministration.Context.Consumer>
           {administration => (
@@ -177,7 +173,7 @@ const MagicMoveWrappedView = props => {
           )}
         </MagicMoveAdministration.Context.Consumer>
       )}
-    </MagicMoveAnimation.Context.Consumer>
+    </MagicMoveContext>
   );
 };
 MagicMoveWrappedView.propTypes = propTypes;

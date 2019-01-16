@@ -1,5 +1,5 @@
-import MagicMoveAnimation from "./Animation";
+import MagicMoveClone from "./Clone";
 
-const MagicMoveContext = MagicMoveAnimation.Context.Consumer;
+const MagicMoveContext = MagicMoveClone.Context.Consumer;
 
 export default MagicMoveContext;

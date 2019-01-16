@@ -1,99 +1,21 @@
-/* globals Promise */
-import React, { PureComponent, createContext } from "react";
-import { Animated, Text, Easing, findNodeHandle } from "react-native";
+import React, { PureComponent } from "react";
+import { StyleSheet, Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
 import defaultTransition from "./transitions/morph";
-
-const MagicMoveAnimationContext = createContext({
-  isClone: false,
-  isTarget: false
-});
+import MagicMoveClone from "./Clone";
 
 const defaultEasingFn = Easing.inOut(Easing.ease);
-
-function measureLayout(id, name, ref) {
-  let i = 0;
-  return new Promise((resolve, reject) => {
-    function onMeasure(x, y, width, height, pageX, pageY) {
-      if (width || height) {
-        return resolve({
-          x: pageX,
-          y: pageY,
-          width,
-          height
-        });
-      }
-      i++;
-      if (x === undefined || i >= 3)
-        return reject(
-          new Error(`[MagicMove] Failed to measure component "${id}" (${name})`)
-        );
-      requestAnimationFrame(() => {
-        ref.measure(onMeasure);
-      });
-    }
-    ref.measure(onMeasure);
-  });
-}
-
-async function measureRelativeLayout(component, sceneRef, fallbackLayout) {
-  // Fallback when no sceneRef is available
-  if (!sceneRef) {
-    const { x, y, width, height } = await measureLayout(
-      component.props.id,
-      "fallback",
-      component.getRef()
-    );
-    return {
-      x: x - fallbackLayout.x,
-      y: y - fallbackLayout.y,
-      width,
-      height
-    };
-  }
-
-  let i = 0;
-  return new Promise((resolve, reject) => {
-    function onSuccess(x, y, width, height) {
-      if (width || height) {
-        return resolve({
-          x,
-          y,
-          width,
-          height
-        });
-      }
-      if (i++ >= 3)
-        return reject(
-          new Error(`[MagicMove] Failed to measure ${component.debugName}`)
-        );
-      requestAnimationFrame(() => {
-        component
-          .getRef()
-          .measureLayout(findNodeHandle(sceneRef), onSuccess, onFail);
-      });
-    }
-    function onFail() {
-      if (i++ >= 3)
-        return reject(
-          new Error(`[MagicMove] Failed to measure ${component.debugName}`)
-        );
-      requestAnimationFrame(() => {
-        component
-          .getRef()
-          .measureLayout(findNodeHandle(sceneRef), onSuccess, onFail);
-      });
-    }
-    component
-      .getRef()
-      .measureLayout(findNodeHandle(sceneRef), onSuccess, onFail);
-  });
-}
 
 function resolveValue(value, def, other = 0) {
   if (value !== undefined) return value;
   return def || other;
 }
+
+const styles = StyleSheet.create({
+  hidden: {
+    opacity: 0
+  }
+});
 
 /**
  * 1. Hide to component
@@ -106,146 +28,74 @@ function resolveValue(value, def, other = 0) {
  */
 class MagicMoveAnimation extends PureComponent {
   static propTypes = {
+    source: PropTypes.object.isRequired,
+    target: PropTypes.object.isRequired,
     containerLayout: PropTypes.object.isRequired,
-    containerRef: PropTypes.object.isRequired,
-    from: PropTypes.object.isRequired,
-    to: PropTypes.object.isRequired,
     onCompleted: PropTypes.func.isRequired
   };
 
+  state = {
+    animValue: new Animated.Value(0),
+    sourceLayout: undefined,
+    targetLayout: undefined
+  };
+
+  /**
+   * Upon creating, hide the "target" component as quickly
+   * as possible.
+   */
   constructor(props) {
     super(props);
-    this.state = {
-      animValue: new Animated.Value(0),
-      container: undefined,
-      from: undefined,
-      to: undefined
-    };
-
-    //
-    // 1. Hide real to component
-    //
     if (this.debug) {
       //eslint-disable-next-line
-      console.debug(`[MagicMove] Hiding target ${props.to.debugName}`);
+      console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
     }
-    props.to.setOpacity(0.0);
+    props.target.setOpacity(0.0);
   }
 
   get debug() {
-    return this.props.to.props.debug;
+    return this.props.target.props.debug;
   }
 
-  componentDidMount() {
-    //
-    // 2a. Get layout for from position
-    //
-    const { to, from, containerRef, containerLayout, onCompleted } = this.props;
-    function errorHandler(err) {
-      console.error(err.message); //eslint-disable-line
-      to.setOpacity(undefined);
-      from.setOpacity(undefined);
-      onCompleted();
-    }
-    if (this.debug) {
-      //eslint-disable-next-line
-      console.debug(
-        `[MagicMove] Measuring source ${this.props.from.debugName}...`
-      );
-    }
-    Promise.all([
-      Promise.resolve(containerLayout),
-      measureRelativeLayout(
-        from,
-        from.props.scene ? from.props.scene.getRef() : undefined,
-        containerLayout
-      ),
-      from.props.scene
-        ? measureRelativeLayout(from.props.scene, containerRef)
-        : Promise.resolve(containerLayout)
-    ])
-      .then(layouts => {
-        if (this.debug) {
-          //eslint-disable-next-line
-          console.debug(
-            `[MagicMove] Measuring source ${this.props.from.debugName}... DONE`
-          );
-        }
-        this.setState({
-          container: layouts[0],
-          from: {
-            x: layouts[1].x + layouts[2].x,
-            y: layouts[1].y + layouts[2].y,
-            width: layouts[1].width,
-            height: layouts[1].height,
-            style: from.getStyle(),
-            scene: {
-              x: layouts[2].x + layouts[0].x,
-              y: layouts[2].y + layouts[0].y,
-              width: layouts[2].width,
-              height: layouts[2].height
-            }
-          }
-        });
-      })
-      .catch(errorHandler);
-
-    //
-    // 2b. Get layout for to position (this may take slightly longer as the
-    //     new component has not been fully rendered/mounted yet.
-    //
-    measureRelativeLayout(
-      to,
-      to.props.scene ? to.props.scene.getRef() : undefined,
-      containerLayout
-    )
-      .then(layout => {
-        this.setState({
-          to: {
-            ...layout,
-            style: to.getStyle(),
-            scene: {
-              x: 0,
-              y: 0
-            }
-          }
-        });
-      })
-      .catch(errorHandler);
-  }
-
-  renderDebugFrom() {
-    if (!this.props.to.props.debug) return;
-    const { container, from } = this.state;
-    if (!container || !from) return;
+  /**
+   * Renders a visual placeholder of the source
+   * component, so it's possible to see what the
+   * start position/shape/size is of the source.
+   */
+  renderDebugSourcePlaceholder() {
+    if (!this.debug) return;
+    const { sourceLayout } = this.state;
+    if (!sourceLayout) return;
+    const { source } = this.props;
+    const style = StyleSheet.flatten([source.props.style]);
     return (
       <Animated.View
-        key={`${this.props.from.props.id}.debugFrom`}
+        key={`${source.props.id}.debugFrom`}
         style={{
           position: "absolute",
-          width: from.width,
-          height: from.height,
-          left: from.x - container.x,
-          top: from.y - container.y,
+          width: sourceLayout.width,
+          height: sourceLayout.height,
+          left: sourceLayout.x,
+          top: sourceLayout.y,
           backgroundColor: "rgba(0, 0, 255, 0.1)",
           borderColor: "royalblue",
           borderWidth: 1,
           borderStyle: "dashed",
           borderTopRightRadius: resolveValue(
-            from.style.borderTopRightRadius,
-            from.style.borderRadius
+            style.borderTopRightRadius,
+            style.borderRadius
           ),
           borderTopLeftRadius: resolveValue(
-            from.style.borderTopLeftRadius,
-            from.style.borderRadius
+            style.borderTopLeftRadius,
+            style.borderRadius
           ),
           borderBottomLeftRadius: resolveValue(
-            from.style.borderBottomLeftRadius,
-            from.style.borderRadius
+            style.borderBottomLeftRadius,
+            style.borderRadius
           ),
           borderBottomRightRadius: resolveValue(
-            from.style.borderBottomRightRadius,
-            from.style.borderRadius
+            style.borderBottomRightRadius,
+            style.borderRadius
           ),
           opacity: 0.8,
           justifyContent: "center"
@@ -256,38 +106,45 @@ class MagicMoveAnimation extends PureComponent {
     );
   }
 
-  renderDebugTo() {
-    if (!this.props.to.props.debug) return;
-    const { container, from, to } = this.state;
-    if (!container || !from || !to) return;
+  /**
+   * Renders a visual placeholder of the target
+   * component, so it's possible to see what the
+   * start position/shape/size is of the target.
+   */
+  renderDebugTargetPlaceholder() {
+    if (!this.debug) return;
+    const { targetLayout } = this.state;
+    if (!targetLayout) return;
+    const { target } = this.props;
+    const style = StyleSheet.flatten([target.props.style]);
     return (
       <Animated.View
-        key={`${this.props.to.props.id}.debugTo`}
+        key={`${target.props.id}.debugTo`}
         style={{
           position: "absolute",
-          width: to.width,
-          height: to.height,
-          left: to.x + from.scene.x - container.x,
-          top: to.y + from.scene.y - container.y,
+          width: targetLayout.width,
+          height: targetLayout.height,
+          left: targetLayout.x,
+          top: targetLayout.y,
           backgroundColor: "rgba(0, 255, 0, 0.1)",
           borderColor: "green",
           borderWidth: 1,
           borderStyle: "dashed",
           borderTopRightRadius: resolveValue(
-            to.style.borderTopRightRadius,
-            to.style.borderRadius
+            style.borderTopRightRadius,
+            style.borderRadius
           ),
           borderTopLeftRadius: resolveValue(
-            to.style.borderTopLeftRadius,
-            to.style.borderRadius
+            style.borderTopLeftRadius,
+            style.borderRadius
           ),
           borderBottomLeftRadius: resolveValue(
-            to.style.borderBottomLeftRadius,
-            to.style.borderRadius
+            style.borderBottomLeftRadius,
+            style.borderRadius
           ),
           borderBottomRightRadius: resolveValue(
-            to.style.borderBottomRightRadius,
-            to.style.borderRadius
+            style.borderBottomRightRadius,
+            style.borderRadius
           ),
           opacity: 0.8,
           justifyContent: "center"
@@ -298,58 +155,95 @@ class MagicMoveAnimation extends PureComponent {
     );
   }
 
-  renderInitialFrom() {
-    const { container, from } = this.state;
-    if (!container || !from) return;
-    const {
-      children,
-      style,
-      AnimatedComponent,
-      ...otherProps
-    } = this.props.from.props;
-    delete otherProps.id;
-    delete otherProps.debug;
-    delete otherProps.Component;
-    delete otherProps.useNativeDriver;
-    delete otherProps.keepHidden;
-    delete otherProps.duration;
-    delete otherProps.delay;
-    delete otherProps.easing;
-    delete otherProps.transition;
+  /**
+   * Renders the initial clones of the source and
+   * target components. The clones are also responsible
+   * for measuring the layout of the source/target components
+   * and supplying that to this class, so it can start the
+   * transition animation with it.
+   */
+  renderInitialClones() {
+    const { source, target, containerLayout } = this.props;
     return (
-      <AnimatedComponent
-        key={`${this.props.from.props.id}.initialFrom`}
-        style={[
-          style,
-          {
-            position: "absolute",
-            width: from.width,
-            height: from.height,
-            left: from.x - container.x,
-            top: from.y - container.y,
-            transform: [],
-            margin: 0,
-            marginTop: 0,
-            marginBottom: 0,
-            marginLeft: 0,
-            marginRight: 0
+      <React.Fragment>
+        <MagicMoveClone
+          key="source0"
+          component={source}
+          parentRef={
+            source.props.scene ? source.props.scene.getRef() : undefined
           }
-        ]}
-        {...otherProps}
-      >
-        {children ? (
-          <MagicMoveAnimationContext.Provider
-            value={{ isClone: true, isTarget: false }}
-          >
-            {children}
-          </MagicMoveAnimationContext.Provider>
-        ) : (
-          undefined
-        )}
-      </AnimatedComponent>
+          containerLayout={containerLayout}
+          isTarget={false}
+          debug={this.debug}
+          onShow={this.onShowSourceClone}
+        >
+          {source.props.children}
+        </MagicMoveClone>
+        <MagicMoveClone
+          key="target0"
+          style={styles.hidden}
+          component={target}
+          parentRef={
+            target.props.scene ? target.props.scene.getRef() : undefined
+          }
+          containerLayout={containerLayout}
+          isTarget={true}
+          debug={this.debug}
+          onLayout={this.onLayoutTargetClone}
+        >
+          {target.props.children}
+        </MagicMoveClone>
+      </React.Fragment>
     );
   }
 
+  /**
+   * Called when the initial source component has calculated
+   * its layout and it's clone has becomes visible.
+   * It then immediately hides the original source component,
+   * so it doesn't appear to move away due to a stack-transition.
+   */
+  onShowSourceClone = layout => {
+    const { source } = this.props;
+    if (this.debug) {
+      //eslint-disable-next-line
+      console.debug(`[MagicMove] Hiding source ${source.debugName}`);
+    }
+    source.setOpacity(0);
+    this.setState({
+      sourceLayout: layout
+    });
+  };
+
+  /**
+   * Called whenever the layout of the target component
+   * has been calculated. It then stores this layout
+   * animation, and in case the layout of the source component
+   * has also been obtained, then starts the transition
+   * animation between the two.
+   */
+  onLayoutTargetClone = layout => {
+    this.setState({
+      targetLayout: layout
+    });
+  };
+
+  /**
+   * Returns the in-use transition function.
+   */
+  getTransition() {
+    return (
+      this.props.target.props.transition ||
+      this.props.source.props.transition ||
+      defaultTransition
+    );
+  }
+
+  /**
+   * Helper interpolation function, which provides
+   * a shorthand notation to be used when writing
+   * transition functions.
+   */
   interpolate = (from, to, clamp) => {
     if (to === from) return to;
     if (clamp) {
@@ -365,175 +259,169 @@ class MagicMoveAnimation extends PureComponent {
     }
   };
 
-  static renderComponent(a) {
-    const { AnimatedComponent, children, ...otherProps } = a.props;
-    delete otherProps.style;
-    delete otherProps.id;
-    delete otherProps.Component;
-    delete otherProps.useNativeDriver;
-    delete otherProps.keepHidden;
-    delete otherProps.duration;
-    delete otherProps.delay;
-    delete otherProps.easing;
-    delete otherProps.transition;
-    delete otherProps.debug;
-
+  /**
+   * Renders a single animation clone onto the screen.
+   */
+  _renderAnimationClone = (clone, index = 0) => {
+    const { containerLayout } = this.props;
+    const { style, component, isTarget } = clone;
     return (
-      <AnimatedComponent style={a.style} {...otherProps}>
-        {children ? (
-          <MagicMoveAnimationContext.Provider
-            value={{ isClone: true, isTarget: a.isTarget }}
-          >
-            {children}
-          </MagicMoveAnimationContext.Provider>
-        ) : (
-          undefined
-        )}
-      </AnimatedComponent>
+      <MagicMoveClone
+        key={`${isTarget ? "target" : "source"}${index + ""}`}
+        component={component}
+        parentRef={
+          component.props.scene ? component.props.scene.getRef() : undefined
+        }
+        containerLayout={containerLayout}
+        isTarget={isTarget}
+        style={style}
+        debug={this.debug}
+      >
+        {component.props.children}
+      </MagicMoveClone>
     );
-  }
+  };
 
-  createComponentStyle(a, x, y) {
-    return {
-      ...a.initial.style,
-      position: "absolute",
-      width: a.width,
-      height: a.height,
-      left: 0,
-      top: 0,
-      transform: [{ translateX: x }, { translateY: y }],
-      margin: 0,
-      marginTop: 0,
-      marginBottom: 0,
-      marginLeft: 0,
-      marginRight: 0
-    };
-  }
+  /**
+   * Renders the animated clones using the configured
+   * transition function.
+   */
+  renderAnimationClones() {
+    const { source, target } = this.props;
+    const { sourceLayout, targetLayout, animValue } = this.state;
+    const sourceStyle = StyleSheet.flatten([source.props.style]);
+    const targetStyle = StyleSheet.flatten([target.props.style]);
 
-  getTransition() {
-    return (
-      this.props.to.props.transition ||
-      this.props.from.props.transition ||
-      defaultTransition
-    );
-  }
-
-  renderAnimation() {
-    const { container, to, from, animValue } = this.state;
-    if (!container || !from || !to) return;
-
-    const source = {
+    const from = {
       isTarget: false,
-      width: from.width,
-      height: from.height,
+      component: source,
+      width: sourceLayout.width,
+      height: sourceLayout.height,
       start: {
-        x: from.x - container.x,
-        y: from.y - container.y,
+        x: sourceLayout.x,
+        y: sourceLayout.y,
         scaleX: 1,
         scaleY: 1,
-        opacity: from.style.opacity !== undefined ? from.style.opacity : 1
+        opacity: sourceStyle.opacity !== undefined ? sourceStyle.opacity : 1
       },
       end: {
-        x: to.x + from.scene.x - container.x - (from.width - to.width) / 2,
-        y: to.y + from.scene.y - container.y - (from.height - to.height) / 2,
-        scaleX: to.width / from.width,
-        scaleY: to.height / from.height,
-        opacity: to.style.opacity !== undefined ? to.style.opacity : 1
+        x: targetLayout.x - (sourceLayout.width - targetLayout.width) / 2,
+        y: targetLayout.y - (sourceLayout.height - targetLayout.height) / 2,
+        scaleX: targetLayout.width / sourceLayout.width,
+        scaleY: targetLayout.height / sourceLayout.height,
+        opacity: targetStyle.opacity !== undefined ? targetStyle.opacity : 1
       },
       initial: from,
       props: {
-        ...this.props.from.props
+        ...source.props
+      },
+      style: {
+        ...sourceStyle,
+        position: "absolute",
+        width: sourceLayout.width,
+        height: sourceLayout.height,
+        left: 0,
+        top: 0,
+        transform: [
+          { translateX: sourceLayout.x },
+          { translateY: sourceLayout.y }
+        ],
+        margin: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0
       }
     };
-    source.style = this.createComponentStyle(
-      source,
-      source.start.x,
-      source.start.y
-    );
 
-    const dest = {
+    const to = {
       isTarget: true,
-      width: to.width,
-      height: to.height,
+      component: target,
+      width: targetLayout.width,
+      height: targetLayout.height,
       start: {
-        x: from.x - container.x - (to.width - from.width) / 2,
-        y: from.y - container.y - (to.height - from.height) / 2,
-        scaleX: from.width / to.width,
-        scaleY: from.height / to.height,
-        opacity: from.style.opacity !== undefined ? from.style.opacity : 1
+        x: sourceLayout.x - (targetLayout.width - sourceLayout.width) / 2,
+        y: sourceLayout.y - (targetLayout.height - sourceLayout.height) / 2,
+        scaleX: sourceLayout.width / targetLayout.width,
+        scaleY: sourceLayout.height / targetLayout.height,
+        opacity: sourceStyle.opacity !== undefined ? sourceStyle.opacity : 1
       },
       end: {
-        x: to.x + from.scene.x - container.x,
-        y: to.y + from.scene.y - container.y,
+        x: targetLayout.x,
+        y: targetLayout.y,
         scaleX: 1,
         scaleY: 1,
-        opacity: to.style.opacity !== undefined ? to.style.opacity : 1
+        opacity: targetStyle.opacity !== undefined ? targetStyle.opacity : 1
       },
-      initial: to,
       props: {
-        ...this.props.to.props
+        ...target.props
+      },
+      style: {
+        ...targetStyle,
+        position: "absolute",
+        width: targetLayout.width,
+        height: targetLayout.height,
+        left: 0,
+        top: 0,
+        transform: [
+          { translateX: targetLayout.x },
+          { translateY: targetLayout.y }
+        ],
+        margin: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0
       }
     };
-    dest.style = this.createComponentStyle(dest, dest.end.x, dest.end.y);
-
-    this._canUseNativeDriver = undefined;
     return this.getTransition()({
-      from: source,
-      to: dest,
+      from,
+      to,
       animValue,
-      Context: MagicMoveAnimationContext,
-      render: MagicMoveAnimation.renderComponent,
-      interpolate: this.interpolate,
-      onCanUseNativeDriver: this.onCanUseNativeDriver
+      render: this._renderAnimationClone,
+      interpolate: this.interpolate
     });
   }
 
-  onCanUseNativeDriver = val => {
-    this._canUseNativeDriver = val;
-  };
-
+  /**
+   * Main render function.
+   */
   render() {
-    const { to } = this.state;
+    const { sourceLayout, targetLayout } = this.state;
     return (
       <React.Fragment>
-        {this.renderDebugFrom()}
-        {this.renderDebugTo()}
-        {to ? this.renderAnimation() : this.renderInitialFrom()}
+        {this.renderDebugSourcePlaceholder()}
+        {this.renderDebugTargetPlaceholder()}
+        {sourceLayout && targetLayout
+          ? this.renderAnimationClones()
+          : this.renderInitialClones()}
       </React.Fragment>
     );
   }
 
+  /**
+   *
+   */
   componentDidUpdate() {
-    const { animValue, container, to, from } = this.state;
-
-    //
-    // 4. Hide from component
-    //
-    if (container && from && !this._isFromHidden) {
-      this._isFromHidden = true;
-      if (this.debug) {
-        //eslint-disable-next-line
-        console.debug(`[MagicMove] Hiding source ${this.props.from.debugName}`);
-      }
-      this.props.from.setOpacity(0);
-    }
+    const { animValue, targetLayout, sourceLayout } = this.state;
 
     //
     // 5. Animate...
     //
-    if (container && from && to && !this._isAnimationStarted) {
+    if (sourceLayout && targetLayout && !this._isAnimationStarted) {
+      const { source, target, onCompleted } = this.props;
       this._isAnimationStarted = true;
-      const toProps = this.props.to.props;
-      const { duration, easing, delay } = toProps;
+      const targetProps = source.props;
+      const { duration, easing, delay } = targetProps;
       const transition = this.getTransition();
       if (this.debug) {
         // eslint-disable-next-line
-        console.debug(`[MagicMove] Animating ${this.props.to.debugName}...`);
+        console.debug(`[MagicMove] Animating ${target.debugName}...`);
       }
 
       // Determine whether the native driver should be used
-      const toND = toProps.useNativeDriver;
-      const fromND = this.props.from.props.useNativeDriver;
+      const toND = targetProps.useNativeDriver;
+      const fromND = target.props.useNativeDriver;
       let useNativeDriver =
         toND === false || fromND === false
           ? false
@@ -541,21 +429,9 @@ class MagicMoveAnimation extends PureComponent {
           ? undefined
           : true;
       if (useNativeDriver === undefined) {
-        if (this._canUseNativeDriver === false) {
-          // eslint-disable-next-line
-          console.warn(
-            `[MagicMove] Warning, cannot use native animation for ${
-              this.props.to.debugName
-            } (set 'useNativeDriver' to 'false' to disable this warning)`
-          );
-          useNativeDriver = false;
-        } else if (this._canUseNativeDriver === true) {
-          useNativeDriver = true;
-        } else {
-          useNativeDriver = transition.defaultProps
-            ? transition.defaultProps.useNativeDriver
-            : false;
-        }
+        useNativeDriver = transition.defaultProps
+          ? transition.defaultProps.useNativeDriver
+          : false;
       }
 
       Animated.timing(animValue, {
@@ -581,35 +457,26 @@ class MagicMoveAnimation extends PureComponent {
         ),
         useNativeDriver
       }).start(() => {
-        const { to, from, onCompleted } = this.props;
         if (this.debug) {
           // eslint-disable-next-line
-          console.debug(
-            `[MagicMove] Animating ${this.props.to.debugName}... DONE`
-          );
+          console.debug(`[MagicMove] Animating ${target.debugName}... DONE`);
         }
         if (this.debug) {
           //eslint-disable-next-line
-          console.debug(
-            `[MagicMove] Showing target ${this.props.to.debugName}`
-          );
+          console.debug(`[MagicMove] Showing target ${target.debugName}`);
         }
-        to.setOpacity(undefined);
-        if (!from.props.keepHidden) {
+        target.setOpacity(undefined);
+        if (!source.props.keepHidden) {
           if (this.debug) {
             //eslint-disable-next-line
-            console.debug(
-              `[MagicMove] Showing source ${this.props.from.debugName}`
-            );
+            console.debug(`[MagicMove] Showing source ${source.debugName}`);
           }
-          from.setOpacity(undefined);
+          source.setOpacity(undefined);
         }
         onCompleted();
       });
     }
   }
 }
-
-MagicMoveAnimation.Context = MagicMoveAnimationContext;
 
 export default MagicMoveAnimation;

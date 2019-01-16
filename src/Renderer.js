@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import { View, StyleSheet } from "react-native";
 import MagicMoveAnimation from "./Animation";
+import MagicMoveClone from "./Clone";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,9 +14,8 @@ const styles = StyleSheet.create({
 });
 
 class MagicMoveRenderer extends PureComponent {
-  state = {
-    layout: {}
-  };
+  _containerLayout = undefined;
+  _containerRef = undefined;
 
   componentDidMount() {
     const { administration } = this.props; //eslint-disable-line
@@ -24,6 +24,18 @@ class MagicMoveRenderer extends PureComponent {
 
   render() {
     const { administration } = this.props; //eslint-disable-line
+
+    // Find all "source" scenes that are currently performing
+    // animations. When animations without a scene are encountered
+    // then "undefined" is added to the scene-array.
+    const scenes = [];
+    if (this._containerLayout && this._containerRef) {
+      administration.animations.forEach(({ source }) => {
+        const { scene } = source.props;
+        if (scenes.indexOf(scene) < 0) scenes.push(scene);
+      });
+    }
+
     return (
       <View
         style={styles.container}
@@ -31,41 +43,64 @@ class MagicMoveRenderer extends PureComponent {
         collapsable={false}
         onLayout={this._onLayout}
       >
-        {administration.animations.map(({ id, from, to }) => (
-          <MagicMoveAnimation
-            containerRef={this.state.ref}
-            containerLayout={this.state.layout}
-            key={id}
-            from={from}
-            to={to}
-            onCompleted={() => administration.removeAnimation(id)}
-          />
-        ))}
+        {scenes.map((scene, sceneIndex) => {
+          const children = administration.animations
+            .filter(({ source }) => source.props.scene === scene)
+            .map(({ id, source, target }) => (
+              <MagicMoveAnimation
+                key={id}
+                source={source}
+                target={target}
+                containerLayout={this._containerLayout}
+                onCompleted={() => administration.removeAnimation(id)}
+              />
+            ));
+          if (!scene) {
+            return children;
+          } else {
+            return (
+              <MagicMoveClone
+                key={`scene${sceneIndex + ""}`}
+                isScene
+                component={scene}
+                parentRef={this._containerRef}
+                containerLayout={this._containerLayout}
+              >
+                {children}
+              </MagicMoveClone>
+            );
+          }
+        })}
       </View>
     );
   }
 
   setContainerRef = ref => {
-    this.setState({ ref: ref });
+    this._containerRef = ref;
+    if (this._containerRef && this._containerLayout) {
+      this.forceUpdate();
+    }
   };
 
   _onLayout = event => {
     const { x, y, width, height } = event.nativeEvent.layout;
-    const { layout } = this.state;
+    const layout = this._containerLayout;
     if (
+      !layout ||
       layout.x !== x ||
       layout.y !== y ||
       layout.width !== width ||
       layout.height !== height
     ) {
-      this.setState({
-        layout: {
-          x,
-          y,
-          width,
-          height
-        }
-      });
+      this._containerLayout = {
+        x,
+        y,
+        width,
+        height
+      };
+      if (this._containerRef && this._containerLayout) {
+        this.forceUpdate();
+      }
     }
   };
 }
