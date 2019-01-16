@@ -69,7 +69,7 @@ export default function flipTransition(
     from.style.transform.push({
       rotateY: interpolateRotate("0deg", flipY / 2 + "deg", flipY + "180deg")
     });
-  from.props.backfaceVisibility = "hidden";
+  from.style.backfaceVisibility = "hidden";
 
   //
   // Flip and show target component
@@ -86,7 +86,7 @@ export default function flipTransition(
     to.style.transform.push({
       rotateY: interpolateRotate(flipY + "deg", flipY / 2 + "deg", "0deg")
     });
-  to.props.backfaceVisibility = "hidden";
+  to.style.backfaceVisibility = "hidden";
 
   //
   // Render
