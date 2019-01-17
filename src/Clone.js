@@ -1,4 +1,7 @@
-import React, { PureComponent, createContext } from "react";
+import NativeClone from "./NativeClone";
+export default NativeClone;
+
+/*import React, { PureComponent, createContext } from "react";
 import { View } from "react-native";
 import PropTypes from "prop-types";
 import { measureRelativeLayout } from "./measure";
@@ -167,3 +170,4 @@ class MagicMoveClone extends PureComponent {
 MagicMoveClone.Context = MagicMoveCloneContext;
 
 export default MagicMoveClone;
+*/
