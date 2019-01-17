@@ -1,5 +1,4 @@
 /* eslint react/prop-types: 0 */
-import React from "react";
 
 function resolveValue(value, def) {
   if (value !== undefined) return value;
@@ -116,12 +115,7 @@ export default function morphTransition({
   //
   // Render
   //
-  return (
-    <React.Fragment>
-      {render(to)}
-      {render(from)}
-    </React.Fragment>
-  );
+  return [render(to), render(from)];
 }
 
 morphTransition.defaultProps = {

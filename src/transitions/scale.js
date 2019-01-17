@@ -15,7 +15,7 @@ export default function scaleTransition({ to, interpolate, render }) {
   //
   // Render
   //
-  return render(to);
+  return [render(to)];
 }
 
 scaleTransition.defaultProps = {

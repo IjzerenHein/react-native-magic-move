@@ -1,5 +1,4 @@
 /* eslint react/prop-types: 0 */
-import React from "react";
 
 export default function dissolveTransition({ from, to, interpolate, render }) {
   //
@@ -29,12 +28,7 @@ export default function dissolveTransition({ from, to, interpolate, render }) {
   //
   // Render
   //
-  return (
-    <React.Fragment>
-      {render(from)}
-      {render(to)}
-    </React.Fragment>
-  );
+  return [render(to), render(from)];
 }
 
 dissolveTransition.defaultProps = {

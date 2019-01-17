@@ -164,37 +164,31 @@ class MagicMoveAnimation extends PureComponent {
    */
   renderInitialClones() {
     const { source, target, containerLayout } = this.props;
-    return (
-      <React.Fragment>
-        <MagicMoveClone
-          key="source0"
-          component={source}
-          parentRef={
-            source.props.scene ? source.props.scene.getRef() : undefined
-          }
-          containerLayout={containerLayout}
-          isTarget={false}
-          debug={this.debug}
-          onShow={this.onShowSourceClone}
-        >
-          {source.props.children}
-        </MagicMoveClone>
-        <MagicMoveClone
-          key="target0"
-          style={styles.hidden}
-          component={target}
-          parentRef={
-            target.props.scene ? target.props.scene.getRef() : undefined
-          }
-          containerLayout={containerLayout}
-          isTarget={true}
-          debug={this.debug}
-          onLayout={this.onLayoutTargetClone}
-        >
-          {target.props.children}
-        </MagicMoveClone>
-      </React.Fragment>
-    );
+    return [
+      <MagicMoveClone
+        key="source0"
+        component={source}
+        parentRef={source.props.scene ? source.props.scene.getRef() : undefined}
+        containerLayout={containerLayout}
+        isTarget={false}
+        debug={this.debug}
+        onShow={this.onShowSourceClone}
+      >
+        {source.props.children}
+      </MagicMoveClone>,
+      <MagicMoveClone
+        key="target0"
+        style={styles.hidden}
+        component={target}
+        parentRef={target.props.scene ? target.props.scene.getRef() : undefined}
+        containerLayout={containerLayout}
+        isTarget={true}
+        debug={this.debug}
+        onLayout={this.onLayoutTargetClone}
+      >
+        {target.props.children}
+      </MagicMoveClone>
+    ];
   }
 
   /**
@@ -265,9 +259,10 @@ class MagicMoveAnimation extends PureComponent {
   _renderAnimationClone = (clone, index = 0) => {
     const { containerLayout } = this.props;
     const { style, component, isTarget } = clone;
+    const key = `${isTarget ? "target" : "source"}${index + ""}`;
     return (
       <MagicMoveClone
-        key={`${isTarget ? "target" : "source"}${index + ""}`}
+        key={key}
         component={component}
         parentRef={
           component.props.scene ? component.props.scene.getRef() : undefined

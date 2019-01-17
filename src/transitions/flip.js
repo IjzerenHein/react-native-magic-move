@@ -1,5 +1,4 @@
 /* eslint react/prop-types: 0 */
-import React from "react";
 
 export default function flipTransition(
   { from, to, animValue, interpolate, render },
@@ -91,12 +90,7 @@ export default function flipTransition(
   //
   // Render
   //
-  return (
-    <React.Fragment>
-      {render(from)}
-      {render(to)}
-    </React.Fragment>
-  );
+  return [render(to), render(from)];
 }
 
 flipTransition.defaultProps = {

@@ -1,5 +1,4 @@
 /* eslint react/prop-types: 0 */
-import React from "react";
 import { Easing } from "react-native";
 
 export default function shrinkAndGrowTransition({
@@ -33,12 +32,7 @@ export default function shrinkAndGrowTransition({
   //
   // Render
   //
-  return (
-    <React.Fragment>
-      {render(from)}
-      {render(to)}
-    </React.Fragment>
-  );
+  return [render(from), render(to)];
 }
 
 shrinkAndGrowTransition.defaultProps = {
