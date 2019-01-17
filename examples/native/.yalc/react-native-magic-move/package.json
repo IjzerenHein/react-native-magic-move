@@ -1,0 +1,32 @@
+{
+  "name": "react-native-magic-move",
+  "version": "0.4.0-af599e6b",
+  "description": "Create magical move transitions between scenes in react-native",
+  "author": "IjzerenHein <hrutjes@gmail.com>",
+  "keywords": [
+    "react-native-magic-move",
+    "react-native",
+    "magic move",
+    "fluid",
+    "scene-transition"
+  ],
+  "repository": "https://github.com/IjzerenHein/react-native-magic-move",
+  "bugs": "https://github.com/IjzerenHein/react-native-magic-move/issues",
+  "license": "MIT",
+  "main": "src/index.js",
+  "react-native": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint ./src"
+  },
+  "dependencies": {
+    "lodash.findlast": "^4.6.0"
+  },
+  "peerDependencies": {
+    "prop-types": "*",
+    "react": "*",
+    "react-native": "*"
+  }
+}

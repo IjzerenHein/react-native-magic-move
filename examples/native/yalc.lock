@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "packages": {
+    "react-native-magic-move": {
+      "signature": "af599e6bda85f76a99a7455dc9a9f08b",
+      "file": true
+    },
+    "react-navigation-magic-move": {
+      "signature": "b87948a05ac0a4ff11e26b32bf2830ea",
+      "file": true
+    }
+  }
+}

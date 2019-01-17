@@ -1,0 +1,33 @@
+{
+  "name": "react-navigation-magic-move",
+  "version": "0.4.0-b87948a0",
+  "description": "Bindings for using react-navigation with react-native-magic-move",
+  "author": "IjzerenHein <hrutjes@gmail.com>",
+  "keywords": [
+    "react-native-magic-move",
+    "react-native",
+    "magic move",
+    "react-navigation",
+    "react-native-router-flux",
+    "fluid",
+    "scene-transition"
+  ],
+  "repository": "https://github.com/IjzerenHein/react-navigation-magic-move",
+  "bugs": "https://github.com/IjzerenHein/react-navigation-magic-move/issues",
+  "license": "MIT",
+  "main": "src/index.js",
+  "react-native": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint ./src"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "*",
+    "prop-types": "*",
+    "react-navigation": ">= 0.2.0",
+    "react-native-magic-move": ">= 0.4.0"
+  }
+}
