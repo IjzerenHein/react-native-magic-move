@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "react-native-magic-move": {
-      "signature": "2b7bfa3b923a6039561d141adf23553a",
+      "signature": "f4feef8af51f180af2a47b967342a4c3",
       "file": true,
       "replaced": "*"
     },
