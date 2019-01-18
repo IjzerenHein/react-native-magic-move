@@ -9,10 +9,12 @@
 #import <Foundation/Foundation.h>
 
 #import <React/RCTConvert.h>
-#import "RCTMagicMoveClone.h"
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventDispatcher.h>
 #import <React/UIView+React.h>
+
+#import "RCTMagicMoveClone.h"
+#import "RCTMagicMoveCloneDataManager.h"
 
 #ifdef DEBUG
 #define DebugLog(...) NSLog(__VA_ARGS__)
@@ -22,36 +24,41 @@
 
 @implementation RCTMagicMoveClone
 {
-  RCTEventDispatcher *_eventDispatcher;
-  NSString* _id;
-  BOOL _debug;
-  UIView *_sourceView;
-  CGRect _layout;
-  BOOL _isTarget;
-  BOOL _isScene;
-  
-  UIImage* _image;
+  RCTEventDispatcher* _eventDispatcher;
+  RCTMagicMoveCloneDataManager* _dataManager;
+  RCTMagicMoveCloneData* _data;
   UIImageView* _imageView;
   BOOL _needsReload;
 }
 
-- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
+@synthesize id = _id;
+@synthesize isScene = _isScene;
+@synthesize isTarget = _isTarget;
+
+- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher dataManager:(RCTMagicMoveCloneDataManager*)dataManager
 {
   if ((self = [super init])) {
     _eventDispatcher = eventDispatcher;
+    _dataManager = dataManager;
+    _data = nil;
     _id = nil;
-    _debug = NO;
-    _sourceView = nil;
-    _isTarget = NO;
-    _isScene = NO;
+    _isScene = false;
+    _isTarget = false;
     _needsReload = NO;
-    _image = nil;
     _imageView = nil;
     // self.contentMode = UIViewContentModeScaleToFill; // resizeMode = 'stretch'
     self.userInteractionEnabled = NO; // Pointer-events = 'none'
   }
   
   return self;
+}
+
+- (void)dealloc
+{
+  if (_data != nil) {
+    [_dataManager release:_data];
+    _data = nil;
+  }
 }
 
 - (void)reactSetFrame:(CGRect)frame
@@ -80,20 +87,31 @@
   }
 }*/
 
-- (void) setInitialProps:(NSString*) id sourceView:(UIView*)sourceView layout:(CGRect)layout isScene:(BOOL)isScene isTarget:(BOOL)isTarget debug:(BOOL)debug
+- (void) setData:(RCTMagicMoveCloneData*) data
 {
   // DebugLog(@"setSource: view.frame: %@, parent.frame: %@", NSStringFromCGRect(source.frame), NSStringFromCGRect(parent.frame));
-  _id = id;
-  _sourceView = sourceView;
-  _layout = layout;
-  _isScene = isScene;
-  _isTarget = isTarget;
-  _debug = debug;
+  _data = data;
   
-  [self reloadImage];
-  
+  // Add/update UIImageView
+  if (data.image != nil) {
+    CGRect bounds = data.layout;
+    bounds.origin.x = 0;
+    bounds.origin.y = 0;
+    if (!_imageView) {
+      _imageView = [[UIImageView new]initWithImage:data.image];
+      _imageView.frame = bounds;
+      [self addSubview:_imageView];
+    } else {
+      _imageView.frame = bounds;
+      _imageView.image = data.image;
+    }
+  }
+}
+
+- (void) updateFrame
+{
   // Update frame and redraw
-  [super reactSetFrame:layout];
+  [super reactSetFrame:_data.layout];
   [self.layer setNeedsDisplay];
 }
 
@@ -103,48 +121,14 @@
     _blurRadius = blurRadius;
     _needsReload = YES;
   }
-}
-
-- (void) reloadImage
-{
-  if (_isScene) return;
-
-  // Get bounds
-  CGRect bounds = _layout;
-  bounds.origin.x = 0;
-  bounds.origin.y = 0;
-  
-  // Get source image
-  UIImage *image;
-  /*if ([_sourceView isKindOfClass:[UIImageView class]]) {
-    UIImageView* sourceImageView = (UIImageView*) _sourceView;
-    image = sourceImageView.image;
-  }
-  else {*/
-    UIGraphicsBeginImageContextWithOptions(_layout.size, _isScene, 0.0f);
-    [_sourceView drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
-    image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-  //}
   
   // image = RCTBlurredImageWithRadius(image, 4.0f);
-  
-  // Add/update UIImageView
-  _image = image;
-  if (!_imageView) {
-    _imageView = [[UIImageView new]initWithImage:image];
-    _imageView.frame = bounds;
-    [self addSubview:_imageView];
-  } else {
-    _imageView.frame = bounds;
-    _imageView.image = image;
-  }
 }
 
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
   if (_needsReload) {
-    [self reloadImage];
+    // [self reloadImage];
   }
 }
 

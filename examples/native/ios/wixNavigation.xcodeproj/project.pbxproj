@@ -29,6 +29,8 @@
 		1BFEC45F0B2B46D09BEE5E05 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1DC2A976BDEA4E54AC771BEE /* Ionicons.ttf */; };
 		217AD57921EF77A300BD11E0 /* RCTMagicMoveCloneManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 217AD57821EF77A300BD11E0 /* RCTMagicMoveCloneManager.m */; };
 		217AD57D21EF78BF00BD11E0 /* RCTMagicMoveClone.m in Sources */ = {isa = PBXBuildFile; fileRef = 217AD57C21EF78BF00BD11E0 /* RCTMagicMoveClone.m */; };
+		217AD5D521F1DF9A00BD11E0 /* RCTMagicMoveCloneData.m in Sources */ = {isa = PBXBuildFile; fileRef = 217AD5D421F1DF9A00BD11E0 /* RCTMagicMoveCloneData.m */; };
+		217AD5D921F1E4B900BD11E0 /* RCTMagicMoveCloneDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 217AD5D721F1E4B900BD11E0 /* RCTMagicMoveCloneDataManager.m */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -378,6 +380,10 @@
 		217AD57A21EF77C000BD11E0 /* RCTMagicMoveCloneManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTMagicMoveCloneManager.h; sourceTree = "<group>"; };
 		217AD57B21EF78AD00BD11E0 /* RCTMagicMoveClone.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTMagicMoveClone.h; sourceTree = "<group>"; };
 		217AD57C21EF78BF00BD11E0 /* RCTMagicMoveClone.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTMagicMoveClone.m; sourceTree = "<group>"; };
+		217AD5D421F1DF9A00BD11E0 /* RCTMagicMoveCloneData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTMagicMoveCloneData.m; sourceTree = "<group>"; };
+		217AD5D621F1DFA500BD11E0 /* RCTMagicMoveCloneData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTMagicMoveCloneData.h; sourceTree = "<group>"; };
+		217AD5D721F1E4B900BD11E0 /* RCTMagicMoveCloneDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMagicMoveCloneDataManager.m; sourceTree = "<group>"; };
+		217AD5D821F1E4B900BD11E0 /* RCTMagicMoveCloneDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMagicMoveCloneDataManager.h; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* wixNavigation-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "wixNavigation-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* wixNavigation-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "wixNavigation-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -597,6 +603,10 @@
 				217AD57821EF77A300BD11E0 /* RCTMagicMoveCloneManager.m */,
 				217AD57B21EF78AD00BD11E0 /* RCTMagicMoveClone.h */,
 				217AD57C21EF78BF00BD11E0 /* RCTMagicMoveClone.m */,
+				217AD5D421F1DF9A00BD11E0 /* RCTMagicMoveCloneData.m */,
+				217AD5D621F1DFA500BD11E0 /* RCTMagicMoveCloneData.h */,
+				217AD5D821F1E4B900BD11E0 /* RCTMagicMoveCloneDataManager.h */,
+				217AD5D721F1E4B900BD11E0 /* RCTMagicMoveCloneDataManager.m */,
 			);
 			path = MagicMove;
 			sourceTree = "<group>";
@@ -1263,9 +1273,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				217AD57D21EF78BF00BD11E0 /* RCTMagicMoveClone.m in Sources */,
+				217AD5D921F1E4B900BD11E0 /* RCTMagicMoveCloneDataManager.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				217AD57921EF77A300BD11E0 /* RCTMagicMoveCloneManager.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				217AD5D521F1DF9A00BD11E0 /* RCTMagicMoveCloneData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

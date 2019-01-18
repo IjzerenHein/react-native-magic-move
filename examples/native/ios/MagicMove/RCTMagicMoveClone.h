@@ -13,15 +13,21 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTResizeMode.h>
 
+#import "RCTMagicMoveCloneDataManager.h"
+
 @class RCTEventDispatcher;
 @interface RCTMagicMoveClone : UIView
 
+@property (nonatomic, assign) NSString* id;
+@property (nonatomic, assign) BOOL isScene;
+@property (nonatomic, assign) BOOL isTarget;
 @property (nonatomic, assign) CGFloat blurRadius;
 @property (nonatomic, assign) RCTResizeMode resizeMode;
 
-- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher dataManager:(RCTMagicMoveCloneDataManager*)dataManager;
 
-- (void) setInitialProps:(NSString*) id sourceView:(UIView*)sourceView layout:(CGRect)layout isScene:(BOOL)isScene isTarget:(BOOL)isTarget debug:(BOOL)debug;
+- (void) setData:(RCTMagicMoveCloneData*) data;
+- (void) updateFrame;
 
 @end
 
