@@ -1,4 +1,4 @@
-import MagicMoveClone from "./Clone";
+import MagicMoveClone from "./clone";
 
 const MagicMoveContext = MagicMoveClone.Context.Consumer;
 

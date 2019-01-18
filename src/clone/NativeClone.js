@@ -1,4 +1,4 @@
-import React, { PureComponent, createContext } from "react";
+import React, { PureComponent } from "react";
 import {
   Animated,
   requireNativeComponent,
@@ -6,40 +6,51 @@ import {
   findNodeHandle
 } from "react-native";
 import PropTypes from "prop-types";
+import MagicMoveCloneContext from "./CloneContext";
 
-const MagicMoveCloneContext = createContext({
-  isClone: false,
-  isTarget: false
-});
-
-class MagicMoveClone extends PureComponent {
+class MagicMoveNativeClone extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
     parentRef: PropTypes.any.isRequired,
-    containerLayout: PropTypes.any.isRequired,
-    isScene: PropTypes.bool,
-    isTarget: PropTypes.bool,
-    debug: PropTypes.bool,
+    containerLayout: PropTypes.any.isRequired, // TODO?
+    isScene: PropTypes.bool.isRequired,
+    isTarget: PropTypes.bool.isRequired,
+    isInitial: PropTypes.bool,
+    snapshotType: PropTypes.number,
+    children: PropTypes.any,
+    style: PropTypes.any,
     onLayout: PropTypes.func,
     onShow: PropTypes.func,
-    style: PropTypes.any,
-    children: PropTypes.any
+    debug: PropTypes.bool
+  };
+
+  static defaultProps = {
+    debug: false,
+    isInitial: false
   };
 
   static Context = MagicMoveCloneContext;
 
   state = {
-    initialLayout: undefined
+    style: undefined
   };
 
   render() {
-    const { isTarget, isScene, children } = this.props;
+    const {
+      component,
+      style,
+      children,
+      isInitial,
+      isScene,
+      isTarget
+    } = this.props;
     return (
       <AnimatedRCTMagicMoveClone
-        ref={this._setRef}
-        isTarget={isTarget}
+        ref={isInitial ? this._setRef : undefined}
+        id={isScene ? component.getId() : component.props.id}
         isScene={isScene}
-        style={this._getStyle()}
+        isTarget={isTarget}
+        style={style || this.state.style}
       >
         {isScene ? children : undefined}
       </AnimatedRCTMagicMoveClone>
@@ -53,18 +64,26 @@ class MagicMoveClone extends PureComponent {
 
   async _init() {
     if (!this._ref) return;
-    const { isScene, isTarget, debug, component, parentRef } = this.props;
+    const {
+      isScene,
+      isTarget,
+      debug,
+      component,
+      parentRef,
+      snapshotType
+    } = this.props;
     // console.log("INIT #1: ", component.getRef(), parentRef, isScene, isTarget);
     const source = findNodeHandle(component.getRef());
     const parent = findNodeHandle(parentRef);
     const layout = await NativeModules.MagicMoveCloneManager.init(
       {
-        id: component.props.id || "",
+        id: isScene ? component.getId() : component.props.id,
         source,
         parent,
         isScene,
         isTarget,
-        debug
+        debug,
+        snapshotType
       },
       findNodeHandle(this._ref)
     );
@@ -76,40 +95,26 @@ class MagicMoveClone extends PureComponent {
         this.props.onShow(layout);
       }
       this.setState({
-        initialLayout: layout
-      });
-    }
-  }
-
-  _getStyle() {
-    let { style } = this.props;
-    if (!style) {
-      const { initialLayout } = this.state;
-      if (initialLayout) {
-        style = {
+        style: {
           position: "absolute",
-          width: initialLayout.width,
-          height: initialLayout.height,
+          width: layout.width,
+          height: layout.height,
           left: 0,
           top: 0,
-          transform: [
-            { translateX: initialLayout.x },
-            { translateY: initialLayout.y }
-          ]
-        };
-      }
+          transform: [{ translateX: layout.x }, { translateY: layout.y }]
+        }
+      });
     }
-    return style;
   }
 }
 
 const RCTMagicMoveClone = requireNativeComponent(
   "RCTMagicMoveClone",
-  MagicMoveClone
+  MagicMoveNativeClone
 );
 
 const AnimatedRCTMagicMoveClone = Animated.createAnimatedComponent(
   RCTMagicMoveClone
 );
 
-export default MagicMoveClone;
+export default MagicMoveNativeClone;

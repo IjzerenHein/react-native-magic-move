@@ -1,29 +1,31 @@
-import NativeClone from "./NativeClone";
-export default NativeClone;
-
-/*import React, { PureComponent, createContext } from "react";
+import React, { PureComponent } from "react";
 import { View } from "react-native";
 import PropTypes from "prop-types";
 import { measureRelativeLayout } from "./measure";
+import MagicMoveCloneContext from "./CloneContext";
 
-const MagicMoveCloneContext = createContext({
-  isClone: false,
-  isTarget: false
-});
-
-class MagicMoveClone extends PureComponent {
+class MagicMoveJavaScriptClone extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
     parentRef: PropTypes.any.isRequired,
     containerLayout: PropTypes.any.isRequired,
-    isScene: PropTypes.bool,
-    isTarget: PropTypes.bool,
+    isInitial: PropTypes.bool,
+    isScene: PropTypes.bool.isRequired,
+    isTarget: PropTypes.bool.isRequired,
+    snapshotType: PropTypes.number,
     children: PropTypes.any,
-    debug: PropTypes.bool,
     style: PropTypes.any,
     onLayout: PropTypes.func,
-    onShow: PropTypes.func
+    onShow: PropTypes.func,
+    debug: PropTypes.bool
   };
+
+  static defaultProps = {
+    debug: false,
+    isInitial: false
+  };
+
+  static Context = MagicMoveCloneContext;
 
   _layout = undefined;
   _isMounted = false;
@@ -167,7 +169,4 @@ class MagicMoveClone extends PureComponent {
   }
 }
 
-MagicMoveClone.Context = MagicMoveCloneContext;
-
-export default MagicMoveClone;
-*/
+export default MagicMoveJavaScriptClone;

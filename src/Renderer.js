@@ -1,7 +1,8 @@
 import React, { PureComponent } from "react";
 import { View, StyleSheet } from "react-native";
 import MagicMoveAnimation from "./Animation";
-import MagicMoveClone from "./Clone";
+import MagicMoveClone from "./clone";
+import { SnapshotType } from "./clone/SnapshotType";
 
 const styles = StyleSheet.create({
   container: {
@@ -61,10 +62,13 @@ class MagicMoveRenderer extends PureComponent {
             return (
               <MagicMoveClone
                 key={`scene${sceneIndex + ""}`}
-                isScene
                 component={scene}
                 parentRef={this._containerRef}
                 containerLayout={this._containerLayout}
+                isInitial={true}
+                isScene={true}
+                isTarget={false}
+                snapshotType={SnapshotType.NONE}
               >
                 {children}
               </MagicMoveClone>

@@ -2,7 +2,8 @@ import React, { PureComponent } from "react";
 import { StyleSheet, Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
 import defaultTransition from "./transitions/morph";
-import MagicMoveClone from "./Clone";
+import MagicMoveClone from "./clone";
+import { SnapshotType } from "./clone/SnapshotType";
 
 const defaultEasingFn = Easing.inOut(Easing.ease);
 
@@ -164,13 +165,17 @@ class MagicMoveAnimation extends PureComponent {
    */
   renderInitialClones() {
     const { source, target, containerLayout } = this.props;
+    //const transition = this.getTransition();
     return [
       <MagicMoveClone
         key="source0"
         component={source}
         parentRef={source.props.scene ? source.props.scene.getRef() : undefined}
         containerLayout={containerLayout}
+        isInitial={true}
+        isScene={false}
         isTarget={false}
+        snapshotType={SnapshotType.IMAGE}
         debug={this.debug}
         onShow={this.onShowSourceClone}
       >
@@ -182,7 +187,10 @@ class MagicMoveAnimation extends PureComponent {
         component={target}
         parentRef={target.props.scene ? target.props.scene.getRef() : undefined}
         containerLayout={containerLayout}
+        isInitial={true}
+        isScene={false}
         isTarget={true}
+        snapshotType={SnapshotType.IMAGE}
         debug={this.debug}
         onLayout={this.onLayoutTargetClone}
       >
@@ -268,6 +276,8 @@ class MagicMoveAnimation extends PureComponent {
           component.props.scene ? component.props.scene.getRef() : undefined
         }
         containerLayout={containerLayout}
+        isInitial={false}
+        isScene={false}
         isTarget={isTarget}
         style={style}
         debug={this.debug}
