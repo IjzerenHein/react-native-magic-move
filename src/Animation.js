@@ -266,7 +266,7 @@ class MagicMoveAnimation extends PureComponent {
    */
   _renderAnimationClone = (clone, index = 0) => {
     const { containerLayout } = this.props;
-    const { style, component, isTarget } = clone;
+    const { style, component, isTarget, offsetX, offsetY } = clone;
     const key = `${isTarget ? "target" : "source"}${index + ""}`;
     return (
       <MagicMoveClone
@@ -279,7 +279,9 @@ class MagicMoveAnimation extends PureComponent {
         isInitial={false}
         isScene={false}
         isTarget={isTarget}
-        style={style}
+        style={{ ...style }}
+        offsetX={offsetX}
+        offsetY={offsetY}
         debug={this.debug}
       >
         {component.props.children}
@@ -302,6 +304,8 @@ class MagicMoveAnimation extends PureComponent {
       component: source,
       width: sourceLayout.width,
       height: sourceLayout.height,
+      offsetX: 0,
+      offsetY: 0,
       start: {
         x: sourceLayout.x,
         y: sourceLayout.y,
@@ -344,6 +348,8 @@ class MagicMoveAnimation extends PureComponent {
       component: target,
       width: targetLayout.width,
       height: targetLayout.height,
+      offsetX: 0,
+      offsetY: 0,
       start: {
         x: sourceLayout.x - (targetLayout.width - sourceLayout.width) / 2,
         y: sourceLayout.y - (targetLayout.height - sourceLayout.height) / 2,

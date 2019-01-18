@@ -3,7 +3,6 @@
 //  react-native-magic-move
 //
 //  Created by Hein Rutjes on 16/01/2019.
-//  Copyright © 2019 Facebook. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -34,6 +33,8 @@
 @synthesize id = _id;
 @synthesize isScene = _isScene;
 @synthesize isTarget = _isTarget;
+@synthesize offsetX = _offsetX;
+@synthesize offsetY = _offsetY;
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher dataManager:(RCTMagicMoveCloneDataManager*)dataManager
 {
@@ -42,11 +43,12 @@
     _dataManager = dataManager;
     _data = nil;
     _id = nil;
+    _offsetX = 0.0f;
+    _offsetY = 0.0f;
     _isScene = false;
     _isTarget = false;
     _needsReload = NO;
     _imageView = nil;
-    // self.contentMode = UIViewContentModeScaleToFill; // resizeMode = 'stretch'
     self.userInteractionEnabled = NO; // Pointer-events = 'none'
   }
   
@@ -127,8 +129,13 @@
 
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
-  if (_needsReload) {
-    // [self reloadImage];
+  if ((_data == nil) && (_id != nil)) {
+    NSString* key = [RCTMagicMoveCloneData keyForSharedId:_id isScene:_isScene isTarget:_isTarget];
+    RCTMagicMoveCloneData* data = [_dataManager acquire:key];
+    if (data != nil) {
+      [self setData:data];
+      [self.layer setNeedsDisplay];
+    }
   }
 }
 

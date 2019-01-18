@@ -16,6 +16,8 @@ class MagicMoveNativeClone extends PureComponent {
     isScene: PropTypes.bool.isRequired,
     isTarget: PropTypes.bool.isRequired,
     isInitial: PropTypes.bool,
+    offsetX: PropTypes.number,
+    offsetY: PropTypes.number,
     snapshotType: PropTypes.number,
     children: PropTypes.any,
     style: PropTypes.any,
@@ -42,7 +44,9 @@ class MagicMoveNativeClone extends PureComponent {
       children,
       isInitial,
       isScene,
-      isTarget
+      isTarget,
+      offsetX,
+      offsetY
     } = this.props;
     return (
       <AnimatedRCTMagicMoveClone
@@ -51,6 +55,8 @@ class MagicMoveNativeClone extends PureComponent {
         isScene={isScene}
         isTarget={isTarget}
         style={style || this.state.style}
+        offsetX={offsetX}
+        offsetY={offsetY}
       >
         {isScene ? children : undefined}
       </AnimatedRCTMagicMoveClone>

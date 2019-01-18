@@ -3,7 +3,6 @@
 //  react-native-magic-move
 //
 //  Created by Hein Rutjes on 16/01/2019.
-//  Copyright © 2019 Facebook. All rights reserved.
 //
 
 #ifndef RCTMagicMoveClone_h
@@ -21,6 +20,8 @@
 @property (nonatomic, assign) NSString* id;
 @property (nonatomic, assign) BOOL isScene;
 @property (nonatomic, assign) BOOL isTarget;
+@property (nonatomic, assign) CGFloat offsetX;
+@property (nonatomic, assign) CGFloat offsetY;
 @property (nonatomic, assign) CGFloat blurRadius;
 @property (nonatomic, assign) RCTResizeMode resizeMode;
 
