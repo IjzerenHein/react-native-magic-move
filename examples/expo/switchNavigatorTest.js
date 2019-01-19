@@ -7,8 +7,8 @@ import {
 } from "react-navigation";
 
 import * as MagicMove from "react-native-magic-move";
-import RNMM from "react-navigation-magic-move";
-MagicMove.Scene.addHook(RNMM);
+import { ReactNavigationScene } from "react-navigation-magic-move";
+MagicMove.Scene.addHook(ReactNavigationScene);
 
 class Screen1 extends React.Component {
   render() {
