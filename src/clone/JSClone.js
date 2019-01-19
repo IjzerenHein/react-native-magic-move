@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View } from "react-native";
+import { StyleSheet, Animated, View } from "react-native";
 import PropTypes from "prop-types";
 import { measureRelativeLayout } from "./measure";
 import MagicMoveCloneContext from "./CloneContext";
@@ -12,6 +12,10 @@ class MagicMoveJavaScriptClone extends PureComponent {
     isInitial: PropTypes.bool,
     isScene: PropTypes.bool.isRequired,
     isTarget: PropTypes.bool.isRequired,
+    contentOffsetX: PropTypes.number,
+    contentOffsetY: PropTypes.number,
+    contentWidth: PropTypes.number,
+    contentHeight: PropTypes.number,
     snapshotType: PropTypes.number,
     children: PropTypes.any,
     style: PropTypes.any,
@@ -22,7 +26,9 @@ class MagicMoveJavaScriptClone extends PureComponent {
 
   static defaultProps = {
     debug: false,
-    isInitial: false
+    isInitial: false,
+    contentOffsetX: 0,
+    contentOffsetY: 0
   };
 
   static Context = MagicMoveCloneContext;
@@ -95,11 +101,21 @@ class MagicMoveJavaScriptClone extends PureComponent {
   }
 
   renderComponent() {
-    const { component, isTarget, children } = this.props;
+    const {
+      component,
+      isTarget,
+      children,
+      style,
+      contentOffsetX,
+      contentOffsetY,
+      contentWidth,
+      contentHeight
+    } = this.props;
     const layout = this._layout;
     if (!layout) return null;
-    const { AnimatedComponent, style, ...otherProps } = component.props;
+    const { AnimatedComponent, ...otherProps } = component.props;
     delete otherProps.children;
+    delete otherProps.style;
     delete otherProps.id;
     delete otherProps.Component;
     delete otherProps.useNativeDriver;
@@ -111,35 +127,75 @@ class MagicMoveJavaScriptClone extends PureComponent {
     delete otherProps.debug;
     delete otherProps.scene;
 
-    return (
-      <AnimatedComponent
-        style={[
-          style,
-          this.props.style || {
-            position: "absolute",
-            left: 0,
-            top: 0,
-            width: layout.width,
-            height: layout.height,
+    const customContentStyle =
+      contentOffsetY ||
+      contentOffsetX ||
+      (contentWidth !== undefined && contentWidth !== layout.width) ||
+      (contentHeight !== undefined && contentHeight !== layout.height)
+        ? {
+            width: contentWidth,
+            height: contentHeight,
             transform: [
-              {
-                translateX: layout.x
-              },
-              {
-                translateY: layout.y
-              }
-            ],
-            margin: 0,
-            marginTop: 0,
-            marginBottom: 0,
-            marginLeft: 0,
-            marginRight: 0
+              { translateX: contentOffsetX },
+              { translateY: contentOffsetY }
+            ]
           }
-        ]}
+        : undefined;
+
+    const {
+      width,
+      height,
+      left,
+      top,
+      transform,
+      borderRadius,
+      borderTopLeftRadius,
+      borderTopRightRadius,
+      borderBottomLeftRadius,
+      borderBottomRightRadius,
+      backfaceVisibility,
+      ...contentStyle
+    } =
+      style ||
+      StyleSheet.flatten([
+        component.props.style,
+        {
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: layout.width,
+          height: layout.height,
+          transform: [{ translateX: layout.x }, { translateY: layout.y }],
+          margin: 0,
+          marginTop: 0,
+          marginBottom: 0,
+          marginLeft: 0,
+          marginRight: 0
+        }
+      ]);
+    const outerStyle = {
+      width,
+      height,
+      left,
+      top,
+      transform,
+      borderRadius,
+      borderTopLeftRadius,
+      borderTopRightRadius,
+      borderBottomLeftRadius,
+      borderBottomRightRadius,
+      backfaceVisibility
+    };
+
+    const content = (
+      <AnimatedComponent
+        style={[contentStyle, customContentStyle || outerStyle]}
         {...otherProps}
       >
         {children ? (
-          <MagicMoveCloneContext.Provider value={{ isClone: true, isTarget }}>
+          <MagicMoveCloneContext.Provider
+            value={{ isClone: true, isTarget, isScene: false }}
+          >
             {children}
           </MagicMoveCloneContext.Provider>
         ) : (
@@ -147,6 +203,22 @@ class MagicMoveJavaScriptClone extends PureComponent {
         )}
       </AnimatedComponent>
     );
+
+    if (customContentStyle) {
+      return (
+        <Animated.View
+          style={{
+            ...outerStyle,
+            position: "absolute",
+            overflow: "hidden"
+          }}
+        >
+          {content}
+        </Animated.View>
+      );
+    } else {
+      return content;
+    }
   }
 
   componentDidMount() {
