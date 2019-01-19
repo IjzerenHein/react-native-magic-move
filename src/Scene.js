@@ -12,7 +12,8 @@ class MagicMoveScene extends Component {
     children: PropTypes.any,
     id: PropTypes.string,
     disabled: PropTypes.bool,
-    active: PropTypes.bool
+    active: PropTypes.bool,
+    debug: PropTypes.bool
   };
 
   static defaultProps = {
@@ -22,6 +23,26 @@ class MagicMoveScene extends Component {
   _ref = undefined;
   _uniqueId = "__autoSceneId" + autoId++;
   _active = undefined;
+
+  componentDidMount() {
+    if (this.props.debug) {
+      // eslint-disable-next-line
+      console.debug(
+        `[MagicMove] Mounted ${this.debugName} (active = ${this.props.active})`
+      );
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.debug) {
+      // eslint-disable-next-line
+      console.debug(
+        `[MagicMove] Unmounted ${this.debugName} (active = ${
+          this.props.active
+        })`
+      );
+    }
+  }
 
   render() {
     // eslint-disable-next-line
@@ -47,6 +68,14 @@ class MagicMoveScene extends Component {
     if (active !== undefined) {
       if (this._active !== active) {
         this._active = active;
+        if (this.props.debug) {
+          // eslint-disable-next-line
+          console.debug(
+            `[MagicMove] ${this.props.active ? "Activated" : "De-activated"} ${
+              this.debugName
+            }`
+          );
+        }
         this._administration.activateScene(this, active);
       }
     }
@@ -62,6 +91,10 @@ class MagicMoveScene extends Component {
 
   getId() {
     return this._uniqueId;
+  }
+
+  get debugName() {
+    return `scene "${this.props.id || this.getId()}"`;
   }
 }
 
