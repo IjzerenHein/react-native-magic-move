@@ -39,7 +39,9 @@ class MagicMoveJavaScriptClone extends PureComponent {
 
   constructor(props) {
     super(props);
-    this._getInitialLayout();
+    if (props.isInitial) {
+      this._getInitialLayout();
+    }
   }
 
   async _getInitialLayout() {
@@ -82,18 +84,21 @@ class MagicMoveJavaScriptClone extends PureComponent {
   }
 
   renderScene() {
-    const { children } = this.props;
+    const { children, style } = this.props;
     const layout = this._layout;
+    if (!style && !layout) return null;
     return (
       <View
-        style={{
-          position: "absolute",
-          overflow: "hidden",
-          left: layout ? layout.x : 0,
-          top: layout ? layout.y : 0,
-          width: layout ? layout.width : 0,
-          height: layout ? layout.height : 0
-        }}
+        style={
+          style || {
+            position: "absolute",
+            overflow: "hidden",
+            left: layout ? layout.x : 0,
+            top: layout ? layout.y : 0,
+            width: layout ? layout.width : 0,
+            height: layout ? layout.height : 0
+          }
+        }
       >
         {children}
       </View>
@@ -112,7 +117,7 @@ class MagicMoveJavaScriptClone extends PureComponent {
       contentHeight
     } = this.props;
     const layout = this._layout;
-    if (!layout) return null;
+    if (!style && !layout) return null;
     const { AnimatedComponent, ...otherProps } = component.props;
     delete otherProps.children;
     delete otherProps.style;
@@ -128,10 +133,11 @@ class MagicMoveJavaScriptClone extends PureComponent {
     delete otherProps.scene;
 
     const customContentStyle =
-      contentOffsetY ||
-      contentOffsetX ||
-      (contentWidth !== undefined && contentWidth !== layout.width) ||
-      (contentHeight !== undefined && contentHeight !== layout.height)
+      style &&
+      (contentOffsetY ||
+        contentOffsetX ||
+        (contentWidth !== undefined && contentWidth !== layout.width) ||
+        (contentHeight !== undefined && contentHeight !== layout.height))
         ? {
             width: contentWidth,
             height: contentHeight,
