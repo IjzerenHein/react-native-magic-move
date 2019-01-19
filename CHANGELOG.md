@@ -4,6 +4,21 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+### Added
+
+- Upgraded to a new `clone` based architecture to enable future native optimisations
+- Added ability to render multiple clones efficiently and clip their contents
+- Added `debug` prop to `MagicMoveScene` (for debugging scene mount/activation)
+
+### Fixed
+
+- Fixed `backfaceVisibility` prop warnings in the `flip` transition
+
+### Changes
+
+- **[BREAKING CHANGE]** Transition functions are now required to return an array, and can no longer return a single clone or `React.Fragment`.
+- Upgraded the `morph` transition to always use the native driver
+
 ## [0.4.0] - 2019-01-09
 
 ### Added
