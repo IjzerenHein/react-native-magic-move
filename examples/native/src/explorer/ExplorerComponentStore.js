@@ -144,7 +144,7 @@ const TRANSITIONS = [
   { label: "Flip Y", transition: Transition.flip.y },
   { label: "Scale", transition: Transition.scale },
   { label: "Shrink & Grow", transition: Transition.shrinkAndGrow },
-  { label: "Squash & Stretch", transition: Transition.quashAndStretch }
+  { label: "Squash & Stretch", transition: Transition.squashAndStretch },
 ];
 
 const EASINGS = [
