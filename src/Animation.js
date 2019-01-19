@@ -266,7 +266,7 @@ class MagicMoveAnimation extends PureComponent {
    */
   _renderAnimationClone = (clone, index = 0) => {
     const { containerLayout } = this.props;
-    const { style, component, isTarget, offsetX, offsetY } = clone;
+    const { style, component, isTarget, content } = clone;
     const key = `${isTarget ? "target" : "source"}${index + ""}`;
     return (
       <MagicMoveClone
@@ -280,8 +280,11 @@ class MagicMoveAnimation extends PureComponent {
         isScene={false}
         isTarget={isTarget}
         style={{ ...style }}
-        offsetX={offsetX}
-        offsetY={offsetY}
+        contentOffsetX={content.offsetX}
+        contentOffsetY={content.offsetY}
+        contentWidth={content.width}
+        contentHeight={content.height}
+        blurRadius={content.blurRadius}
         debug={this.debug}
       >
         {component.props.children}
@@ -304,8 +307,13 @@ class MagicMoveAnimation extends PureComponent {
       component: source,
       width: sourceLayout.width,
       height: sourceLayout.height,
-      offsetX: 0,
-      offsetY: 0,
+      content: {
+        offsetX: 0,
+        offsetY: 0,
+        width: sourceLayout.width,
+        height: sourceLayout.height,
+        blurRadius: 0
+      },
       start: {
         x: sourceLayout.x,
         y: sourceLayout.y,
@@ -348,8 +356,13 @@ class MagicMoveAnimation extends PureComponent {
       component: target,
       width: targetLayout.width,
       height: targetLayout.height,
-      offsetX: 0,
-      offsetY: 0,
+      content: {
+        offsetX: 0,
+        offsetY: 0,
+        width: targetLayout.width,
+        height: targetLayout.height,
+        blurRadius: 0
+      },
       start: {
         x: sourceLayout.x - (targetLayout.width - sourceLayout.width) / 2,
         y: sourceLayout.y - (targetLayout.height - sourceLayout.height) / 2,

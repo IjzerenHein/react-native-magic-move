@@ -16,11 +16,14 @@ class MagicMoveNativeClone extends PureComponent {
     isScene: PropTypes.bool.isRequired,
     isTarget: PropTypes.bool.isRequired,
     isInitial: PropTypes.bool,
-    offsetX: PropTypes.number,
-    offsetY: PropTypes.number,
+    contentOffsetX: PropTypes.number,
+    contentOffsetY: PropTypes.number,
+    contentWidth: PropTypes.number,
+    contentHeight: PropTypes.number,
     snapshotType: PropTypes.number,
     children: PropTypes.any,
     style: PropTypes.any,
+    blurRadius: PropTypes.number,
     onLayout: PropTypes.func,
     onShow: PropTypes.func,
     debug: PropTypes.bool
@@ -28,14 +31,29 @@ class MagicMoveNativeClone extends PureComponent {
 
   static defaultProps = {
     debug: false,
-    isInitial: false
+    isInitial: false,
+    contentOffsetX: 0,
+    contentOffsetY: 0,
+    contentWidth: 0,
+    contentHeight: 0,
+    blurRadius: 0
   };
 
   static Context = MagicMoveCloneContext;
 
-  state = {
-    style: undefined
-  };
+  static isAvailable = NativeModules.MagicMoveCloneManager ? true : false;
+
+  constructor(props) {
+    super(props);
+    if (!MagicMoveNativeClone.isAvailable) {
+      throw new Error(
+        "MagicMoveNativeClone is not available, did you forget to use `react-native link react-native-magic-move`?"
+      );
+    }
+    this.state = {
+      style: undefined
+    };
+  }
 
   render() {
     const {
@@ -45,8 +63,11 @@ class MagicMoveNativeClone extends PureComponent {
       isInitial,
       isScene,
       isTarget,
-      offsetX,
-      offsetY
+      contentOffsetX,
+      contentOffsetY,
+      contentWidth,
+      contentHeight,
+      blurRadius
     } = this.props;
     return (
       <AnimatedRCTMagicMoveClone
@@ -55,8 +76,11 @@ class MagicMoveNativeClone extends PureComponent {
         isScene={isScene}
         isTarget={isTarget}
         style={style || this.state.style}
-        offsetX={offsetX}
-        offsetY={offsetY}
+        contentOffsetX={contentOffsetX}
+        contentOffsetY={contentOffsetY}
+        contentWidth={contentWidth}
+        contentHeight={contentHeight}
+        blurRadius={blurRadius}
       >
         {isScene ? children : undefined}
       </AnimatedRCTMagicMoveClone>
@@ -114,13 +138,12 @@ class MagicMoveNativeClone extends PureComponent {
   }
 }
 
-const RCTMagicMoveClone = requireNativeComponent(
-  "RCTMagicMoveClone",
-  MagicMoveNativeClone
-);
+const RCTMagicMoveClone = MagicMoveNativeClone.isAvailable
+  ? requireNativeComponent("RCTMagicMoveClone", MagicMoveNativeClone)
+  : undefined;
 
-const AnimatedRCTMagicMoveClone = Animated.createAnimatedComponent(
-  RCTMagicMoveClone
-);
+const AnimatedRCTMagicMoveClone = MagicMoveNativeClone.isAvailable
+  ? Animated.createAnimatedComponent(RCTMagicMoveClone)
+  : undefined;
 
 export default MagicMoveNativeClone;
