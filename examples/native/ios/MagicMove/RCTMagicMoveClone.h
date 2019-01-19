@@ -8,27 +8,23 @@
 #ifndef RCTMagicMoveClone_h
 #define RCTMagicMoveClone_h
 
-#import <React/RCTComponent.h>
-#import <React/RCTBridgeModule.h>
-#import <React/RCTResizeMode.h>
-
+#import <React/RCTView.h>
+#import <UIKit/UIKit.h>
 #import "RCTMagicMoveCloneDataManager.h"
 
-@class RCTEventDispatcher;
-@interface RCTMagicMoveClone : UIView
+@interface RCTMagicMoveClone : RCTView
 
 @property (nonatomic, assign) NSString* id;
+@property (nonatomic, assign) RCTMagicMoveCloneData* data;
 @property (nonatomic, assign) BOOL isScene;
 @property (nonatomic, assign) BOOL isTarget;
-@property (nonatomic, assign) CGFloat offsetX;
-@property (nonatomic, assign) CGFloat offsetY;
+@property (nonatomic, assign) CGFloat contentOffsetX;
+@property (nonatomic, assign) CGFloat contentOffsetY;
+@property (nonatomic, assign) CGFloat contentWidth;
+@property (nonatomic, assign) CGFloat contentHeight;
 @property (nonatomic, assign) CGFloat blurRadius;
-@property (nonatomic, assign) RCTResizeMode resizeMode;
 
-- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher dataManager:(RCTMagicMoveCloneDataManager*)dataManager;
-
-- (void) setData:(RCTMagicMoveCloneData*) data;
-- (void) updateFrame;
+- (instancetype)initWithDataManager:(RCTMagicMoveCloneDataManager*)dataManager;
 
 @end
 

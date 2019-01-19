@@ -30,7 +30,7 @@ RCT_EXPORT_MODULE();
 
 - (UIView *)view
 {
-  return [[RCTMagicMoveClone alloc] initWithEventDispatcher:self.bridge.eventDispatcher dataManager:_dataManager];
+  return [[RCTMagicMoveClone alloc] initWithDataManager:_dataManager];
 }
 
 - (dispatch_queue_t)methodQueue
@@ -39,6 +39,13 @@ RCT_EXPORT_MODULE();
 }
 
 RCT_EXPORT_VIEW_PROPERTY(id, NSString);
+RCT_EXPORT_VIEW_PROPERTY(isScene, BOOL);
+RCT_EXPORT_VIEW_PROPERTY(isTarget, BOOL);
+RCT_EXPORT_VIEW_PROPERTY(contentOffsetX, CGFloat);
+RCT_EXPORT_VIEW_PROPERTY(contentOffsetY, CGFloat);
+RCT_EXPORT_VIEW_PROPERTY(contentWidth, CGFloat);
+RCT_EXPORT_VIEW_PROPERTY(contentHeight, CGFloat);
+RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat);
 
 RCT_REMAP_METHOD(init,
                  options:(NSDictionary *)options
@@ -91,12 +98,7 @@ RCT_REMAP_METHOD(init,
       if (sourceView == nil) {
         return RCTLogError(@"[MagicMove] Invalid source tag specified, not found in registry: %@", sourceTag);
       }
-    
-      // Get bounds
-      CGRect bounds = layout;
-      bounds.origin.x = 0;
-      bounds.origin.y = 0;
-      
+          
       // Get source image
       UIImage *image = nil;
       if (snapshotType != MMSnapshotTypeNone) {
@@ -105,6 +107,9 @@ RCT_REMAP_METHOD(init,
           image = sourceImageView.image;
         }
         else {
+          CGRect bounds = layout;
+          bounds.origin.x = 0;
+          bounds.origin.y = 0;
           UIGraphicsBeginImageContextWithOptions(layout.size, isScene, 0.0f);
           [sourceView drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
           image = UIGraphicsGetImageFromCurrentImageContext();
@@ -116,13 +121,11 @@ RCT_REMAP_METHOD(init,
       RCTMagicMoveCloneData* data = [[RCTMagicMoveCloneData alloc]init:sharedId reactTag:sourceTag layout:layout snapshotType:snapshotType image:image isScene:isScene isTarget:isTarget debug:debug];
       [dataManager put:data];
       [view setData:data];
-      [view updateFrame];
       calculateLayout = nil;
     }];
   };
   calculateLayout();
 }
-
 
 + (BOOL)requiresMainQueueSetup
 {

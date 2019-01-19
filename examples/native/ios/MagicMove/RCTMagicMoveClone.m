@@ -6,14 +6,10 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#import <React/RCTConvert.h>
-#import <React/RCTBridgeModule.h>
-#import <React/RCTEventDispatcher.h>
 #import <React/UIView+React.h>
-
 #import "RCTMagicMoveClone.h"
 #import "RCTMagicMoveCloneDataManager.h"
+#import "BlurEffectWithAmount.h"
 
 #ifdef DEBUG
 #define DebugLog(...) NSLog(__VA_ARGS__)
@@ -23,32 +19,27 @@
 
 @implementation RCTMagicMoveClone
 {
-  RCTEventDispatcher* _eventDispatcher;
   RCTMagicMoveCloneDataManager* _dataManager;
-  RCTMagicMoveCloneData* _data;
-  UIImageView* _imageView;
-  BOOL _needsReload;
+  CALayer* _imageLayer;
+  UIVisualEffectView* _blurEffectView;
 }
 
+@synthesize data = _data;
 @synthesize id = _id;
 @synthesize isScene = _isScene;
 @synthesize isTarget = _isTarget;
-@synthesize offsetX = _offsetX;
-@synthesize offsetY = _offsetY;
+@synthesize contentOffsetX = _contentOffsetX;
+@synthesize contentOffsetY = _contentOffsetY;
+@synthesize contentWidth = _contentWidth;
+@synthesize contentHeight = _contentHeight;
 
-- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher dataManager:(RCTMagicMoveCloneDataManager*)dataManager
+- (instancetype)initWithDataManager:(RCTMagicMoveCloneDataManager*)dataManager
 {
   if ((self = [super init])) {
-    _eventDispatcher = eventDispatcher;
     _dataManager = dataManager;
     _data = nil;
-    _id = nil;
-    _offsetX = 0.0f;
-    _offsetY = 0.0f;
-    _isScene = false;
-    _isTarget = false;
-    _needsReload = NO;
-    _imageView = nil;
+    _imageLayer = [[CALayer alloc]init];
+    [self.layer addSublayer:_imageLayer];
     self.userInteractionEnabled = NO; // Pointer-events = 'none'
   }
   
@@ -65,63 +56,56 @@
 
 - (void)reactSetFrame:(CGRect)frame
 {
+  // DebugLog(@"[MagicMove] reactSetFrame: %@", NSStringFromCGRect(frame));
   if (frame.size.width * frame.size.height) {
     [super reactSetFrame:frame];
   }
 }
 
-/*
 - (void)displayLayer:(CALayer *)layer
 {
-  if (CGSizeEqualToSize(layer.bounds.size, CGSizeZero)) {
-    return;
-  }
+  [super displayLayer:layer];
   
-  if (_isScene) {
-    layer.backgroundColor = [[UIColor colorWithRed:0.0f green:1.0f blue:0.0f alpha:0.2f] CGColor];
-  }
-  else if (_isTarget) {
-    layer.backgroundColor = [[UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:0.5f] CGColor];
-  }
-  else {
-    //layer.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:1.0f alpha:0.5f] CGColor];
-    layer.backgroundColor = [[UIColor purpleColor] CGColor];
-  }
-}*/
+  if (_data == nil) return;
+  _imageLayer.frame = CGRectMake(_contentOffsetX, _contentOffsetY, _contentWidth, _contentHeight);
+  _imageLayer.contents = _data.image ? (id)_data.image.CGImage : nil;
+  layer.masksToBounds = YES;
+}
 
 - (void) setData:(RCTMagicMoveCloneData*) data
 {
-  // DebugLog(@"setSource: view.frame: %@, parent.frame: %@", NSStringFromCGRect(source.frame), NSStringFromCGRect(parent.frame));
   _data = data;
-  
-  // Add/update UIImageView
-  if (data.image != nil) {
-    CGRect bounds = data.layout;
-    bounds.origin.x = 0;
-    bounds.origin.y = 0;
-    if (!_imageView) {
-      _imageView = [[UIImageView new]initWithImage:data.image];
-      _imageView.frame = bounds;
-      [self addSubview:_imageView];
-    } else {
-      _imageView.frame = bounds;
-      _imageView.image = data.image;
-    }
-  }
-}
-
-- (void) updateFrame
-{
-  // Update frame and redraw
+  _contentWidth = data.layout.size.width;
+  _contentHeight = data.layout.size.height;
   [super reactSetFrame:_data.layout];
   [self.layer setNeedsDisplay];
 }
 
 - (void)setBlurRadius:(CGFloat)blurRadius
 {
+  blurRadius = (blurRadius <=__FLT_EPSILON__) ? 0 : blurRadius;
   if (blurRadius != _blurRadius) {
     _blurRadius = blurRadius;
-    _needsReload = YES;
+    // DebugLog(@"[MagicMove] setBlurRadius: %f", blurRadius);
+    //[self.layer setNeedsDisplay];
+    
+    if (blurRadius) {
+      BlurEffectWithAmount* blurEffect = [BlurEffectWithAmount effectWithStyle:UIBlurEffectStyleLight andBlurAmount:@(blurRadius)];
+      if (_blurEffectView == nil) {
+        _blurEffectView = [[UIVisualEffectView alloc] init];
+        _blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _blurEffectView.effect = blurEffect;
+        _blurEffectView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        [self addSubview:_blurEffectView];
+      }
+      else {
+        _blurEffectView.effect = blurEffect;
+      }
+    }
+    else if (_blurEffectView) {
+      [_blurEffectView removeFromSuperview];
+      _blurEffectView = nil;
+    }
   }
   
   // image = RCTBlurredImageWithRadius(image, 4.0f);
@@ -133,7 +117,7 @@
     NSString* key = [RCTMagicMoveCloneData keyForSharedId:_id isScene:_isScene isTarget:_isTarget];
     RCTMagicMoveCloneData* data = [_dataManager acquire:key];
     if (data != nil) {
-      [self setData:data];
+      _data = data;
       [self.layer setNeedsDisplay];
     }
   }
