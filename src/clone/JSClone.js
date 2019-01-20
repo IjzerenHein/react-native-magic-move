@@ -26,9 +26,7 @@ class MagicMoveJavaScriptClone extends PureComponent {
 
   static defaultProps = {
     debug: false,
-    isInitial: false,
-    contentOffsetX: 0,
-    contentOffsetY: 0
+    isInitial: false
   };
 
   static Context = MagicMoveCloneContext;
@@ -136,8 +134,8 @@ class MagicMoveJavaScriptClone extends PureComponent {
       style &&
       (contentOffsetY ||
         contentOffsetX ||
-        (contentWidth !== undefined && contentWidth !== layout.width) ||
-        (contentHeight !== undefined && contentHeight !== layout.height))
+        (contentWidth !== undefined && contentWidth !== style.width) ||
+        (contentHeight !== undefined && contentHeight !== style.height))
         ? {
             width: contentWidth,
             height: contentHeight,

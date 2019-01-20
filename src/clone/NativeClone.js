@@ -16,27 +16,22 @@ class MagicMoveNativeClone extends PureComponent {
     isScene: PropTypes.bool.isRequired,
     isTarget: PropTypes.bool.isRequired,
     isInitial: PropTypes.bool,
+    onLayout: PropTypes.func,
+    onShow: PropTypes.func,
+    debug: PropTypes.bool,
+    children: PropTypes.any,
+    style: PropTypes.any,
     contentOffsetX: PropTypes.number,
     contentOffsetY: PropTypes.number,
     contentWidth: PropTypes.number,
     contentHeight: PropTypes.number,
     snapshotType: PropTypes.number,
-    children: PropTypes.any,
-    style: PropTypes.any,
-    blurRadius: PropTypes.number,
-    onLayout: PropTypes.func,
-    onShow: PropTypes.func,
-    debug: PropTypes.bool
+    blurRadius: PropTypes.number
   };
 
   static defaultProps = {
     debug: false,
-    isInitial: false,
-    contentOffsetX: 0,
-    contentOffsetY: 0,
-    contentWidth: 0,
-    contentHeight: 0,
-    blurRadius: 0
+    isInitial: false
   };
 
   static Context = MagicMoveCloneContext;
@@ -58,29 +53,24 @@ class MagicMoveNativeClone extends PureComponent {
   render() {
     const {
       component,
+      parentRef, // eslint-disable-line
+      containerLayout, // eslint-disable-line
       style,
       children,
       isInitial,
       isScene,
-      isTarget,
-      contentOffsetX,
-      contentOffsetY,
-      contentWidth,
-      contentHeight,
-      blurRadius
+      onLayout, // eslint-disable-line
+      onShow, // eslint-disable-line
+      debug, // eslint-disable-line
+      ...otherProps
     } = this.props;
     return (
       <AnimatedRCTMagicMoveClone
         ref={isInitial ? this._setRef : undefined}
         id={isScene ? component.getId() : component.props.id}
-        isScene={isScene}
-        isTarget={isTarget}
         style={style || this.state.style}
-        contentOffsetX={contentOffsetX}
-        contentOffsetY={contentOffsetY}
-        contentWidth={contentWidth}
-        contentHeight={contentHeight}
-        blurRadius={blurRadius}
+        isScene={isScene}
+        {...otherProps}
       >
         {isScene ? children : undefined}
       </AnimatedRCTMagicMoveClone>

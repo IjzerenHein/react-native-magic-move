@@ -41,6 +41,7 @@
     _imageLayer = [[CALayer alloc]init];
     [self.layer addSublayer:_imageLayer];
     self.userInteractionEnabled = NO; // Pointer-events = 'none'
+    self.layer.masksToBounds = YES; // overflow = 'hidden'
   }
   
   return self;
@@ -54,14 +55,6 @@
   }
 }
 
-- (void)reactSetFrame:(CGRect)frame
-{
-  // DebugLog(@"[MagicMove] reactSetFrame: %@", NSStringFromCGRect(frame));
-  if (frame.size.width * frame.size.height) {
-    [super reactSetFrame:frame];
-  }
-}
-
 - (void)displayLayer:(CALayer *)layer
 {
   [super displayLayer:layer];
@@ -69,7 +62,6 @@
   if (_data == nil) return;
   _imageLayer.frame = CGRectMake(_contentOffsetX, _contentOffsetY, _contentWidth, _contentHeight);
   _imageLayer.contents = _data.image ? (id)_data.image.CGImage : nil;
-  layer.masksToBounds = YES;
 }
 
 - (void) setData:(RCTMagicMoveCloneData*) data
@@ -77,9 +69,7 @@
   _data = data;
   _contentWidth = data.layout.size.width;
   _contentHeight = data.layout.size.height;
-  if (data.isTarget) {
-    self.layer.opacity = 0;
-  }
+  //if (data.isTarget) self.layer.opacity = YES; // TODO?
   [super reactSetFrame:_data.layout];
   [self.layer setNeedsDisplay];
 }
@@ -116,14 +106,12 @@
 
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
+  // DebugLog(@"[MagicMove] didSetProps (%@ %@): cw: %f, ch: %f, hasData: %@", _isTarget ? @"target" : @"source", _isScene ?@"scene" : @"comp", _contentWidth, _contentHeight, (_data != nil) ? @"Yes" : @"No");
   if ((_data == nil) && (_id != nil)) {
     NSString* key = [RCTMagicMoveCloneData keyForSharedId:_id isScene:_isScene isTarget:_isTarget];
-    RCTMagicMoveCloneData* data = [_dataManager acquire:key];
-    if (data != nil) {
-      _data = data;
-      [self.layer setNeedsDisplay];
-    }
+    _data = [_dataManager acquire:key];
   }
+  [self.layer setNeedsDisplay];
 }
 
 @end
