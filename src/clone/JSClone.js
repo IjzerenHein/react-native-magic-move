@@ -193,6 +193,10 @@ class MagicMoveJavaScriptClone extends PureComponent {
       backfaceVisibility
     };
 
+    if (!style && isTarget) {
+      outerStyle.opacity = 0;
+    }
+
     const content = (
       <AnimatedComponent
         style={[contentStyle, customContentStyle || outerStyle]}

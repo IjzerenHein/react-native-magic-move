@@ -77,6 +77,9 @@
   _data = data;
   _contentWidth = data.layout.size.width;
   _contentHeight = data.layout.size.height;
+  if (data.isTarget) {
+    self.layer.opacity = 0;
+  }
   [super reactSetFrame:_data.layout];
   [self.layer setNeedsDisplay];
 }
