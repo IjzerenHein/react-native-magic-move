@@ -128,12 +128,23 @@ class MagicMoveNativeClone extends PureComponent {
   }
 }
 
-const RCTMagicMoveClone = MagicMoveNativeClone.isAvailable
-  ? requireNativeComponent("RCTMagicMoveClone", MagicMoveNativeClone)
-  : undefined;
-
-const AnimatedRCTMagicMoveClone = MagicMoveNativeClone.isAvailable
-  ? Animated.createAnimatedComponent(RCTMagicMoveClone)
-  : undefined;
+const AnimatedRCTMagicMoveClone = (function() {
+  try {
+    const RCTMagicMoveClone = MagicMoveNativeClone.isAvailable
+      ? requireNativeComponent("RCTMagicMoveClone", MagicMoveNativeClone)
+      : undefined;
+    const AnimatedRCTMagicMoveClone = RCTMagicMoveClone
+      ? Animated.createAnimatedComponent(RCTMagicMoveClone)
+      : undefined;
+    return AnimatedRCTMagicMoveClone;
+  } catch (err) {
+    // eslint-disable-next-line
+    console.error(
+      `${
+        err.message
+      } (are you importing two different versions of react-native-magic-move?)`
+    );
+  }
+})();
 
 export default MagicMoveNativeClone;
