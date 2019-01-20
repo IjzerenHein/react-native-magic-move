@@ -12,6 +12,7 @@ Create magical move transitions between scenes in react-native
 
 ### Fixed
 
+- Fixed animations overlapping the scene bounds
 - Fixed `backfaceVisibility` prop warnings in the `flip` transition
 
 ### Changes
