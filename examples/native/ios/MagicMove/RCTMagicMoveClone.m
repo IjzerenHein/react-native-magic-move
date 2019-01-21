@@ -64,6 +64,15 @@
   _imageLayer.contents = _data.image ? (id)_data.image.CGImage : nil;
 }
 
+- (void) reactSetFrame:(CGRect)frame
+{
+  // This ensures that the initial clone is visible before it has
+  // received any styles from the JS side
+  if (frame.size.width * frame.size.height) {
+    [super reactSetFrame:frame];
+  }
+}
+
 - (void) setData:(RCTMagicMoveCloneData*) data
 {
   _data = data;
