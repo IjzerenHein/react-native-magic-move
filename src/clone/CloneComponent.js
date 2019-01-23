@@ -1,10 +1,9 @@
 import React, { PureComponent } from "react";
-import { StyleSheet, Animated, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import { measureRelativeLayout } from "./measure";
-import MagicMoveCloneContext from "./CloneContext";
 
-class MagicMoveJavaScriptClone extends PureComponent {
+class MagicMoveCloneComponent extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
     parentRef: PropTypes.any.isRequired,
@@ -12,7 +11,6 @@ class MagicMoveJavaScriptClone extends PureComponent {
     isInitial: PropTypes.bool,
     isScene: PropTypes.bool.isRequired,
     isTarget: PropTypes.bool.isRequired,
-    contentTransform: PropTypes.any,
     snapshotType: PropTypes.number,
     children: PropTypes.any,
     style: PropTypes.any,
@@ -20,13 +18,6 @@ class MagicMoveJavaScriptClone extends PureComponent {
     onShow: PropTypes.func,
     debug: PropTypes.bool
   };
-
-  static defaultProps = {
-    debug: false,
-    isInitial: false
-  };
-
-  static Context = MagicMoveCloneContext;
 
   _layout = undefined;
   _isMounted = false;
@@ -101,13 +92,7 @@ class MagicMoveJavaScriptClone extends PureComponent {
   }
 
   renderComponent() {
-    const {
-      component,
-      isTarget,
-      children,
-      style,
-      contentTransform
-    } = this.props;
+    const { component, isTarget, children, style } = this.props;
     const layout = this._layout;
     if (!style && !layout) return null;
     const { AnimatedComponent, ...otherProps } = component.props;
@@ -124,20 +109,7 @@ class MagicMoveJavaScriptClone extends PureComponent {
     delete otherProps.debug;
     delete otherProps.scene;
 
-    const {
-      width,
-      height,
-      left,
-      top,
-      transform,
-      borderRadius,
-      borderTopLeftRadius,
-      borderTopRightRadius,
-      borderBottomLeftRadius,
-      borderBottomRightRadius,
-      backfaceVisibility,
-      ...contentStyle
-    } =
+    let cloneStyle =
       style ||
       StyleSheet.flatten([
         component.props.style,
@@ -155,59 +127,16 @@ class MagicMoveJavaScriptClone extends PureComponent {
           marginRight: 0
         }
       ]);
-    const outerStyle = {
-      width,
-      height,
-      left,
-      top,
-      transform,
-      borderRadius,
-      borderTopLeftRadius,
-      borderTopRightRadius,
-      borderBottomLeftRadius,
-      borderBottomRightRadius,
-      backfaceVisibility
-    };
 
     if (!style && isTarget) {
-      outerStyle.opacity = 0;
+      cloneStyle.opacity = 0;
     }
 
-    const content = (
-      <AnimatedComponent
-        style={[
-          contentStyle,
-          contentTransform ? { transform: contentTransform } : outerStyle
-        ]}
-        {...otherProps}
-      >
-        {children ? (
-          <MagicMoveCloneContext.Provider
-            value={{ isClone: true, isTarget, isScene: false }}
-          >
-            {children}
-          </MagicMoveCloneContext.Provider>
-        ) : (
-          undefined
-        )}
+    return (
+      <AnimatedComponent style={cloneStyle} {...otherProps}>
+        {children}
       </AnimatedComponent>
     );
-
-    if (contentTransform) {
-      return (
-        <Animated.View
-          style={{
-            ...outerStyle,
-            position: "absolute",
-            overflow: "hidden"
-          }}
-        >
-          {content}
-        </Animated.View>
-      );
-    } else {
-      return content;
-    }
   }
 
   componentDidMount() {
@@ -230,4 +159,4 @@ class MagicMoveJavaScriptClone extends PureComponent {
   }
 }
 
-export default MagicMoveJavaScriptClone;
+export default MagicMoveCloneComponent;

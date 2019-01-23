@@ -6,9 +6,8 @@ import {
   findNodeHandle
 } from "react-native";
 import PropTypes from "prop-types";
-import MagicMoveCloneContext from "./CloneContext";
 
-class MagicMoveNativeClone extends PureComponent {
+class MagicMoveNativeCloneComponent extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
     parentRef: PropTypes.any.isRequired,
@@ -21,7 +20,6 @@ class MagicMoveNativeClone extends PureComponent {
     debug: PropTypes.bool,
     children: PropTypes.any,
     style: PropTypes.any,
-    contentTransform: PropTypes.any,
     snapshotType: PropTypes.number,
     blurRadius: PropTypes.number
   };
@@ -31,15 +29,13 @@ class MagicMoveNativeClone extends PureComponent {
     isInitial: false
   };
 
-  static Context = MagicMoveCloneContext;
-
   static isAvailable = NativeModules.MagicMoveCloneManager ? true : false;
 
   constructor(props) {
     super(props);
-    if (!MagicMoveNativeClone.isAvailable) {
+    if (!MagicMoveNativeCloneComponent.isAvailable) {
       throw new Error(
-        "MagicMoveNativeClone is not available, did you forget to use `react-native link react-native-magic-move`?"
+        "MagicMoveNativeCloneComponent is not available, did you forget to use `react-native link react-native-magic-move`?"
       );
     }
     this.state = {
@@ -127,8 +123,11 @@ class MagicMoveNativeClone extends PureComponent {
 
 const RCTMagicMoveClone = (function() {
   try {
-    const RCTMagicMoveClone = MagicMoveNativeClone.isAvailable
-      ? requireNativeComponent("RCTMagicMoveClone", MagicMoveNativeClone)
+    const RCTMagicMoveClone = MagicMoveNativeCloneComponent.isAvailable
+      ? requireNativeComponent(
+          "RCTMagicMoveClone",
+          MagicMoveNativeCloneComponent
+        )
       : undefined;
     const AnimatedRCTMagicMoveClone = RCTMagicMoveClone
       ? Animated.createAnimatedComponent(RCTMagicMoveClone)
@@ -144,4 +143,4 @@ const RCTMagicMoveClone = (function() {
   }
 })();
 
-export default MagicMoveNativeClone;
+export default MagicMoveNativeCloneComponent;

@@ -1,6 +1,3 @@
-import MagicMoveNativeClone from "./NativeClone";
-import MagicMoveJSClone from "./JSClone";
+import MagicMoveClone from "./Clone";
 
-export default (MagicMoveNativeClone.isAvailable
-  ? MagicMoveNativeClone
-  : MagicMoveJSClone);
+export default MagicMoveClone;

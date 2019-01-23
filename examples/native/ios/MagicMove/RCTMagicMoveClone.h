@@ -18,7 +18,6 @@
 @property (nonatomic, assign) RCTMagicMoveCloneData* data;
 @property (nonatomic, assign) BOOL isScene;
 @property (nonatomic, assign) BOOL isTarget;
-@property (nonatomic, assign) CATransform3D contentTransform;
 @property (nonatomic, assign) CGFloat blurRadius;
 
 - (instancetype)initWithDataManager:(RCTMagicMoveCloneDataManager*)dataManager;

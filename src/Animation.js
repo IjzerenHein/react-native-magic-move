@@ -265,7 +265,7 @@ class MagicMoveAnimation extends PureComponent {
    */
   _renderAnimationClone = (clone, index = 0) => {
     const { containerLayout } = this.props;
-    const { style, component, isTarget, contentTransform } = clone;
+    const { style, component, isTarget, contentStyle } = clone;
     const key = `${isTarget ? "target" : "source"}${index + ""}`;
     return (
       <MagicMoveClone
@@ -279,7 +279,7 @@ class MagicMoveAnimation extends PureComponent {
         isScene={false}
         isTarget={isTarget}
         style={{ ...style }}
-        contentTransform={contentTransform}
+        contentStyle={contentStyle}
         // blurRadius={blurRadius}
         debug={this.debug}
       >
@@ -340,7 +340,7 @@ class MagicMoveAnimation extends PureComponent {
         marginLeft: 0,
         marginRight: 0
       },
-      contentTransform: undefined
+      contentStyle: undefined
     };
 
     const to = {
@@ -384,7 +384,7 @@ class MagicMoveAnimation extends PureComponent {
         marginLeft: 0,
         marginRight: 0
       },
-      contentTransform: undefined
+      contentStyle: undefined
     };
     return this.getTransition()({
       from,

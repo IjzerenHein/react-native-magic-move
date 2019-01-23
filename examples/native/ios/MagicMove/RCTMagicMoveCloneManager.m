@@ -42,7 +42,6 @@ RCT_EXPORT_VIEW_PROPERTY(id, NSString);
 RCT_EXPORT_VIEW_PROPERTY(isScene, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(isTarget, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat);
-RCT_EXPORT_VIEW_PROPERTY(contentTransform, CATransform3D);
 
 RCT_REMAP_METHOD(init,
                  options:(NSDictionary *)options
