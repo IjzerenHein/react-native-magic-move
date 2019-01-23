@@ -59,7 +59,7 @@
   [super displayLayer:layer];
   
   if (_data == nil) return;
-  _contentLayer.frame = CGRectMake(0, 0, _data.layout.size.width, _data.layout.size.height);
+  _contentLayer.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
   _contentLayer.contents = _data.image ? (id)_data.image.CGImage : nil;
   _contentLayer.opacity = _isContentHidden ? 0 : 1;
 }
@@ -129,7 +129,7 @@
         break;
       }
     }
-  } 
+  }
 }
 
 @end
