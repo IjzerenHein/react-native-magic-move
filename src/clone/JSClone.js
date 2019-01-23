@@ -12,10 +12,7 @@ class MagicMoveJavaScriptClone extends PureComponent {
     isInitial: PropTypes.bool,
     isScene: PropTypes.bool.isRequired,
     isTarget: PropTypes.bool.isRequired,
-    contentOffsetX: PropTypes.number,
-    contentOffsetY: PropTypes.number,
-    contentWidth: PropTypes.number,
-    contentHeight: PropTypes.number,
+    contentTransform: PropTypes.any,
     snapshotType: PropTypes.number,
     children: PropTypes.any,
     style: PropTypes.any,
@@ -109,10 +106,7 @@ class MagicMoveJavaScriptClone extends PureComponent {
       isTarget,
       children,
       style,
-      contentOffsetX,
-      contentOffsetY,
-      contentWidth,
-      contentHeight
+      contentTransform
     } = this.props;
     const layout = this._layout;
     if (!style && !layout) return null;
@@ -129,22 +123,6 @@ class MagicMoveJavaScriptClone extends PureComponent {
     delete otherProps.transition;
     delete otherProps.debug;
     delete otherProps.scene;
-
-    const customContentStyle =
-      style &&
-      (contentOffsetY ||
-        contentOffsetX ||
-        (contentWidth !== undefined && contentWidth !== style.width) ||
-        (contentHeight !== undefined && contentHeight !== style.height))
-        ? {
-            width: contentWidth,
-            height: contentHeight,
-            transform: [
-              { translateX: contentOffsetX },
-              { translateY: contentOffsetY }
-            ]
-          }
-        : undefined;
 
     const {
       width,
@@ -197,7 +175,10 @@ class MagicMoveJavaScriptClone extends PureComponent {
 
     const content = (
       <AnimatedComponent
-        style={[contentStyle, customContentStyle || outerStyle]}
+        style={[
+          contentStyle,
+          contentTransform ? { transform: contentTransform } : outerStyle
+        ]}
         {...otherProps}
       >
         {children ? (
@@ -212,7 +193,7 @@ class MagicMoveJavaScriptClone extends PureComponent {
       </AnimatedComponent>
     );
 
-    if (customContentStyle) {
+    if (contentTransform) {
       return (
         <Animated.View
           style={{

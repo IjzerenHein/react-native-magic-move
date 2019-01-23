@@ -21,10 +21,7 @@ class MagicMoveNativeClone extends PureComponent {
     debug: PropTypes.bool,
     children: PropTypes.any,
     style: PropTypes.any,
-    contentOffsetX: PropTypes.number,
-    contentOffsetY: PropTypes.number,
-    contentWidth: PropTypes.number,
-    contentHeight: PropTypes.number,
+    contentTransform: PropTypes.any,
     snapshotType: PropTypes.number,
     blurRadius: PropTypes.number
   };
@@ -65,7 +62,7 @@ class MagicMoveNativeClone extends PureComponent {
       ...otherProps
     } = this.props;
     return (
-      <AnimatedRCTMagicMoveClone
+      <RCTMagicMoveClone
         ref={isInitial ? this._setRef : undefined}
         id={isScene ? component.getId() : component.props.id}
         style={style || this.state.style}
@@ -73,7 +70,7 @@ class MagicMoveNativeClone extends PureComponent {
         {...otherProps}
       >
         {isScene ? children : undefined}
-      </AnimatedRCTMagicMoveClone>
+      </RCTMagicMoveClone>
     );
   }
 
@@ -128,7 +125,7 @@ class MagicMoveNativeClone extends PureComponent {
   }
 }
 
-const AnimatedRCTMagicMoveClone = (function() {
+const RCTMagicMoveClone = (function() {
   try {
     const RCTMagicMoveClone = MagicMoveNativeClone.isAvailable
       ? requireNativeComponent("RCTMagicMoveClone", MagicMoveNativeClone)

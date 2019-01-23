@@ -17,10 +17,19 @@
 #define DebugLog(...) (void)0
 #endif
 
+NSString *StringFromCATransform3D(CATransform3D transform) {
+  return [NSString stringWithFormat:@"[%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f]",
+          transform.m11, transform.m12, transform.m13, transform.m14,
+          transform.m21, transform.m22, transform.m23, transform.m24,
+          transform.m31, transform.m32, transform.m33, transform.m34,
+          transform.m41, transform.m42, transform.m43, transform.m44];
+}
+
 @implementation RCTMagicMoveClone
 {
   RCTMagicMoveCloneDataManager* _dataManager;
-  CALayer* _imageLayer;
+  CALayer* _contentLayer;
+  CATransform3D _contentTransform;
   UIVisualEffectView* _blurEffectView;
 }
 
@@ -28,18 +37,15 @@
 @synthesize id = _id;
 @synthesize isScene = _isScene;
 @synthesize isTarget = _isTarget;
-@synthesize contentOffsetX = _contentOffsetX;
-@synthesize contentOffsetY = _contentOffsetY;
-@synthesize contentWidth = _contentWidth;
-@synthesize contentHeight = _contentHeight;
 
 - (instancetype)initWithDataManager:(RCTMagicMoveCloneDataManager*)dataManager
 {
   if ((self = [super init])) {
     _dataManager = dataManager;
     _data = nil;
-    _imageLayer = [[CALayer alloc]init];
-    [self.layer addSublayer:_imageLayer];
+    _contentLayer = [[CALayer alloc]init];
+    _contentTransform = CATransform3DIdentity;
+    [self.layer addSublayer:_contentLayer];
     self.userInteractionEnabled = NO; // Pointer-events = 'none'
     self.layer.masksToBounds = YES; // overflow = 'hidden'
   }
@@ -60,8 +66,9 @@
   [super displayLayer:layer];
   
   if (_data == nil) return;
-  _imageLayer.frame = CGRectMake(_contentOffsetX, _contentOffsetY, _contentWidth, _contentHeight);
-  _imageLayer.contents = _data.image ? (id)_data.image.CGImage : nil;
+  _contentLayer.frame = CGRectMake(0, 0, _data.layout.size.width, _data.layout.size.height);
+  _contentLayer.transform = _contentTransform;
+  _contentLayer.contents = _data.image ? (id)_data.image.CGImage : nil;
 }
 
 - (void) reactSetFrame:(CGRect)frame
@@ -76,9 +83,9 @@
 - (void) setData:(RCTMagicMoveCloneData*) data
 {
   _data = data;
-  _contentWidth = data.layout.size.width;
-  _contentHeight = data.layout.size.height;
-  //if (data.isTarget) self.layer.opacity = YES; // TODO?
+  // (data.isTarget) self.layer.opacity = 0; // TODO
+  _contentLayer.frame = CGRectMake(0, 0, data.layout.size.width, data.layout.size.height);
+  _contentLayer.contents = _data.image ? (id)_data.image.CGImage : nil;
   [super reactSetFrame:_data.layout];
   [self.layer setNeedsDisplay];
 }
@@ -113,14 +120,28 @@
   // image = RCTBlurredImageWithRadius(image, 4.0f);
 }
 
+- (void) setContentTransform:(CATransform3D)contentTransform
+{
+  // DebugLog(@"[MagicMove] setContentTransform: %@", StringFromCATransform3D(contentTransform));
+  if (!CATransform3DEqualToTransform(_contentTransform, contentTransform)) {
+    _contentTransform = contentTransform;
+    if (_data != nil) {
+      [self.layer setNeedsDisplay];
+    }
+  }
+}
+
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
   // DebugLog(@"[MagicMove] didSetProps (%@ %@): cw: %f, ch: %f, hasData: %@", _isTarget ? @"target" : @"source", _isScene ?@"scene" : @"comp", _contentWidth, _contentHeight, (_data != nil) ? @"Yes" : @"No");
   if ((_data == nil) && (_id != nil)) {
     NSString* key = [RCTMagicMoveCloneData keyForSharedId:_id isScene:_isScene isTarget:_isTarget];
     _data = [_dataManager acquire:key];
+    _contentLayer.frame = CGRectMake(0, 0, _data.layout.size.width, _data.layout.size.height);
+    _contentLayer.contents = _data.image ? (id)_data.image.CGImage : nil;
+    [self.layer setNeedsDisplay];
+    //if (_data.isTarget && self.alpha) {self.layer.opacity = 0;
   }
-  [self.layer setNeedsDisplay];
 }
 
 @end

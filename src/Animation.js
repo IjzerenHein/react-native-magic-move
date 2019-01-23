@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { StyleSheet, Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
-import defaultTransition from "./transitions/morph";
+import defaultTransition from "./transitions/move";
 import MagicMoveClone from "./clone";
 import { SnapshotType } from "./clone/SnapshotType";
 
@@ -11,12 +11,6 @@ function resolveValue(value, def, other = 0) {
   if (value !== undefined) return value;
   return def || other;
 }
-
-const styles = StyleSheet.create({
-  hidden: {
-    opacity: 0
-  }
-});
 
 /**
  * 1. Hide to component
@@ -165,7 +159,13 @@ class MagicMoveAnimation extends PureComponent {
    */
   renderInitialClones() {
     const { source, target, containerLayout } = this.props;
-    //const transition = this.getTransition();
+    const transition = this.getTransition();
+    const useRawImage = transition.defaultProps
+      ? transition.defaultProps.useRawImage
+      : false;
+    const snapshotType = useRawImage
+      ? SnapshotType.RAWIMAGE
+      : SnapshotType.IMAGE;
     return [
       <MagicMoveClone
         key="source0"
@@ -175,7 +175,7 @@ class MagicMoveAnimation extends PureComponent {
         isInitial={true}
         isScene={false}
         isTarget={false}
-        snapshotType={SnapshotType.IMAGE}
+        snapshotType={snapshotType}
         debug={this.debug}
         onShow={this.onShowSourceClone}
       >
@@ -183,14 +183,13 @@ class MagicMoveAnimation extends PureComponent {
       </MagicMoveClone>,
       <MagicMoveClone
         key="target0"
-        style={styles.hidden}
         component={target}
         parentRef={target.props.scene ? target.props.scene.getRef() : undefined}
         containerLayout={containerLayout}
         isInitial={true}
         isScene={false}
         isTarget={true}
-        snapshotType={SnapshotType.IMAGE}
+        snapshotType={snapshotType}
         debug={this.debug}
         onLayout={this.onLayoutTargetClone}
       >
@@ -266,7 +265,7 @@ class MagicMoveAnimation extends PureComponent {
    */
   _renderAnimationClone = (clone, index = 0) => {
     const { containerLayout } = this.props;
-    const { style, component, isTarget, content } = clone;
+    const { style, component, isTarget, contentTransform } = clone;
     const key = `${isTarget ? "target" : "source"}${index + ""}`;
     return (
       <MagicMoveClone
@@ -280,11 +279,8 @@ class MagicMoveAnimation extends PureComponent {
         isScene={false}
         isTarget={isTarget}
         style={{ ...style }}
-        contentOffsetX={content.offsetX}
-        contentOffsetY={content.offsetY}
-        contentWidth={content.width}
-        contentHeight={content.height}
-        blurRadius={content.blurRadius}
+        contentTransform={contentTransform}
+        // blurRadius={blurRadius}
         debug={this.debug}
       >
         {component.props.children}
@@ -307,13 +303,8 @@ class MagicMoveAnimation extends PureComponent {
       component: source,
       width: sourceLayout.width,
       height: sourceLayout.height,
-      content: {
-        offsetX: 0,
-        offsetY: 0,
-        width: sourceLayout.width,
-        height: sourceLayout.height,
-        blurRadius: 0
-      },
+      imageAspectRatio: sourceLayout.imageAspectRatio,
+      blurRadius: 0,
       start: {
         x: sourceLayout.x,
         y: sourceLayout.y,
@@ -348,7 +339,8 @@ class MagicMoveAnimation extends PureComponent {
         marginBottom: 0,
         marginLeft: 0,
         marginRight: 0
-      }
+      },
+      contentTransform: undefined
     };
 
     const to = {
@@ -356,13 +348,8 @@ class MagicMoveAnimation extends PureComponent {
       component: target,
       width: targetLayout.width,
       height: targetLayout.height,
-      content: {
-        offsetX: 0,
-        offsetY: 0,
-        width: targetLayout.width,
-        height: targetLayout.height,
-        blurRadius: 0
-      },
+      imageAspectRatio: targetLayout.imageAspectRatio,
+      blurRadius: 0,
       start: {
         x: sourceLayout.x - (targetLayout.width - sourceLayout.width) / 2,
         y: sourceLayout.y - (targetLayout.height - sourceLayout.height) / 2,
@@ -396,7 +383,8 @@ class MagicMoveAnimation extends PureComponent {
         marginBottom: 0,
         marginLeft: 0,
         marginRight: 0
-      }
+      },
+      contentTransform: undefined
     };
     return this.getTransition()({
       from,

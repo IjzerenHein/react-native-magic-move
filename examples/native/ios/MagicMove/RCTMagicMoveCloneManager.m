@@ -41,11 +41,8 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_VIEW_PROPERTY(id, NSString);
 RCT_EXPORT_VIEW_PROPERTY(isScene, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(isTarget, BOOL);
-RCT_EXPORT_VIEW_PROPERTY(contentOffsetX, CGFloat);
-RCT_EXPORT_VIEW_PROPERTY(contentOffsetY, CGFloat);
-RCT_EXPORT_VIEW_PROPERTY(contentWidth, CGFloat);
-RCT_EXPORT_VIEW_PROPERTY(contentHeight, CGFloat);
 RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat);
+RCT_EXPORT_VIEW_PROPERTY(contentTransform, CATransform3D);
 
 RCT_REMAP_METHOD(init,
                  options:(NSDictionary *)options
@@ -80,13 +77,12 @@ RCT_REMAP_METHOD(init,
       return;
     }
     
-    // Upon success, send notification with the result
-    resolve(@{
-              @"width": @(layout.size.width),
-              @"height": @(layout.size.height),
-              @"x": @(layout.origin.x),
-              @"y": @(layout.origin.y),
-              });
+    // Prepare result
+    NSMutableDictionary* result = [[NSMutableDictionary alloc]init];
+    [result setObject:@(layout.size.width) forKey:@"width"];
+    [result setObject:@(layout.size.height) forKey:@"height"];
+    [result setObject:@(layout.origin.x) forKey:@"x"];
+    [result setObject:@(layout.origin.y) forKey:@"y"];
     
     // And inform the clone of the layout and other props
     [self.bridge.uiManager prependUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
@@ -98,13 +94,14 @@ RCT_REMAP_METHOD(init,
       if (sourceView == nil) {
         return RCTLogError(@"[MagicMove] Invalid source tag specified, not found in registry: %@", sourceTag);
       }
-          
+      
       // Get source image
       UIImage *image = nil;
       if (snapshotType != MMSnapshotTypeNone) {
         if ((snapshotType == MMSnapshotTypeRawImage) && [sourceView isKindOfClass:[UIImageView class]]) {
           UIImageView* sourceImageView = (UIImageView*) sourceView;
           image = sourceImageView.image;
+          [result setObject:@(image.size.width / image.size.height) forKey:@"imageAspectRatio"];
         }
         else {
           CGRect bounds = layout;
@@ -116,6 +113,9 @@ RCT_REMAP_METHOD(init,
           UIGraphicsEndImageContext();
         }
       }
+      
+      // Upon success, send notification with the result
+      resolve(result);
       
       // Create data object
       RCTMagicMoveCloneData* data = [[RCTMagicMoveCloneData alloc]init:sharedId reactTag:sourceTag layout:layout snapshotType:snapshotType image:image isScene:isScene isTarget:isTarget debug:debug];
