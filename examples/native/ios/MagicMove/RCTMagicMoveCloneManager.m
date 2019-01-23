@@ -100,7 +100,8 @@ RCT_REMAP_METHOD(init,
         if ((snapshotType == MMSnapshotTypeRawImage) && [sourceView isKindOfClass:[UIImageView class]]) {
           UIImageView* sourceImageView = (UIImageView*) sourceView;
           image = sourceImageView.image;
-          [result setObject:@(image.size.width / image.size.height) forKey:@"imageAspectRatio"];
+          [result setObject:@(image.size.width * image.scale) forKey:@"imageWidth"];
+          [result setObject:@(image.size.height * image.scale) forKey:@"imageHeight"];
         }
         else {
           CGRect bounds = layout;
