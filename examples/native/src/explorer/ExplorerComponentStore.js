@@ -51,6 +51,11 @@ const SHAPES = [
 const CONTENTS = [
   { label: "Image 1", imageSource: require("../assets/waves.jpg") },
   { label: "Image 2", imageSource: require("../assets/escher.jpg") },
+  { label: "Mario", imageSource: require("../assets/mario.png") },
+  {
+    label: "Mario (low-res)",
+    imageSource: require("../assets/mario-lowres.png")
+  },
   { label: "Pink", backgroundColor: "salmon" },
   { label: "Blue", backgroundColor: "steelblue" },
   { label: "Orange", backgroundColor: "orange" },
