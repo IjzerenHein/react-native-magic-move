@@ -30,9 +30,6 @@ class MagicMoveClone extends PureComponent {
   static Context = MagicMoveCloneContext;
 
   render() {
-    const CloneComponent = NativeCloneComponent.isAvailable
-      ? NativeCloneComponent
-      : JSCloneComponent;
     const {
       children,
       style,
@@ -40,6 +37,9 @@ class MagicMoveClone extends PureComponent {
       contentStyle,
       ...otherProps
     } = this.props;
+    const CloneComponent = NativeCloneComponent.isAvailable
+      ? NativeCloneComponent
+      : JSCloneComponent;
 
     const cloneChildren = children ? (
       <MagicMoveCloneContext.Provider
