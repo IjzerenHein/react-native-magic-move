@@ -32,7 +32,7 @@ class TransitionComponent extends Component {
       easing,
       disabled
     } = componentStore;
-    const { backgroundColor, imageSource } = content;
+    const { backgroundColor, imageSource, imageSize } = content;
     const style = {
       margin: 10,
       width: size.width,
@@ -70,6 +70,7 @@ class TransitionComponent extends Component {
           <MagicMove.Image
             source={imageSource}
             resizeMode="cover"
+            imageSizeHint={imageSize}
             {...compProps}
           />
         ) : (

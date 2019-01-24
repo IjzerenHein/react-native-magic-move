@@ -16,7 +16,11 @@ const propTypes = {
   easing: PropTypes.func,
   debug: PropTypes.bool,
   disabled: PropTypes.bool,
-  transition: PropTypes.func
+  transition: PropTypes.func,
+  imageSizeHint: PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number
+  })
 };
 
 /**

@@ -61,6 +61,10 @@ class MagicMoveCloneComponent extends PureComponent {
       );
     }
     this._layout = layout;
+    if (component.props.imageSizeHint) {
+      this._layout.imageWidth = component.props.imageSizeHint.width;
+      this._layout.imageHeight = component.props.imageSizeHint.height;
+    }
     if (onLayout) onLayout(layout);
     else if (this._isMounted) this.forceUpdate();
   }
