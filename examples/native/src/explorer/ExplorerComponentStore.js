@@ -49,12 +49,25 @@ const SHAPES = [
 ];
 
 const CONTENTS = [
-  { label: "Image 1", imageSource: require("../assets/waves.jpg") },
-  { label: "Image 2", imageSource: require("../assets/escher.jpg") },
-  { label: "Mario", imageSource: require("../assets/mario.png") },
+  {
+    label: "Image 1",
+    imageSource: require("../assets/waves.jpg"),
+    imageSize: { width: 640, height: 525 }
+  },
+  {
+    label: "Image 2",
+    imageSource: require("../assets/escher.jpg"),
+    imageSize: { width: 256, height: 256 }
+  },
+  {
+    label: "Mario",
+    imageSource: require("../assets/mario.png"),
+    imageSize: { width: 256, height: 256 }
+  },
   {
     label: "Mario (low-res)",
-    imageSource: require("../assets/mario-lowres.png")
+    imageSource: require("../assets/mario-lowres.png"),
+    imageSize: { width: 32, height: 32 }
   },
   { label: "Pink", backgroundColor: "salmon" },
   { label: "Blue", backgroundColor: "steelblue" },
