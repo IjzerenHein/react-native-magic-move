@@ -30,10 +30,16 @@ class MagicMoveClone extends PureComponent {
   static Context = MagicMoveCloneContext;
 
   render() {
-    const { children, style, contentStyle, ...otherProps } = this.props;
     const CloneComponent = NativeCloneComponent.isAvailable
       ? NativeCloneComponent
       : JSCloneComponent;
+    const {
+      children,
+      style,
+      resizeMode,
+      contentStyle,
+      ...otherProps
+    } = this.props;
 
     const cloneChildren = children ? (
       <MagicMoveCloneContext.Provider
@@ -59,7 +65,7 @@ class MagicMoveClone extends PureComponent {
       );
     } else {
       return (
-        <CloneComponent style={style} {...otherProps}>
+        <CloneComponent style={style} resizeMode={resizeMode} {...otherProps}>
           {cloneChildren}
         </CloneComponent>
       );
