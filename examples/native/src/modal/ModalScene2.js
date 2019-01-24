@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { storeObserver, StorePropType } from "../store";
 import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
@@ -10,10 +10,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   box: {
+    width: Dimensions.get("window").height / 2,
+    height: Dimensions.get("window").height / 3,
     backgroundColor: "seagreen",
-    height: 320,
-    flexDirection: "column",
-    justifyContent: "center"
+    resizeMode: "cover"
   },
   title: {
     alignSelf: "center",
@@ -39,14 +39,14 @@ class Scene extends React.Component {
     const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
-        <MagicMove.View
+        <MagicMove.Image
           id="scene6"
+          source={require("../assets/mario.png")}
+          imageSizeHint={{ width: 256, height: 256 }}
           style={styles.box}
-          transition={MagicMove.Transition.morph}
+          transition={MagicMove.Transition.move}
           debug={debug}
-        >
-          <Text style={styles.title}>Magic Move</Text>
-        </MagicMove.View>
+        />
         <Animatable.Text
           style={styles.text}
           animation="fadeInUp"

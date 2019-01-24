@@ -55,6 +55,7 @@ class Scene extends React.Component {
             id={`list${i}.title`}
             style={styles.text}
             debug={debug}
+            transition={MagicMove.Transition.morph}
           >
             {"Item " + i}
           </MagicMove.Text>

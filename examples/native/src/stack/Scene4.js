@@ -29,7 +29,12 @@ class Scene extends React.Component {
     const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
-        <MagicMove.View id="scene4" style={styles.background} debug={debug}>
+        <MagicMove.View
+          id="scene4"
+          style={styles.background}
+          debug={debug}
+          transition={MagicMove.Transition.morph}
+        >
           <MagicMove.Text id="scene4.title" style={styles.text} debug={debug}>
             Color Change
           </MagicMove.Text>

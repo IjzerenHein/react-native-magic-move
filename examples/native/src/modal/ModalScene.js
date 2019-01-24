@@ -54,14 +54,15 @@ class Scene extends React.Component {
         >
           <Button onPress={this.onPressShow} label="Show Modal" />
         </Animatable.View>
-        <MagicMove.View
+        <MagicMove.Image
           id="scene6"
           style={styles.box}
+          resizeMode="cover"
+          source={require("../assets/mario.png")}
+          imageSizeHint={{ width: 256, height: 256 }}
           transition={MagicMove.Transition.flip.x}
           debug={debug}
-        >
-          <Text style={styles.title}>Magic Move</Text>
-        </MagicMove.View>
+        />
         <Animatable.Text
           style={styles.text}
           animation="fadeInUp"

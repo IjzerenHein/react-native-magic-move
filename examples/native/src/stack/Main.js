@@ -49,7 +49,7 @@ class Main extends Component {
     );
   }
 
-  renderImageItem({ id, source, onPress }) {
+  renderImageItem({ id, source, onPress, imageSizeHint }) {
     const { debug } = this.props.store;
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
@@ -57,6 +57,8 @@ class Main extends Component {
           <MagicMove.Image
             id={id}
             source={source}
+            imageSizeHint={imageSizeHint}
+            resizeMode="cover"
             style={[styles.box, StyleSheet.absoluteFill]}
             debug={debug}
           />
@@ -81,6 +83,7 @@ class Main extends Component {
           {this.renderImageItem({
             id: "image",
             source: require("../assets/waves.jpg"),
+            imageSizeHint: { width: 640, height: 525 },
             onPress: () => Actions.push("scene3")
           })}
         </View>
