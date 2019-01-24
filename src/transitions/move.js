@@ -30,16 +30,30 @@ export default function moveTransition(
   // achievable shape.
   //
   if (moveTarget === undefined) {
+    // If the source contains an image, but the target doesn't
+    // have that image yet, then always use the source
+    if (
+      (from.imageWidth || from.imageHeight) &&
+      !to.imageWidth &&
+      !to.imageHeight
+    ) {
+      moveTarget = false;
+    }
+
     // If the shape of the source and target are the
     // same, then we can morph without needing a dissolve
     const sourceRatio = from.width / from.height;
     const targetRatio = to.width / to.height;
-    if (Math.abs(sourceRatio - targetRatio) < 0.01) {
+    if (
+      moveTarget === undefined &&
+      Math.abs(sourceRatio - targetRatio) < 0.01
+    ) {
       moveTarget = from.width > to.width ? false : true;
+    }
 
-      // If either the source or the target have no border-radius
-      // then a morph without dissolve is also possible
-    } else if (moveTarget === undefined) {
+    // If either the source or the target have no border-radius
+    // then a morph without dissolve is also possible
+    if (moveTarget === undefined) {
       const fromBR = from.style.borderRadius;
       const hasSourceBorderRadius =
         resolveValue(from.style.borderTopLeftRadius, fromBR) ||
@@ -135,7 +149,7 @@ export default function moveTransition(
   ) {
     const layout = getImageLayout(clone, otherClone);
     const otherLayout = getImageLayout(otherClone, clone);
-    console.log("YO");
+    console.log("YO, isTarget: ", clone.isTarget);
 
     const startScaleX = clone.isTarget
       ? otherLayout.width / layout.width / clone.start.scaleX
