@@ -21,7 +21,6 @@
 @implementation RCTMagicMoveClone
 {
   RCTMagicMoveCloneDataManager* _dataManager;
-  CALayer* _contentLayer;
   BOOL _isContentHidden;
   UIVisualEffectView* _blurEffectView;
 }
@@ -37,8 +36,6 @@
     _dataManager = dataManager;
     _data = nil;
     _isContentHidden = NO;
-    _contentLayer = [[CALayer alloc]init];
-    [self.layer addSublayer:_contentLayer];
     self.userInteractionEnabled = NO; // Pointer-events = 'none'
     self.layer.masksToBounds = YES; // overflow = 'hidden'
   }
@@ -59,9 +56,7 @@
   [super displayLayer:layer];
   
   if (_data == nil) return;
-  _contentLayer.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-  _contentLayer.contents = _data.image ? (id)_data.image.CGImage : nil;
-  _contentLayer.opacity = _isContentHidden ? 0 : 1;
+  self.layer.contents =_isContentHidden ? nil : _data.image ? (id)_data.image.CGImage : nil;
 }
 
 - (void) reactSetFrame:(CGRect)frame
