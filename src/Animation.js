@@ -303,7 +303,8 @@ class MagicMoveAnimation extends PureComponent {
       component: source,
       width: sourceLayout.width,
       height: sourceLayout.height,
-      imageAspectRatio: sourceLayout.imageAspectRatio,
+      imageWidth: sourceLayout.imageWidth,
+      imageHeight: sourceLayout.imageHeight,
       blurRadius: 0,
       start: {
         x: sourceLayout.x,
@@ -348,7 +349,8 @@ class MagicMoveAnimation extends PureComponent {
       component: target,
       width: targetLayout.width,
       height: targetLayout.height,
-      imageAspectRatio: targetLayout.imageAspectRatio,
+      imageWidth: targetLayout.imageWidth,
+      imageHeight: targetLayout.imageHeight,
       blurRadius: 0,
       start: {
         x: sourceLayout.x - (targetLayout.width - sourceLayout.width) / 2,
