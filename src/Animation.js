@@ -44,12 +44,26 @@ class MagicMoveAnimation extends PureComponent {
       //eslint-disable-next-line
       console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
     }
-    // TODO - This breaks native snapshot rendering
-    props.target.setOpacity(0);
+    if (!this.useNative) {
+      props.target.setOpacity(0);
+    }
   }
 
   get debug() {
     return this.props.target.props.debug;
+  }
+
+  getTransition() {
+    return this.props.target.props.transition || defaultTransition;
+  }
+
+  get useNative() {
+    const transition = this.getTransition();
+    const useNativeOptimisations =
+      (transition.defaultProps
+        ? transition.defaultProps.useNativeOptimisations
+        : undefined) || false;
+    return useNativeOptimisations && MagicMoveClone.isNativeAvailable;
   }
 
   /**
@@ -159,13 +173,7 @@ class MagicMoveAnimation extends PureComponent {
    */
   renderInitialClones() {
     const { source, target, containerLayout } = this.props;
-    const transition = this.getTransition();
-    const useNativeOptimisations =
-      (transition.defaultProps
-        ? transition.defaultProps.useNativeOptimisations
-        : undefined) || false;
-    const useNative =
-      useNativeOptimisations && MagicMoveClone.isNativeAvailable;
+    const { useNative } = this;
     return [
       <MagicMoveClone
         key="source0"
@@ -229,14 +237,10 @@ class MagicMoveAnimation extends PureComponent {
     this.setState({
       targetLayout: layout
     });
+    if (this.useNative) {
+      this.props.target.setOpacity(0);
+    }
   };
-
-  /**
-   * Returns the in-use transition function.
-   */
-  getTransition() {
-    return this.props.target.props.transition || defaultTransition;
-  }
 
   /**
    * Helper interpolation function, which provides
@@ -302,18 +306,10 @@ class MagicMoveAnimation extends PureComponent {
    */
   renderAnimationClones() {
     const { source, target } = this.props;
+    const { useNative } = this;
     const { sourceLayout, targetLayout, animValue } = this.state;
     const sourceStyle = StyleSheet.flatten([source.props.style]);
     const targetStyle = StyleSheet.flatten([target.props.style]);
-    const transition = this.getTransition();
-
-    const useNativeOptimisations =
-      (transition.defaultProps
-        ? transition.defaultProps.useNativeOptimisations
-        : undefined) || false;
-    const useNative =
-      useNativeOptimisations && MagicMoveClone.isNativeAvailable;
-
     const from = {
       isTarget: false,
       component: source,
@@ -408,7 +404,7 @@ class MagicMoveAnimation extends PureComponent {
       useNative,
       useSnapshotImage: useNative
     };
-    return transition({
+    return this.getTransition()({
       from,
       to,
       animValue,
