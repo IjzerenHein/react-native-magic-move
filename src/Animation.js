@@ -225,11 +225,7 @@ class MagicMoveAnimation extends PureComponent {
    * Returns the in-use transition function.
    */
   getTransition() {
-    return (
-      this.props.target.props.transition ||
-      this.props.source.props.transition ||
-      defaultTransition
-    );
+    return this.props.target.props.transition || defaultTransition;
   }
 
   /**
