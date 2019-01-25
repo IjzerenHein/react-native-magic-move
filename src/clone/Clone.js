@@ -52,34 +52,23 @@ class MagicMoveClone extends PureComponent {
     if (isInitial) innerOptions -= CloneOption.INITIAL;
     if (isVisible && !contentStyle) innerOptions -= CloneOption.VISIBLE;
 
-    const cloneChildren = children ? (
-      <MagicMoveCloneContext.Provider
-        value={{
-          isClone: true,
-          isTarget,
-          isScene
-        }}
-      >
-        {children}
-      </MagicMoveCloneContext.Provider>
-    ) : (
-      undefined
-    );
-
+    // Render content
+    let content;
+    const cloneChildren = !useNative || isScene ? children : undefined;
     if (useNative) {
-      return (
+      content = (
         <CloneComponent style={style} options={outerOptions} {...otherProps}>
           <CloneComponent
             style={contentStyle || StyleSheet.absoluteFill}
             options={innerOptions}
             {...otherProps}
           >
-            {isScene ? cloneChildren : undefined}
+            {cloneChildren}
           </CloneComponent>
         </CloneComponent>
       );
     } else if (!isInitial && contentStyle) {
-      return (
+      content = (
         <Animated.View style={style} options={outerOptions}>
           <CloneComponent
             style={contentStyle}
@@ -91,11 +80,27 @@ class MagicMoveClone extends PureComponent {
         </Animated.View>
       );
     } else {
-      return (
+      content = (
         <CloneComponent style={style} options={options} {...otherProps}>
           {cloneChildren}
         </CloneComponent>
       );
+    }
+
+    if (cloneChildren) {
+      return (
+        <MagicMoveCloneContext.Provider
+          value={{
+            isClone: true,
+            isTarget,
+            isScene
+          }}
+        >
+          {content}
+        </MagicMoveCloneContext.Provider>
+      );
+    } else {
+      return content;
     }
   }
 }
