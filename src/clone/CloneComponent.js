@@ -110,6 +110,10 @@ class MagicMoveCloneComponent extends PureComponent {
     delete otherProps.transition;
     delete otherProps.debug;
     delete otherProps.scene;
+    delete otherProps.isClone;
+    delete otherProps.isTarget;
+    delete otherProps.administration;
+    delete otherProps.disabled;
 
     let cloneStyle =
       style ||

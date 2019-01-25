@@ -44,7 +44,8 @@ class MagicMoveAnimation extends PureComponent {
       //eslint-disable-next-line
       console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
     }
-    props.target.setOpacity(0.0);
+    // TODO - This breaks native snapshot rendering
+    props.target.setOpacity(0);
   }
 
   get debug() {
