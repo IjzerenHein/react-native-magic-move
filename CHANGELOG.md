@@ -6,19 +6,24 @@ Create magical move transitions between scenes in react-native
 
 ### Added
 
-- Upgraded to a new `clone` based architecture to enable future native optimisations
-- Added ability to render multiple clones efficiently and clip their contents
+- Added new _smart_ `move` transition, for seamless transitions when source and target are the same, but are sized differently or use different border radii
+- Added ability to render multiple clones efficiently and clip and transform their contents
+- Added optional native optimisations to address flickering issues when animating (to install use `react-native link react-native-magic-move`)
 - Added `debug` prop to `MagicMoveScene` (for debugging scene mount/activation)
+- Upgraded to a new `clone` based architecture to enable native optimisations
+- Upgraded the `morph` transition to always use the native driver
 
 ### Fixed
 
 - Fixed animations overlapping the scene bounds
 - Fixed `backfaceVisibility` prop warnings in the `flip` transition
+- Fixed image flickering through new native optimisations
 
 ### Changes
 
-- **[BREAKING CHANGE]** Transition functions are now required to return an array, and can no longer return a single clone or `React.Fragment`.
-- Upgraded the `morph` transition to always use the native driver
+- The `move` transition is now the default transition. Use `morph` if the content is distinctly different.
+- **[BREAKING CHANGE]** Custom transition functions are now required to return an array, and can no longer return a single clone or `React.Fragment`.
+- Removed behaviour that selected the transition of the source when no transition was defined on the target (this proved to be counter productive)
 
 ## [0.4.0] - 2019-01-09
 
