@@ -64,6 +64,7 @@ class MagicMoveRenderer extends PureComponent {
                 component={scene}
                 parentRef={this._containerRef}
                 containerLayout={this._containerLayout}
+                useNative={MagicMoveClone.isNativeAvailable}
                 options={
                   MagicMoveClone.Option.INITIAL | MagicMoveClone.Option.SCENE
                 }

@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { StyleSheet } from "react-native";
+import { Animated, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 import MagicMoveCloneContext from "./CloneContext";
 import JSCloneComponent from "./CloneComponent";
@@ -12,6 +12,7 @@ class MagicMoveClone extends PureComponent {
     parentRef: PropTypes.any.isRequired,
     containerLayout: PropTypes.any.isRequired,
     options: PropTypes.number.isRequired,
+    useNative: PropTypes.bool,
     contentStyle: PropTypes.any,
     children: PropTypes.any,
     style: PropTypes.any,
@@ -28,12 +29,11 @@ class MagicMoveClone extends PureComponent {
       children,
       style,
       options,
+      useNative,
       contentStyle,
       ...otherProps
     } = this.props;
-    const CloneComponent = NativeCloneComponent.isAvailable
-      ? NativeCloneComponent
-      : JSCloneComponent;
+    const CloneComponent = useNative ? NativeCloneComponent : JSCloneComponent;
 
     // For convenience of reasoning, deconstruct the options
     const isInitial = options & CloneOption.INITIAL ? true : false;
@@ -52,32 +52,51 @@ class MagicMoveClone extends PureComponent {
     if (isInitial) innerOptions -= CloneOption.INITIAL;
     if (isVisible && !contentStyle) innerOptions -= CloneOption.VISIBLE;
 
-    const areChildrenVisible =
-      children && (!NativeCloneComponent.isAvailable || isScene);
-
-    return (
-      <CloneComponent style={style} options={outerOptions} {...otherProps}>
-        <CloneComponent
-          style={contentStyle || StyleSheet.absoluteFill}
-          options={innerOptions}
-          {...otherProps}
-        >
-          {areChildrenVisible ? (
-            <MagicMoveCloneContext.Provider
-              value={{
-                isClone: true,
-                isTarget,
-                isScene
-              }}
-            >
-              {children}
-            </MagicMoveCloneContext.Provider>
-          ) : (
-            undefined
-          )}
-        </CloneComponent>
-      </CloneComponent>
+    const cloneChildren = children ? (
+      <MagicMoveCloneContext.Provider
+        value={{
+          isClone: true,
+          isTarget,
+          isScene
+        }}
+      >
+        {children}
+      </MagicMoveCloneContext.Provider>
+    ) : (
+      undefined
     );
+
+    if (useNative) {
+      return (
+        <CloneComponent style={style} options={outerOptions} {...otherProps}>
+          <CloneComponent
+            style={contentStyle || StyleSheet.absoluteFill}
+            options={innerOptions}
+            {...otherProps}
+          >
+            {isScene ? cloneChildren : undefined}
+          </CloneComponent>
+        </CloneComponent>
+      );
+    } else if (!isInitial && contentStyle) {
+      return (
+        <Animated.View style={style} options={outerOptions}>
+          <CloneComponent
+            style={contentStyle}
+            options={innerOptions}
+            {...otherProps}
+          >
+            {cloneChildren}
+          </CloneComponent>
+        </Animated.View>
+      );
+    } else {
+      return (
+        <CloneComponent style={style} options={options} {...otherProps}>
+          {cloneChildren}
+        </CloneComponent>
+      );
+    }
   }
 }
 

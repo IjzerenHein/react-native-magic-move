@@ -190,7 +190,8 @@ export default function moveTransition(
 }
 
 moveTransition.defaultProps = {
-  useNativeDriver: true
+  useNativeDriver: true,
+  useNativeOptimisations: true
 };
 
 function createMoveTransition(moveTarget) {
