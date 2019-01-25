@@ -3,7 +3,6 @@ import { StyleSheet, Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
 import defaultTransition from "./transitions/move";
 import MagicMoveClone from "./clone";
-import { SnapshotType } from "./clone/SnapshotType";
 
 const defaultEasingFn = Easing.inOut(Easing.ease);
 
@@ -159,24 +158,17 @@ class MagicMoveAnimation extends PureComponent {
    */
   renderInitialClones() {
     const { source, target, containerLayout } = this.props;
-    const transition = this.getTransition();
-    const useRawImage = transition.defaultProps
-      ? transition.defaultProps.useRawImage
-      : false;
-    const snapshotType = useRawImage
-      ? SnapshotType.RAWIMAGE
-      : SnapshotType.IMAGE;
     return [
       <MagicMoveClone
         key="source0"
         component={source}
         parentRef={source.props.scene ? source.props.scene.getRef() : undefined}
         containerLayout={containerLayout}
-        isInitial={true}
-        isScene={false}
-        isTarget={false}
-        snapshotType={snapshotType}
-        debug={this.debug}
+        options={
+          MagicMoveClone.Option.INITIAL |
+          MagicMoveClone.Option.VISIBLE |
+          (this.debug ? MagicMoveClone.Option.DEBUG : 0)
+        }
         onShow={this.onShowSourceClone}
       >
         {source.props.children}
@@ -186,11 +178,11 @@ class MagicMoveAnimation extends PureComponent {
         component={target}
         parentRef={target.props.scene ? target.props.scene.getRef() : undefined}
         containerLayout={containerLayout}
-        isInitial={true}
-        isScene={false}
-        isTarget={true}
-        snapshotType={snapshotType}
-        debug={this.debug}
+        options={
+          MagicMoveClone.Option.INITIAL |
+          MagicMoveClone.Option.TARGET |
+          (this.debug ? MagicMoveClone.Option.DEBUG : 0)
+        }
         onLayout={this.onLayoutTargetClone}
       >
         {target.props.children}
@@ -265,7 +257,13 @@ class MagicMoveAnimation extends PureComponent {
    */
   _renderAnimationClone = (clone, index = 0) => {
     const { containerLayout } = this.props;
-    const { style, component, isTarget, contentStyle } = clone;
+    const {
+      style,
+      component,
+      isTarget,
+      contentStyle,
+      useSnapshotImage
+    } = clone;
     const key = `${isTarget ? "target" : "source"}${index + ""}`;
     return (
       <MagicMoveClone
@@ -275,13 +273,15 @@ class MagicMoveAnimation extends PureComponent {
           component.props.scene ? component.props.scene.getRef() : undefined
         }
         containerLayout={containerLayout}
-        isInitial={false}
-        isScene={false}
-        isTarget={isTarget}
+        options={
+          MagicMoveClone.Option.VISIBLE |
+          (isTarget ? MagicMoveClone.Option.TARGET : 0) |
+          (!useSnapshotImage ? MagicMoveClone.Option.RAWIMAGE : 0) |
+          (this.debug ? MagicMoveClone.Option.DEBUG : 0)
+        }
         style={{ ...style }}
         contentStyle={contentStyle}
         // blurRadius={blurRadius}
-        debug={this.debug}
       >
         {component.props.children}
       </MagicMoveClone>
@@ -341,7 +341,8 @@ class MagicMoveAnimation extends PureComponent {
         marginLeft: 0,
         marginRight: 0
       },
-      contentStyle: undefined
+      contentStyle: undefined,
+      useSnapshotImage: MagicMoveClone.isNativeAvailable
     };
 
     const to = {
@@ -386,7 +387,8 @@ class MagicMoveAnimation extends PureComponent {
         marginLeft: 0,
         marginRight: 0
       },
-      contentStyle: undefined
+      contentStyle: undefined,
+      useSnapshotImage: MagicMoveClone.isNativeAvailable
     };
     return this.getTransition()({
       from,

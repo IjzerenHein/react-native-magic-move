@@ -2,21 +2,18 @@ import React, { PureComponent } from "react";
 import { StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import { measureRelativeLayout } from "./measure";
+import { CloneOption } from "./CloneOption";
 
 class MagicMoveCloneComponent extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
     parentRef: PropTypes.any.isRequired,
     containerLayout: PropTypes.any.isRequired,
-    isInitial: PropTypes.bool,
-    isScene: PropTypes.bool.isRequired,
-    isTarget: PropTypes.bool.isRequired,
-    snapshotType: PropTypes.number,
+    options: PropTypes.number.isRequired,
     children: PropTypes.any,
     style: PropTypes.any,
     onLayout: PropTypes.func,
-    onShow: PropTypes.func,
-    debug: PropTypes.bool
+    onShow: PropTypes.func
   };
 
   _layout = undefined;
@@ -25,7 +22,7 @@ class MagicMoveCloneComponent extends PureComponent {
 
   constructor(props) {
     super(props);
-    if (props.isInitial) {
+    if (props.options & CloneOption.INITIAL) {
       this._getInitialLayout();
     }
   }
@@ -33,18 +30,17 @@ class MagicMoveCloneComponent extends PureComponent {
   async _getInitialLayout() {
     const {
       component,
-      debug,
+      options,
       parentRef,
       containerLayout,
-      isTarget,
       onLayout
     } = this.props;
-    if (debug) {
+    if (options & CloneOption.DEBUG) {
       //eslint-disable-next-line
       console.debug(
-        `[MagicMove] Measuring ${isTarget ? "target" : "source"} ${
-          component.debugName
-        }...`
+        `[MagicMove] Measuring ${
+          options & CloneOption.TARGET ? "target" : "source"
+        } ${component.debugName}...`
       );
     }
     const layout = await measureRelativeLayout(
@@ -52,11 +48,11 @@ class MagicMoveCloneComponent extends PureComponent {
       parentRef,
       containerLayout
     );
-    if (debug) {
+    if (options & CloneOption.DEBUG) {
       //eslint-disable-next-line
       console.debug(
         `[MagicMove] Measuring ${
-          isTarget ? "target" : "source"
+          options & CloneOption.TARGET ? "target" : "source"
         } ${component}... DONE`
       );
     }
@@ -70,7 +66,9 @@ class MagicMoveCloneComponent extends PureComponent {
   }
 
   render() {
-    return this.props.isScene ? this.renderScene() : this.renderComponent();
+    return this.props.options & CloneOption.SCENE
+      ? this.renderScene()
+      : this.renderComponent();
   }
 
   renderScene() {
@@ -96,7 +94,7 @@ class MagicMoveCloneComponent extends PureComponent {
   }
 
   renderComponent() {
-    const { component, isTarget, children, style } = this.props;
+    const { component, options, children, style } = this.props;
     const layout = this._layout;
     if (!style && !layout) return null;
     const { AnimatedComponent, ...otherProps } = component.props;
@@ -132,7 +130,7 @@ class MagicMoveCloneComponent extends PureComponent {
         }
       ]);
 
-    if (!style && isTarget) {
+    if (!style && options & CloneOption.TARGET) {
       cloneStyle.opacity = 0;
     }
 

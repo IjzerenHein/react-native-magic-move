@@ -172,6 +172,15 @@ export default function moveTransition(
         { scaleY: interpolate(startScaleY, endScaleY) }
       ]
     };
+
+    // Clip the contents
+    clone.style.overflow = "hidden";
+
+    // When using the native optimisations, make sure to
+    // turn off the usage of the 'snapshot' image, because
+    // the snapshot image is clipped and has the
+    // border-radii applied to the image
+    clone.useSnapshotImage = false;
   }
 
   //
@@ -181,8 +190,7 @@ export default function moveTransition(
 }
 
 moveTransition.defaultProps = {
-  useNativeDriver: true,
-  useRawImage: true
+  useNativeDriver: true
 };
 
 function createMoveTransition(moveTarget) {

@@ -21,23 +21,21 @@
 @implementation RCTMagicMoveClone
 {
   RCTMagicMoveCloneDataManager* _dataManager;
-  BOOL _isContentHidden;
+  RCTMagicMoveCloneData* _data;
   UIVisualEffectView* _blurEffectView;
 }
 
-@synthesize data = _data;
 @synthesize id = _id;
-@synthesize isScene = _isScene;
-@synthesize isTarget = _isTarget;
+@synthesize options = _options;
 
 - (instancetype)initWithDataManager:(RCTMagicMoveCloneDataManager*)dataManager
 {
   if ((self = [super init])) {
     _dataManager = dataManager;
     _data = nil;
-    _isContentHidden = NO;
-    self.userInteractionEnabled = NO; // Pointer-events = 'none'
-    self.layer.masksToBounds = YES; // overflow = 'hidden'
+    _options = 0;
+    //self.userInteractionEnabled = NO; // Pointer-events = 'none'
+    // self.layer.masksToBounds = YES; // overflow = 'hidden'
   }
   
   return self;
@@ -55,8 +53,15 @@
 {
   [super displayLayer:layer];
   
-  if (_data == nil) return;
-  self.layer.contents =_isContentHidden ? nil : _data.image ? (id)_data.image.CGImage : nil;
+  if (_data == nil || (_options & MMOptionVisible) == 0) {
+    self.layer.contents = nil;
+  }
+  else if (_options & MMOptionRawImage) {
+    self.layer.contents =  _data.rawImage ? (id)_data.rawImage.CGImage : nil;
+  }
+  else {
+    self.layer.contents = _data.snapshotImage ? (id)_data.snapshotImage.CGImage : nil;
+  }
 }
 
 - (void) reactSetFrame:(CGRect)frame
@@ -68,10 +73,10 @@
   }
 }
 
-- (void) setData:(RCTMagicMoveCloneData*) data
+- (void) setInitialData:(RCTMagicMoveCloneData*) data
 {
   _data = data;
-  _isContentHidden = data.isTarget;
+  _options = data.options;
   [super reactSetFrame:_data.layout];
   [self.layer setNeedsDisplay];
 }
@@ -108,23 +113,11 @@
 
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
-  // DebugLog(@"[MagicMove] didSetProps (%@ %@): cw: %f, ch: %f, hasData: %@", _isTarget ? @"target" : @"source", _isScene ?@"scene" : @"comp", _contentWidth, _contentHeight, (_data != nil) ? @"Yes" : @"No");
   if ((_data == nil) && (_id != nil)) {
-    NSString* key = [RCTMagicMoveCloneData keyForSharedId:_id isScene:_isScene isTarget:_isTarget];
+    NSString* key = [RCTMagicMoveCloneData keyForSharedId:_id options:_options];
     _data = [_dataManager acquire:key];
-    [self.layer setNeedsDisplay];
   }
-  
-  if (_isContentHidden) {
-    for (NSUInteger i = 0, n = changedProps.count; i < n; i++) {
-      NSString *propName = (NSString*) [changedProps objectAtIndex:i];
-      if ([propName isEqualToString:@"width"]) {
-        _isContentHidden = NO;
-        [self.layer setNeedsDisplay];
-        break;
-      }
-    }
-  }
+  [self.layer setNeedsDisplay];
 }
 
 @end

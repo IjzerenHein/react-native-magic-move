@@ -15,12 +15,12 @@
 @interface RCTMagicMoveClone : RCTView
 
 @property (nonatomic, assign) NSString* id;
-@property (nonatomic, assign) RCTMagicMoveCloneData* data;
-@property (nonatomic, assign) BOOL isScene;
-@property (nonatomic, assign) BOOL isTarget;
+@property (nonatomic, assign) MMOptions options;
 @property (nonatomic, assign) CGFloat blurRadius;
 
 - (instancetype)initWithDataManager:(RCTMagicMoveCloneDataManager*)dataManager;
+
+- (void) setInitialData:(RCTMagicMoveCloneData*)data;
 
 @end
 

@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { View, StyleSheet } from "react-native";
 import MagicMoveAnimation from "./Animation";
 import MagicMoveClone from "./clone";
-import { SnapshotType } from "./clone/SnapshotType";
 
 const styles = StyleSheet.create({
   container: {
@@ -65,10 +64,9 @@ class MagicMoveRenderer extends PureComponent {
                 component={scene}
                 parentRef={this._containerRef}
                 containerLayout={this._containerLayout}
-                isInitial={true}
-                isScene={true}
-                isTarget={false}
-                snapshotType={SnapshotType.NONE}
+                options={
+                  MagicMoveClone.Option.INITIAL | MagicMoveClone.Option.SCENE
+                }
               >
                 {children}
               </MagicMoveClone>

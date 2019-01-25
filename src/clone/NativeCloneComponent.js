@@ -6,27 +6,19 @@ import {
   findNodeHandle
 } from "react-native";
 import PropTypes from "prop-types";
+import { CloneOption } from "./CloneOption";
 
 class MagicMoveNativeCloneComponent extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
     parentRef: PropTypes.any.isRequired,
-    containerLayout: PropTypes.any.isRequired, // TODO?
-    isScene: PropTypes.bool.isRequired,
-    isTarget: PropTypes.bool.isRequired,
-    isInitial: PropTypes.bool,
+    containerLayout: PropTypes.any.isRequired, // Not used by Native clone
+    options: PropTypes.number.isRequired,
     onLayout: PropTypes.func,
     onShow: PropTypes.func,
-    debug: PropTypes.bool,
     children: PropTypes.any,
     style: PropTypes.any,
-    snapshotType: PropTypes.number,
     blurRadius: PropTypes.number
-  };
-
-  static defaultProps = {
-    debug: false,
-    isInitial: false
   };
 
   static isAvailable = NativeModules.MagicMoveCloneManager ? true : false;
@@ -46,26 +38,26 @@ class MagicMoveNativeCloneComponent extends PureComponent {
   render() {
     const {
       component,
-      parentRef, // eslint-disable-line
-      containerLayout, // eslint-disable-line
       style,
       children,
-      isInitial,
-      isScene,
+      options,
+      parentRef, // eslint-disable-line
+      containerLayout, // eslint-disable-line
       onLayout, // eslint-disable-line
       onShow, // eslint-disable-line
-      debug, // eslint-disable-line
       ...otherProps
     } = this.props;
     return (
       <RCTMagicMoveClone
-        ref={isInitial ? this._setRef : undefined}
-        id={isScene ? component.getId() : component.props.id}
+        ref={options & CloneOption.INITIAL ? this._setRef : undefined}
+        id={
+          options & CloneOption.SCENE ? component.getId() : component.props.id
+        }
         style={style || this.state.style}
-        isScene={isScene}
+        options={options}
         {...otherProps}
       >
-        {isScene ? children : undefined}
+        {children}
       </RCTMagicMoveClone>
     );
   }
@@ -77,26 +69,17 @@ class MagicMoveNativeCloneComponent extends PureComponent {
 
   async _init() {
     if (!this._ref) return;
-    const {
-      isScene,
-      isTarget,
-      debug,
-      component,
-      parentRef,
-      snapshotType
-    } = this.props;
-    // console.log("INIT #1: ", component.getRef(), parentRef, isScene, isTarget);
+    const { options, component, parentRef } = this.props;
+    // console.log("INIT #1: ", component.getRef(), parentRef, options);
     const source = findNodeHandle(component.getRef());
     const parent = findNodeHandle(parentRef);
     const layout = await NativeModules.MagicMoveCloneManager.init(
       {
-        id: isScene ? component.getId() : component.props.id,
+        id:
+          options & CloneOption.SCENE ? component.getId() : component.props.id,
         source,
         parent,
-        isScene,
-        isTarget,
-        debug,
-        snapshotType
+        options
       },
       findNodeHandle(this._ref)
     );
@@ -107,7 +90,7 @@ class MagicMoveNativeCloneComponent extends PureComponent {
       if (this.props.onShow) {
         this.props.onShow(layout);
       }
-      this.setState({
+      /*this.setState({
         style: {
           position: "absolute",
           width: layout.width,
@@ -116,7 +99,7 @@ class MagicMoveNativeCloneComponent extends PureComponent {
           top: 0,
           transform: [{ translateX: layout.x }, { translateY: layout.y }]
         }
-      });
+      });*/
     }
   }
 }

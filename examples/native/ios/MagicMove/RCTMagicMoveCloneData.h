@@ -8,10 +8,13 @@
 #ifndef RCTMagicMoveCloneData_h
 #define RCTMagicMoveCloneData_h
 
-typedef NS_ENUM(NSInteger, MMSnapshotType) {
-  MMSnapshotTypeNone = 0,
-  MMSnapshotTypeImage = 1,
-  MMSnapshotTypeRawImage = 2,
+typedef NS_ENUM(NSInteger, MMOptions) {
+  MMOptionInitial = 1,
+  MMOptionScene = 2,
+  MMOptionTarget = 4,
+  MMOptionVisible = 8,
+  MMOptionRawImage = 16,
+  MMOptionDebug = 32,
 };
 
 @interface RCTMagicMoveCloneData : NSObject
@@ -19,17 +22,15 @@ typedef NS_ENUM(NSInteger, MMSnapshotType) {
 @property (readonly, nonatomic) NSString* sharedId;
 @property (readonly, nonatomic) NSString* key;
 @property (readonly, nonatomic) NSNumber* reactTag;
-@property (readonly, nonatomic) UIImage* image;
-@property (readonly, nonatomic) MMSnapshotType snapshotType;
+@property (readonly, nonatomic) UIImage* snapshotImage;
+@property (readonly, nonatomic) UIImage* rawImage;
 @property (readonly, nonatomic) CGRect layout;
-@property (readonly, nonatomic) BOOL isScene;
-@property (readonly, nonatomic) BOOL isTarget;
-@property (readonly, nonatomic) BOOL debug;
+@property (readonly, nonatomic) MMOptions options;
 @property (nonatomic) long refCount;
 
-- (instancetype)init:(NSString*)sharedId reactTag:(NSNumber *)reactTag layout:(CGRect)layout snapshotType:(MMSnapshotType)snapshotType image:(UIImage*) image isScene:(BOOL)isScene isTarget:(BOOL)isTarget debug:(BOOL)debug;
+- (instancetype)init:(NSString*)sharedId reactTag:(NSNumber *)reactTag layout:(CGRect)layout options:(MMOptions)options snapshotImage:(UIImage*) snapshotImage rawImage:(UIImage*) rawImage;
 
-+ (NSString*) keyForSharedId:(NSString*)sharedId isScene:(BOOL)isScene isTarget:(BOOL)isTarget;
++ (NSString*) keyForSharedId:(NSString*)sharedId options:(MMOptions)options;
 
 @end
 

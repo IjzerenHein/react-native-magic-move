@@ -39,24 +39,20 @@ RCT_EXPORT_MODULE();
 }
 
 RCT_EXPORT_VIEW_PROPERTY(id, NSString);
-RCT_EXPORT_VIEW_PROPERTY(isScene, BOOL);
-RCT_EXPORT_VIEW_PROPERTY(isTarget, BOOL);
+RCT_EXPORT_VIEW_PROPERTY(options, NSInteger);
 RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat);
 
 RCT_REMAP_METHOD(init,
-                 options:(NSDictionary *)options
+                 config:(NSDictionary *)config
                  reactTag:(nonnull NSNumber *)reactTag
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
   // Destructure options
-  NSString* sharedId = options[@"id"];
-  BOOL isScene = [options[@"isScene"] boolValue];
-  BOOL isTarget = [options[@"isTarget"] boolValue];
-  BOOL debug = [options[@"debug"] boolValue];
-  NSNumber* sourceTag = options[@"source"];
-  NSNumber* parentTag = options[@"parent"];
-  MMSnapshotType snapshotType = [options[@"snapshotType"] intValue];
+  NSString* sharedId = config[@"id"];
+  MMOptions options = [config[@"options"] intValue];
+  NSNumber* sourceTag = config[@"source"];
+  NSNumber* parentTag = config[@"parent"];
   
   // Get shadow views
   RCTShadowView* sourceShadowView = [self.bridge.uiManager shadowViewForReactTag:sourceTag];
@@ -94,33 +90,31 @@ RCT_REMAP_METHOD(init,
         return RCTLogError(@"[MagicMove] Invalid source tag specified, not found in registry: %@", sourceTag);
       }
       
-      // Get source image
-      UIImage *image = nil;
-      if (snapshotType != MMSnapshotTypeNone) {
-        if ((snapshotType == MMSnapshotTypeRawImage) && [sourceView isKindOfClass:[UIImageView class]]) {
-          UIImageView* sourceImageView = (UIImageView*) sourceView;
-          image = sourceImageView.image;
-          [result setObject:@(image.size.width * image.scale) forKey:@"imageWidth"];
-          [result setObject:@(image.size.height * image.scale) forKey:@"imageHeight"];
-        }
-        else {
-          CGRect bounds = layout;
-          bounds.origin.x = 0;
-          bounds.origin.y = 0;
-          UIGraphicsBeginImageContextWithOptions(layout.size, isScene, 0.0f);
-          [sourceView drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
-          image = UIGraphicsGetImageFromCurrentImageContext();
-          UIGraphicsEndImageContext();
-        }
+      // Get snapshot image
+      CGRect bounds = layout;
+      bounds.origin.x = 0;
+      bounds.origin.y = 0;
+      UIGraphicsBeginImageContextWithOptions(layout.size, (options & MMOptionScene) ? YES : NO, 0.0f);
+      [sourceView drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
+      UIImage *snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
+      UIGraphicsEndImageContext();
+      
+      // Get raw image
+      UIImage *rawImage = nil;
+      if ([sourceView isKindOfClass:[UIImageView class]]) {
+        UIImageView* sourceImageView = (UIImageView*) sourceView;
+        rawImage = sourceImageView.image;
+        [result setObject:@(rawImage.size.width * rawImage.scale) forKey:@"imageWidth"];
+        [result setObject:@(rawImage.size.height * rawImage.scale) forKey:@"imageHeight"];
       }
       
       // Upon success, send notification with the result
       resolve(result);
       
       // Create data object
-      RCTMagicMoveCloneData* data = [[RCTMagicMoveCloneData alloc]init:sharedId reactTag:sourceTag layout:layout snapshotType:snapshotType image:image isScene:isScene isTarget:isTarget debug:debug];
+      RCTMagicMoveCloneData* data = [[RCTMagicMoveCloneData alloc]init:sharedId reactTag:sourceTag layout:layout options:options snapshotImage:snapshotImage rawImage:rawImage];
       [dataManager put:data];
-      [view setData:data];
+      [view setInitialData:data];
       calculateLayout = nil;
     }];
   };
