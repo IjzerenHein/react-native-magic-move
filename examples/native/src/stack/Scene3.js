@@ -1,6 +1,5 @@
 import React from "react";
 import { Easing, Dimensions, StyleSheet, ScrollView } from "react-native";
-import { storeObserver, StorePropType } from "../store";
 import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 
@@ -28,11 +27,7 @@ const styles = StyleSheet.create({
 });
 
 class Scene extends React.Component {
-  static propTypes = {
-    store: StorePropType
-  };
   render() {
-    const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
         <ScrollView style={styles.container}>
@@ -44,7 +39,6 @@ class Scene extends React.Component {
             resizeMode="cover"
             easing={Easing.in(Easing.cubic)}
             duration={400}
-            debug={debug}
           />
           <Animatable.Text
             style={styles.text}
@@ -68,4 +62,4 @@ class Scene extends React.Component {
     );
   }
 }
-export default storeObserver(Scene);
+export default Scene;

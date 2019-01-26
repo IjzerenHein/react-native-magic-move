@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { storeObserver, StorePropType } from "../store";
 import * as MagicMove from "react-native-magic-move";
 
 const styles = StyleSheet.create({
@@ -22,20 +21,19 @@ const styles = StyleSheet.create({
 });
 
 class Scene extends React.Component {
-  static propTypes = {
-    store: StorePropType
-  };
   render() {
-    const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
         <MagicMove.View
           id="scene4"
           style={styles.background}
-          debug={debug}
           transition={MagicMove.Transition.morph}
         >
-          <MagicMove.Text id="scene4.title" style={styles.text} debug={debug}>
+          <MagicMove.Text
+            id="scene4.title"
+            style={styles.text}
+            transition={MagicMove.Transition.morph}
+          >
             Color Change
           </MagicMove.Text>
         </MagicMove.View>
@@ -43,4 +41,4 @@ class Scene extends React.Component {
     );
   }
 }
-export default storeObserver(Scene);
+export default Scene;

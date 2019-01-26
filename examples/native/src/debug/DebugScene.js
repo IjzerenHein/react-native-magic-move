@@ -47,7 +47,7 @@ class DebugScene extends React.Component {
     const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
-        <Bar hideId="scene8" debug={true} />
+        <Bar hideId="scene8" />
         <View style={styles.content}>
           <MagicMove.View
             id="scene8"

@@ -21,35 +21,31 @@ const styles = StyleSheet.create({
 });
 
 // eslint-disable-next-line
-const Item = ({ color, id, debug }) => (
-  <MagicMove.View
-    style={[styles.item, { backgroundColor: color }]}
-    id={id}
-    debug={debug}
-  />
+const Item = ({ color, id }) => (
+  <MagicMove.View style={[styles.item, { backgroundColor: color }]} id={id} />
 );
 
-const Bar = ({ hideId, debug }) => {
+const Bar = ({ hideId }) => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
         {hideId !== "scene5" ? (
-          <Item id={"scene5"} color={"goldenrod"} debug={debug} />
+          <Item id={"scene5"} color={"goldenrod"} />
         ) : (
           undefined
         )}
         {hideId !== "scene6" ? (
-          <Item id={"scene6"} color={"seagreen"} debug={debug} />
+          <Item id={"scene6"} color={"seagreen"} />
         ) : (
           undefined
         )}
         {hideId !== "scene7" ? (
-          <Item id={"scene7"} color={"salmon"} debug={debug} />
+          <Item id={"scene7"} color={"salmon"} />
         ) : (
           undefined
         )}
         {hideId !== "scene8" ? (
-          <Item id={"scene8"} color={"steelblue"} debug={debug} />
+          <Item id={"scene8"} color={"steelblue"} />
         ) : (
           undefined
         )}
@@ -59,8 +55,7 @@ const Bar = ({ hideId, debug }) => {
 };
 
 Bar.propTypes = {
-  hideId: PropTypes.string.isRequired,
-  debug: PropTypes.bool
+  hideId: PropTypes.string.isRequired
 };
 
 export default Bar;

@@ -1,6 +1,5 @@
 import React from "react";
 import { Dimensions, StyleSheet } from "react-native";
-import { storeObserver, StorePropType } from "../store";
 import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 
@@ -10,7 +9,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   box: {
-    width: Dimensions.get("window").height / 2,
+    width: Dimensions.get("window").width,
     height: Dimensions.get("window").height / 3,
     backgroundColor: "seagreen",
     resizeMode: "cover"
@@ -32,11 +31,7 @@ const styles = StyleSheet.create({
 });
 
 class Scene extends React.Component {
-  static propTypes = {
-    store: StorePropType
-  };
   render() {
-    const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
         <MagicMove.Image
@@ -44,8 +39,6 @@ class Scene extends React.Component {
           source={require("../assets/mario.png")}
           imageSizeHint={{ width: 256, height: 256 }}
           style={styles.box}
-          transition={MagicMove.Transition.move}
-          debug={debug}
         />
         <Animatable.Text
           style={styles.text}
@@ -60,4 +53,4 @@ class Scene extends React.Component {
   }
 }
 
-export default storeObserver(Scene);
+export default Scene;

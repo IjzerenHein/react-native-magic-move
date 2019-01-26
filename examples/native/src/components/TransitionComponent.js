@@ -15,12 +15,11 @@ const styles = StyleSheet.create({
 class TransitionComponent extends Component {
   static propTypes = {
     componentStore: PropTypes.object.isRequired,
-    debug: PropTypes.bool,
     style: PropTypes.any
   };
 
   render() {
-    const { componentStore, debug } = this.props;
+    const { componentStore } = this.props;
     const {
       id,
       size,
@@ -52,8 +51,7 @@ class TransitionComponent extends Component {
       transition: transition.transition,
       duration: duration.duration,
       easing: easing.easing,
-      disabled: disabled.disabled,
-      debug
+      disabled: disabled.disabled
     };
     return (
       <View

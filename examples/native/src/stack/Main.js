@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import * as MagicMove from "react-native-magic-move";
 import { Actions } from "react-native-router-flux";
-import { storeObserver, StorePropType } from "../store";
 
 const styles = StyleSheet.create({
   container: {
@@ -32,16 +31,11 @@ const styles = StyleSheet.create({
 });
 
 class Main extends Component {
-  static propTypes = {
-    store: StorePropType
-  };
-
   renderItem({ id, style, text, onPress }) {
-    const { debug } = this.props.store;
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
-        <MagicMove.View id={id} style={[styles.box, style]} debug={debug}>
-          <MagicMove.Text id={`${id}.title`} style={styles.text} debug={debug}>
+        <MagicMove.View id={id} style={[styles.box, style]}>
+          <MagicMove.Text id={`${id}.title`} style={styles.text}>
             {text}
           </MagicMove.Text>
         </MagicMove.View>
@@ -50,7 +44,6 @@ class Main extends Component {
   }
 
   renderImageItem({ id, source, onPress, imageSizeHint }) {
-    const { debug } = this.props.store;
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
         <View style={styles.box}>
@@ -60,7 +53,6 @@ class Main extends Component {
             imageSizeHint={imageSizeHint}
             resizeMode="cover"
             style={[styles.box, StyleSheet.absoluteFill]}
-            debug={debug}
           />
         </View>
       </TouchableOpacity>
@@ -148,4 +140,4 @@ class Main extends Component {
   }
 }
 
-export default storeObserver(Main);
+export default Main;

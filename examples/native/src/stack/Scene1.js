@@ -42,13 +42,11 @@ class Scene extends React.Component {
           id="scene1"
           style={styles.background}
           transition={MagicMove.Transition.scale}
-          debug={debug}
         >
           <MagicMove.Text
             id="scene1.title"
             style={styles.title}
             transition={MagicMove.Transition.scale}
-            debug={debug}
           >
             Scale
           </MagicMove.Text>
