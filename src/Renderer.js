@@ -46,12 +46,19 @@ class MagicMoveRenderer extends PureComponent {
           if (!scene) {
             return children;
           } else {
+            let useNative = MagicMoveClone.isNativeAvailable
+              ? undefined
+              : false;
+            if (useNative === undefined)
+              useNative = scene.props.useNativeOptimisations;
+            if (useNative === undefined)
+              useNative = scene.props.mmContext.useNativeOptimisations;
             return (
               <MagicMoveClone
                 key={`scene${sceneIndex + ""}`}
                 mmContext={scene.props.mmContext}
                 component={scene}
-                useNative={MagicMoveClone.isNativeAvailable}
+                useNative={useNative || false}
                 options={
                   MagicMoveClone.Option.INITIAL | MagicMoveClone.Option.SCENE
                 }

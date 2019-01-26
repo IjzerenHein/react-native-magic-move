@@ -81,6 +81,18 @@ class MagicMoveContextValue {
     }
     return false;
   }
+
+  get useNativeOptimisations() {
+    let parent = this._parent;
+    while (parent) {
+      if (parent.props.useNativeOptimisations !== undefined)
+        return parent.props.useNativeOptimisations;
+      parent = parent.props.mmContext
+        ? parent.props.mmContext.parent
+        : undefined;
+    }
+    return undefined;
+  }
 }
 
 export class MagicMoveContextProvider extends Component {

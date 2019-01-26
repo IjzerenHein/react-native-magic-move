@@ -92,6 +92,7 @@ class MagicMoveCloneComponent extends PureComponent {
     delete otherProps.id;
     delete otherProps.Component;
     delete otherProps.useNativeDriver;
+    delete otherProps.useNativeOptimisations;
     delete otherProps.keepHidden;
     delete otherProps.duration;
     delete otherProps.delay;

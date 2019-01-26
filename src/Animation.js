@@ -57,12 +57,18 @@ class MagicMoveAnimation extends PureComponent {
   }
 
   get useNative() {
+    const { target } = this.props;
+    if (!MagicMoveClone.isNativeAvailable) return false;
+    const comp = target.props.useNativeOptimisations;
+    if (comp !== undefined) return comp;
+    const context = target.props.mmContext.useNativeOptimisations;
+    if (context !== undefined) return context;
     const transition = this.getTransition();
-    const useNativeOptimisations =
+    return (
       (transition.defaultProps
         ? transition.defaultProps.useNativeOptimisations
-        : undefined) || false;
-    return useNativeOptimisations && MagicMoveClone.isNativeAvailable;
+        : undefined) || false
+    );
   }
 
   /**

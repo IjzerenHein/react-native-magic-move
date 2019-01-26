@@ -6,6 +6,7 @@ import { inject, observer, Provider } from "mobx-react";
 class Store {
   constructor() {
     this._debug = observable.box(false);
+    this._native = observable.box(undefined);
   }
 
   get debug() {
@@ -13,6 +14,13 @@ class Store {
   }
   set debug(val) {
     this._debug.set(val);
+  }
+
+  get native() {
+    return this._native.get();
+  }
+  set native(val) {
+    this._native.set(val);
   }
 }
 

@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
  */
 class MagicMoveProvider extends Component {
   static propTypes = {
-    debug: PropTypes.bool
+    debug: PropTypes.bool,
+    useNativeOptimisations: PropTypes.bool
   };
 
   _administration = new MagicMoveAdministration();
@@ -34,6 +35,10 @@ class MagicMoveProvider extends Component {
 
   get isDebug() {
     return this.props.debug;
+  }
+
+  get useNativeOptimisations() {
+    return this.props.useNativeOptimisations;
   }
 
   get debugName() {
