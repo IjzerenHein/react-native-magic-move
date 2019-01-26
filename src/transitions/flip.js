@@ -83,7 +83,8 @@ export default function flipTransition(
 }
 
 flipTransition.defaultProps = {
-  useNativeDriver: true
+  useNativeDriver: true,
+  useNativeOptimisations: true
 };
 
 function createFlipTransition({ x, y }) {

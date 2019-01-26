@@ -32,5 +32,6 @@ export default function dissolveTransition({ from, to, interpolate, render }) {
 }
 
 dissolveTransition.defaultProps = {
-  useNativeDriver: true
+  useNativeDriver: true,
+  useNativeOptimisations: true
 };

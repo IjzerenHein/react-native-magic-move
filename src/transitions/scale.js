@@ -19,5 +19,6 @@ export default function scaleTransition({ to, interpolate, render }) {
 }
 
 scaleTransition.defaultProps = {
-  useNativeDriver: true
+  useNativeDriver: true,
+  useNativeOptimisations: true
 };

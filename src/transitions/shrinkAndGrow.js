@@ -37,5 +37,6 @@ export default function shrinkAndGrowTransition({
 
 shrinkAndGrowTransition.defaultProps = {
   easing: Easing.elastic(1),
-  useNativeDriver: true
+  useNativeDriver: true,
+  useNativeOptimisations: true
 };
