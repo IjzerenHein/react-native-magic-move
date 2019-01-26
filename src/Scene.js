@@ -127,6 +127,8 @@ const MagicMoveSceneWrapper = props => {
   }
 };
 
-MagicMoveSceneWrapper.addHook = addHook;
+const Scene = withMagicMoveContext(MagicMoveSceneWrapper);
 
-export default withMagicMoveContext(MagicMoveSceneWrapper);
+Scene.addHook = addHook;
+
+export default Scene;

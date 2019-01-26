@@ -103,6 +103,7 @@ const RCTMagicMoveClone = (function() {
     return AnimatedRCTMagicMoveClone;
   } catch (err) {
     // eslint-disable-next-line
+    MagicMoveNativeCloneComponent.isAvailable = false;
     console.error(
       `${
         err.message
