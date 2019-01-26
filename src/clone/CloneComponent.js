@@ -7,8 +7,6 @@ import { CloneOption } from "./CloneOption";
 class MagicMoveCloneComponent extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
-    parentRef: PropTypes.any.isRequired,
-    containerLayout: PropTypes.any.isRequired,
     options: PropTypes.number.isRequired,
     children: PropTypes.any,
     style: PropTypes.any,
@@ -28,13 +26,7 @@ class MagicMoveCloneComponent extends PureComponent {
   }
 
   async _getInitialLayout() {
-    const {
-      component,
-      options,
-      parentRef,
-      containerLayout,
-      onLayout
-    } = this.props;
+    const { component, options, onLayout } = this.props;
     if (options & CloneOption.DEBUG) {
       //eslint-disable-next-line
       console.debug(
@@ -43,11 +35,8 @@ class MagicMoveCloneComponent extends PureComponent {
         } ${component.debugName}...`
       );
     }
-    const layout = await measureRelativeLayout(
-      component,
-      parentRef,
-      containerLayout
-    );
+
+    const layout = await measureRelativeLayout(component);
     if (options & CloneOption.DEBUG) {
       //eslint-disable-next-line
       console.debug(
@@ -109,11 +98,8 @@ class MagicMoveCloneComponent extends PureComponent {
     delete otherProps.easing;
     delete otherProps.transition;
     delete otherProps.debug;
-    delete otherProps.scene;
-    delete otherProps.isClone;
-    delete otherProps.isTarget;
-    delete otherProps.administration;
     delete otherProps.disabled;
+    delete otherProps.mmContext;
 
     let cloneStyle =
       style ||

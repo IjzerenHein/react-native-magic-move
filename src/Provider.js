@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
+import PropTypes from "prop-types";
 import MagicMoveAdministration from "./Administration";
+import { MagicMoveContextProvider } from "./Context";
 import MagicMoveRenderer from "./Renderer";
 
 const styles = StyleSheet.create({
@@ -15,45 +17,48 @@ const styles = StyleSheet.create({
  * <MagicMove.Provider> component.
  */
 class MagicMoveProvider extends Component {
-  constructor(props) {
-    super(props);
-    this._administration = new MagicMoveAdministration();
+  static propTypes = {
+    debug: PropTypes.bool
+  };
+
+  _administration = new MagicMoveAdministration();
+  _ref = undefined;
+
+  get isProvider() {
+    return true;
+  }
+
+  get administration() {
+    return this._administration;
+  }
+
+  get isDebug() {
+    return this.props.debug;
+  }
+
+  get debugName() {
+    return "provider";
+  }
+
+  get ref() {
+    return this._ref;
   }
 
   render() {
     const { children } = this.props; //eslint-disable-line
     return (
-      <MagicMoveAdministration.Context.Provider value={this._administration}>
-        <View
-          style={styles.container}
-          collapsable={false}
-          ref={this._setContainerRef}
-        >
+      <MagicMoveContextProvider value={this}>
+        <View style={styles.container} collapsable={false} ref={this._setRef}>
           {children}
         </View>
-        <MagicMoveRenderer
-          ref={this._setRendererRef}
-          administration={this._administration}
-        />
-      </MagicMoveAdministration.Context.Provider>
+        <MagicMoveRenderer administration={this._administration} />
+      </MagicMoveContextProvider>
     );
   }
 
-  _setContainerRef = ref => {
-    this._containerRef = ref;
-    this._updateRef();
+  _setRef = ref => {
+    this._ref = ref;
   };
-
-  _setRendererRef = ref => {
-    this._rendererRef = ref;
-    this._updateRef();
-  };
-
-  _updateRef() {
-    if (this._rendererRef) {
-      this._rendererRef.setContainerRef(this._containerRef);
-    }
-  }
 }
 
 export default MagicMoveProvider;

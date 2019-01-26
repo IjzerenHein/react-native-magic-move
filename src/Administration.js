@@ -35,11 +35,11 @@ class MagicMoveAdministration {
 
       // Start animations for all components on this scene
       const sceneComps = this._activeScene
-        ? this._sceneComponents[this._activeScene.getId()]
+        ? this._sceneComponents[this._activeScene.id]
         : undefined;
       if (sceneComps) {
         sceneComps.forEach(comp => {
-          const { id } = comp.props;
+          const { id } = comp;
           const comps = this._components[id];
           const prevComp = comps.active;
           comps.active = comp;
@@ -50,11 +50,11 @@ class MagicMoveAdministration {
       // Reset active state on all non-animated components of the
       // previous scene
       const prevSceneComps = this._prevScene
-        ? this._sceneComponents[this._prevScene.getId()]
+        ? this._sceneComponents[this._prevScene.id]
         : undefined;
       if (prevSceneComps) {
         prevSceneComps.forEach(comp => {
-          const { id } = comp.props;
+          const { id } = comp;
           const comps = this._components[id];
           if (comps.active === comp) {
             comps.active = undefined;
@@ -68,10 +68,10 @@ class MagicMoveAdministration {
   }
 
   mountComponent(component) {
-    const { id, scene, debug } = component.props;
+    const { id, scene, isDebug } = component;
     const isActive =
       !scene || scene.props.active === undefined ? true : scene.props.active;
-    if (debug)
+    if (isDebug)
       //eslint-disable-next-line
       console.debug(
         `[MagicMove] Mounted ${component.debugName} (active = ${isActive})`
@@ -91,10 +91,9 @@ class MagicMoveAdministration {
 
     // Register within scene
     if (scene) {
-      const sceneId = scene.getId();
-      const sceneComps = this._sceneComponents[sceneId];
+      const sceneComps = this._sceneComponents[scene.id];
       if (!sceneComps) {
-        this._sceneComponents[sceneId] = [component];
+        this._sceneComponents[scene.id] = [component];
       } else {
         sceneComps.push(component);
       }
@@ -107,12 +106,11 @@ class MagicMoveAdministration {
   }
 
   unmountComponent(component) {
-    const { id, debug, scene } = component.props;
+    const { id, isDebug, scene } = component;
 
     // Unregister component with scene
     if (scene) {
-      const sceneId = scene.getId();
-      const sceneComps = this._sceneComponents[sceneId];
+      const sceneComps = this._sceneComponents[scene.id];
       if (!sceneComps)
         throw new Error(
           `[MagicMove] Unmounting ${component.debugName} that was not mounted`
@@ -124,7 +122,7 @@ class MagicMoveAdministration {
         );
       sceneComps.splice(idx, 1);
       if (!sceneComps.length) {
-        delete this._sceneComponents[sceneId];
+        delete this._sceneComponents[scene.id];
       }
     }
 
@@ -145,20 +143,20 @@ class MagicMoveAdministration {
     } else if (comps.active === component) {
       const prevComp = findLast(
         comps.mounts,
-        ({ props }) =>
-          !props.scene ||
-          props.scene.props.active === undefined ||
-          props.scene.props.active === true
+        ({ scene }) =>
+          !scene ||
+          scene.props.active === undefined ||
+          scene.props.active === true
       );
       comps.active = prevComp;
     }
-    if (debug)
+    if (isDebug)
       //eslint-disable-next-line
       console.debug(`[MagicMove] Unmounted ${component.debugName}`);
   }
 
   isAnimatingComponent(component) {
-    const { id } = component.props;
+    const { id } = component;
     const idx = this._animations.findIndex(anim => anim.id === id);
     return idx >= 0;
   }
@@ -174,10 +172,10 @@ class MagicMoveAdministration {
   }
 
   _checkForAnimate(component, prevComp) {
-    const { id, debug, disabled, scene } = component.props;
+    const { id, isDebug, scene } = component;
     if (component === prevComp) return;
     if (!prevComp) {
-      if (debug) {
+      if (isDebug) {
         // eslint-disable-next-line
         console.debug(
           `[MagicMove] Not animating ${
@@ -187,8 +185,8 @@ class MagicMoveAdministration {
       }
       return;
     }
-    if (disabled) {
-      if (debug) {
+    if (component.props.disabled) {
+      if (isDebug) {
         // eslint-disable-next-line
         console.debug(
           `[MagicMove] Not animating ${
@@ -199,7 +197,7 @@ class MagicMoveAdministration {
       return;
     }
     if (scene && scene.disabled) {
-      if (debug) {
+      if (isDebug) {
         // eslint-disable-next-line
         console.debug(
           `[MagicMove] Not animating ${component.debugName} (scene is disabled)`

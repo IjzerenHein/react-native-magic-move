@@ -1,9 +1,11 @@
-import React, { Component, createContext } from "react";
+import React, { Component } from "react";
 import { View } from "react-native";
 import { PropTypes } from "prop-types";
-import MagicMoveAdministration from "./Administration";
-
-const MagicMoveSceneContext = createContext(undefined);
+import {
+  withMagicMoveContext,
+  MagicMoveContextProvider,
+  MagicMoveContextPropType
+} from "./Context";
 
 let autoId = 0;
 
@@ -13,7 +15,8 @@ class MagicMoveScene extends Component {
     id: PropTypes.string,
     disabled: PropTypes.bool,
     active: PropTypes.bool,
-    debug: PropTypes.bool
+    debug: PropTypes.bool,
+    mmContext: MagicMoveContextPropType
   };
 
   static defaultProps = {
@@ -24,59 +27,79 @@ class MagicMoveScene extends Component {
   _uniqueId = "__autoSceneId" + autoId++;
   _active = undefined;
 
+  get isScene() {
+    return true;
+  }
+
+  get ref() {
+    return this._ref;
+  }
+
+  get id() {
+    return this._uniqueId;
+  }
+
+  get isDebug() {
+    const { debug, mmContext } = this.props;
+    return debug !== undefined ? debug : mmContext.isDebug;
+  }
+
+  get debugName() {
+    return `scene "${this.props.id || this.id}"`;
+  }
+
   componentDidMount() {
-    if (this.props.debug) {
+    if (this.isDebug) {
       // eslint-disable-next-line
       console.debug(
-        `[MagicMove] Mounted ${this.debugName} (active = ${this.props.active})`
+        `[MagicMove] Mounted ${this.debugName} (active = ${this.isActive})`
       );
     }
   }
 
   componentWillUnmount() {
-    if (this.props.debug) {
+    if (this.isDebug) {
       // eslint-disable-next-line
       console.debug(
-        `[MagicMove] Unmounted ${this.debugName} (active = ${
-          this.props.active
-        })`
+        `[MagicMove] Unmounted ${this.debugName} (active = ${this.isActive})`
       );
     }
   }
 
   render() {
-    // eslint-disable-next-line
-    const { children, id, disabled, active, ...otherProps } = this.props;
+    const {
+      children,
+      id, // eslint-disable-line
+      disabled, // eslint-disable-line
+      active, // eslint-disable-line
+      debug, // eslint-disable-line
+      mmContext, // eslint-disable-line
+      ...otherProps
+    } = this.props;
+    console.log("SCENE RENDER");
     return (
       <View ref={this._setRef} {...otherProps} collapsable={false}>
-        <MagicMoveAdministration.Context.Consumer>
-          {administration => {
-            this._administration = administration;
-            return (
-              <MagicMoveSceneContext.Provider value={this}>
-                {children}
-              </MagicMoveSceneContext.Provider>
-            );
-          }}
-        </MagicMoveAdministration.Context.Consumer>
+        <MagicMoveContextProvider value={this}>
+          {children}
+        </MagicMoveContextProvider>
       </View>
     );
   }
 
   componentDidUpdate() {
-    const { active } = this.props;
-    if (active !== undefined) {
-      if (this._active !== active) {
-        this._active = active;
-        if (this.props.debug) {
+    const { isActive, isDebug } = this;
+    if (isActive !== undefined) {
+      if (this._active !== isActive) {
+        this._active = isActive;
+        if (isDebug) {
           // eslint-disable-next-line
           console.debug(
-            `[MagicMove] ${this.props.active ? "Activated" : "De-activated"} ${
+            `[MagicMove] ${isActive ? "Activated" : "De-activated"} ${
               this.debugName
             }`
           );
         }
-        this._administration.activateScene(this, active);
+        this.props.mmContext.administration.activateScene(this, isActive);
       }
     }
   }
@@ -85,16 +108,8 @@ class MagicMoveScene extends Component {
     this._ref = ref;
   };
 
-  getRef() {
-    return this._ref;
-  }
-
-  getId() {
-    return this._uniqueId;
-  }
-
-  get debugName() {
-    return `scene "${this.props.id || this.getId()}"`;
+  get isActive() {
+    return this.props.active;
   }
 }
 
@@ -112,7 +127,6 @@ const MagicMoveSceneWrapper = props => {
   }
 };
 
-MagicMoveSceneWrapper.Context = MagicMoveSceneContext;
 MagicMoveSceneWrapper.addHook = addHook;
 
-export default MagicMoveSceneWrapper;
+export default withMagicMoveContext(MagicMoveSceneWrapper);

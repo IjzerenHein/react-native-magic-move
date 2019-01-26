@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Animated, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
-import MagicMoveCloneContext from "./CloneContext";
+import { MagicMoveContextProvider, MagicMoveContextPropType } from "../Context";
 import JSCloneComponent from "./CloneComponent";
 import NativeCloneComponent from "./NativeCloneComponent";
 import { CloneOption } from "./CloneOption";
@@ -9,9 +9,8 @@ import { CloneOption } from "./CloneOption";
 class MagicMoveClone extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
-    parentRef: PropTypes.any.isRequired,
-    containerLayout: PropTypes.any.isRequired,
     options: PropTypes.number.isRequired,
+    mmContext: MagicMoveContextPropType,
     useNative: PropTypes.bool,
     contentStyle: PropTypes.any,
     children: PropTypes.any,
@@ -20,9 +19,16 @@ class MagicMoveClone extends PureComponent {
     onShow: PropTypes.func
   };
 
-  static Context = MagicMoveCloneContext;
   static Option = CloneOption;
   static isNativeAvailable = NativeCloneComponent.isAvailable;
+
+  get isClone() {
+    return true;
+  }
+
+  get isTarget() {
+    return this.options & CloneOption.TARGET ? true : false;
+  }
 
   render() {
     const {
@@ -38,7 +44,6 @@ class MagicMoveClone extends PureComponent {
     // For convenience of reasoning, deconstruct the options
     const isInitial = options & CloneOption.INITIAL ? true : false;
     const isVisible = options & CloneOption.VISIBLE ? true : false;
-    const isTarget = options & CloneOption.TARGET ? true : false;
     const isScene = options & CloneOption.SCENE ? true : false;
 
     // Do now show the outer content, when an inner content style
@@ -89,15 +94,9 @@ class MagicMoveClone extends PureComponent {
 
     if (cloneChildren) {
       return (
-        <MagicMoveCloneContext.Provider
-          value={{
-            isClone: true,
-            isTarget,
-            isScene
-          }}
-        >
+        <MagicMoveContextProvider value={this}>
           {content}
-        </MagicMoveCloneContext.Provider>
+        </MagicMoveContextProvider>
       );
     } else {
       return content;

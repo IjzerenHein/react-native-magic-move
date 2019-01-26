@@ -24,7 +24,6 @@ class MagicMoveAnimation extends PureComponent {
   static propTypes = {
     source: PropTypes.object.isRequired,
     target: PropTypes.object.isRequired,
-    containerLayout: PropTypes.object.isRequired,
     onCompleted: PropTypes.func.isRequired
   };
 
@@ -40,7 +39,7 @@ class MagicMoveAnimation extends PureComponent {
    */
   constructor(props) {
     super(props);
-    if (this.debug) {
+    if (this.isDebug) {
       //eslint-disable-next-line
       console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
     }
@@ -49,8 +48,8 @@ class MagicMoveAnimation extends PureComponent {
     }
   }
 
-  get debug() {
-    return this.props.target.props.debug;
+  get isDebug() {
+    return this.props.target.isDebug;
   }
 
   getTransition() {
@@ -72,14 +71,14 @@ class MagicMoveAnimation extends PureComponent {
    * start position/shape/size is of the source.
    */
   renderDebugSourcePlaceholder() {
-    if (!this.debug) return;
+    if (!this.isDebug) return;
     const { sourceLayout } = this.state;
     if (!sourceLayout) return;
     const { source } = this.props;
     const style = StyleSheet.flatten([source.props.style]);
     return (
       <Animated.View
-        key={`${source.props.id}.debugFrom`}
+        key={`${source.id}.debugFrom`}
         style={{
           position: "absolute",
           width: sourceLayout.width,
@@ -121,14 +120,14 @@ class MagicMoveAnimation extends PureComponent {
    * start position/shape/size is of the target.
    */
   renderDebugTargetPlaceholder() {
-    if (!this.debug) return;
+    if (!this.isDebug) return;
     const { targetLayout } = this.state;
     if (!targetLayout) return;
     const { target } = this.props;
     const style = StyleSheet.flatten([target.props.style]);
     return (
       <Animated.View
-        key={`${target.props.id}.debugTo`}
+        key={`${target.id}.debugTo`}
         style={{
           position: "absolute",
           width: targetLayout.width,
@@ -172,19 +171,18 @@ class MagicMoveAnimation extends PureComponent {
    * transition animation with it.
    */
   renderInitialClones() {
-    const { source, target, containerLayout } = this.props;
+    const { source, target } = this.props;
     const { useNative } = this;
     return [
       <MagicMoveClone
         key="source0"
         component={source}
-        parentRef={source.props.scene ? source.props.scene.getRef() : undefined}
-        containerLayout={containerLayout}
+        mmContext={source.props.mmContext}
         useNative={useNative}
         options={
           MagicMoveClone.Option.INITIAL |
           MagicMoveClone.Option.VISIBLE |
-          (this.debug ? MagicMoveClone.Option.DEBUG : 0)
+          (this.isDebug ? MagicMoveClone.Option.DEBUG : 0)
         }
         onShow={this.onShowSourceClone}
       >
@@ -193,13 +191,12 @@ class MagicMoveAnimation extends PureComponent {
       <MagicMoveClone
         key="target0"
         component={target}
-        parentRef={target.props.scene ? target.props.scene.getRef() : undefined}
-        containerLayout={containerLayout}
+        mmContext={target.props.mmContext}
         useNative={useNative}
         options={
           MagicMoveClone.Option.INITIAL |
           MagicMoveClone.Option.TARGET |
-          (this.debug ? MagicMoveClone.Option.DEBUG : 0)
+          (this.isDebug ? MagicMoveClone.Option.DEBUG : 0)
         }
         onLayout={this.onLayoutTargetClone}
       >
@@ -216,7 +213,7 @@ class MagicMoveAnimation extends PureComponent {
    */
   onShowSourceClone = layout => {
     const { source } = this.props;
-    if (this.debug) {
+    if (this.isDebug) {
       //eslint-disable-next-line
       console.debug(`[MagicMove] Hiding source ${source.debugName}`);
     }
@@ -266,7 +263,6 @@ class MagicMoveAnimation extends PureComponent {
    * Renders a single animation clone onto the screen.
    */
   _renderAnimationClone = (clone, index = 0) => {
-    const { containerLayout } = this.props;
     const {
       style,
       component,
@@ -280,16 +276,13 @@ class MagicMoveAnimation extends PureComponent {
       <MagicMoveClone
         key={key}
         component={component}
-        parentRef={
-          component.props.scene ? component.props.scene.getRef() : undefined
-        }
-        containerLayout={containerLayout}
+        mmContext={component.props.mmContext}
         useNative={useNative}
         options={
           MagicMoveClone.Option.VISIBLE |
           (isTarget ? MagicMoveClone.Option.TARGET : 0) |
           (!useSnapshotImage ? MagicMoveClone.Option.RAWIMAGE : 0) |
-          (this.debug ? MagicMoveClone.Option.DEBUG : 0)
+          (this.isDebug ? MagicMoveClone.Option.DEBUG : 0)
         }
         style={{ ...style }}
         contentStyle={contentStyle}
@@ -444,7 +437,7 @@ class MagicMoveAnimation extends PureComponent {
       const targetProps = source.props;
       const { duration, easing, delay } = targetProps;
       const transition = this.getTransition();
-      if (this.debug) {
+      if (this.isDebug) {
         // eslint-disable-next-line
         console.debug(`[MagicMove] Animating ${target.debugName}...`);
       }
@@ -466,7 +459,7 @@ class MagicMoveAnimation extends PureComponent {
 
       Animated.timing(animValue, {
         toValue: 1,
-        duration: this.debug
+        duration: this.isDebug
           ? 8000
           : resolveValue(
               duration,
@@ -487,17 +480,17 @@ class MagicMoveAnimation extends PureComponent {
         ),
         useNativeDriver
       }).start(() => {
-        if (this.debug) {
+        if (this.isDebug) {
           // eslint-disable-next-line
           console.debug(`[MagicMove] Animating ${target.debugName}... DONE`);
         }
-        if (this.debug) {
+        if (this.isDebug) {
           //eslint-disable-next-line
           console.debug(`[MagicMove] Showing target ${target.debugName}`);
         }
         target.setOpacity(undefined);
         if (!source.props.keepHidden) {
-          if (this.debug) {
+          if (this.isDebug) {
             //eslint-disable-next-line
             console.debug(`[MagicMove] Showing source ${source.debugName}`);
           }

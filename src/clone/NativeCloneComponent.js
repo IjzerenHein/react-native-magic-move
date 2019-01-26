@@ -11,8 +11,6 @@ import { CloneOption } from "./CloneOption";
 class MagicMoveNativeCloneComponent extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
-    parentRef: PropTypes.any.isRequired,
-    containerLayout: PropTypes.any.isRequired, // Not used by Native clone
     options: PropTypes.number.isRequired,
     onLayout: PropTypes.func,
     onShow: PropTypes.func,
@@ -41,8 +39,6 @@ class MagicMoveNativeCloneComponent extends PureComponent {
       style,
       children,
       options,
-      parentRef, // eslint-disable-line
-      containerLayout, // eslint-disable-line
       onLayout, // eslint-disable-line
       onShow, // eslint-disable-line
       ...otherProps
@@ -50,9 +46,7 @@ class MagicMoveNativeCloneComponent extends PureComponent {
     return (
       <RCTMagicMoveClone
         ref={options & CloneOption.INITIAL ? this._setRef : undefined}
-        id={
-          options & CloneOption.SCENE ? component.getId() : component.props.id
-        }
+        id={options & CloneOption.SCENE ? component.id : component.props.id}
         style={style || this.state.style}
         options={options}
         {...otherProps}
@@ -69,16 +63,17 @@ class MagicMoveNativeCloneComponent extends PureComponent {
 
   async _init() {
     if (!this._ref) return;
-    const { options, component, parentRef } = this.props;
-    // console.log("INIT #1: ", component.getRef(), parentRef, options);
-    const source = findNodeHandle(component.getRef());
-    const parent = findNodeHandle(parentRef);
+    const { options, component } = this.props;
+    const { mmContext } = component.props;
+    const { scene, parent } = mmContext;
+    // console.log("INIT #1: ", component.ref, options);
+    const sourceHandle = findNodeHandle(component.ref);
+    const parentHandle = findNodeHandle(scene ? scene.ref : parent.ref);
     const layout = await NativeModules.MagicMoveCloneManager.init(
       {
-        id:
-          options & CloneOption.SCENE ? component.getId() : component.props.id,
-        source,
-        parent,
+        id: options & CloneOption.SCENE ? component.id : component.props.id,
+        source: sourceHandle,
+        parent: parentHandle,
         options
       },
       findNodeHandle(this._ref)
@@ -90,16 +85,6 @@ class MagicMoveNativeCloneComponent extends PureComponent {
       if (this.props.onShow) {
         this.props.onShow(layout);
       }
-      /*this.setState({
-        style: {
-          position: "absolute",
-          width: layout.width,
-          height: layout.height,
-          left: 0,
-          top: 0,
-          transform: [{ translateX: layout.x }, { translateY: layout.y }]
-        }
-      });*/
     }
   }
 }
