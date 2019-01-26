@@ -9,7 +9,7 @@ Create magical move transitions between scenes in react-native
 - Added new _smart_ `move` transition, for seamless transitions when source and target are the same, but are sized differently or use different border radii
 - Added ability to render multiple clones efficiently and clip and transform their contents
 - Added optional native optimisations to address flickering issues when animating (to install use `react-native link react-native-magic-move`)
-- Added `debug` prop to `MagicMoveScene` (for debugging scene mount/activation)
+- Added `debug` prop for `Provider` and `Scene`, which also propagates into the rendering hierarchy.
 - Upgraded to a new `clone` based architecture to enable native optimisations
 - Upgraded the `morph` transition to always use the native driver
 
