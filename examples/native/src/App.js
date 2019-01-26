@@ -3,7 +3,7 @@ import { View, Platform } from "react-native";
 import { Router, Stack, Scene, Tabs, Modal } from "react-native-router-flux";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as MagicMove from "react-native-magic-move";
-// import "react-navigation-magic-move";
+import "react-navigation-magic-move";
 import { StoreProvider, storeObserver } from "./store";
 import DebugButton from "./components/DebugButton";
 import Main from "./stack/Main";
@@ -42,7 +42,7 @@ const AppInner = storeObserver(({ store }) => (
       <Tabs>
         <Stack key="tab1" tabBarLabel={"Stack"} icon={StackIcon}>
           <Scene
-            key="main"
+            key="mainTab"
             component={Main}
             title="react-native-magic-move"
             titleStyle={{ width: 300 }}
@@ -58,7 +58,7 @@ const AppInner = storeObserver(({ store }) => (
           <Scene key="scene8" component={Scene8} title="Squash & Stretch" />
         </Stack>
         <Scene
-          key="explorer"
+          key="explorerTab"
           component={ExplorerView}
           title="Transition Explorer"
           tabBarLabel="Explorer"
@@ -66,25 +66,26 @@ const AppInner = storeObserver(({ store }) => (
           renderRightButton={() => <DebugButton />}
         />
         <Scene
-          key="tab2"
+          key="multiTab"
           component={MultiScene}
           title="Tab"
           icon={MultiIcon}
           renderRightButton={() => <DebugButton />}
         />
         <Scene
-          key="tab3"
+          key="debugTab"
           component={DebugScene}
           title="Debug"
           icon={DebugIcon}
         />
         <Modal
+          key="modalTab"
           title="Modal"
           icon={ModalIcon}
           renderRightButton={() => <DebugButton />}
         >
-          <Scene key="tab3" component={ModalScene} title="Modal" />
-          <Scene key="modal" component={ModalScene2} title="Modal" />
+          <Scene key="modal1" component={ModalScene} title="Modal" />
+          <Scene key="modal2" component={ModalScene2} title="Modal" />
         </Modal>
       </Tabs>
     </Router>

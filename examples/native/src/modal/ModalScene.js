@@ -70,7 +70,7 @@ class Scene extends React.Component {
   }
 
   onPressShow = () => {
-    Actions.modal();
+    Actions.modal2();
   };
 }
 
