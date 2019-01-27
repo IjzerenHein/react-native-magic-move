@@ -34,8 +34,16 @@ class Main extends Component {
   renderItem({ id, style, text, onPress }) {
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
-        <MagicMove.View id={id} style={[styles.box, style]}>
-          <MagicMove.Text id={`${id}.title`} style={styles.text}>
+        <MagicMove.View
+          id={id}
+          style={[styles.box, style]}
+          transition={MagicMove.Transition.morph}
+        >
+          <MagicMove.Text
+            id={`${id}.title`}
+            style={styles.text}
+            transition={MagicMove.Transition.morph}
+          >
             {text}
           </MagicMove.Text>
         </MagicMove.View>
@@ -43,16 +51,16 @@ class Main extends Component {
     );
   }
 
-  renderImageItem({ id, source, onPress, imageSizeHint }) {
+  renderImageItem({ id, source, onPress }) {
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
         <View style={styles.box}>
           <MagicMove.Image
             id={id}
             source={source}
-            imageSizeHint={imageSizeHint}
             resizeMode="cover"
             style={[styles.box, StyleSheet.absoluteFill]}
+            transition={MagicMove.Transition.morph}
           />
         </View>
       </TouchableOpacity>
@@ -75,7 +83,6 @@ class Main extends Component {
           {this.renderImageItem({
             id: "image",
             source: require("../assets/waves.jpg"),
-            imageSizeHint: { width: 640, height: 525 },
             onPress: () => Actions.push("scene3")
           })}
         </View>

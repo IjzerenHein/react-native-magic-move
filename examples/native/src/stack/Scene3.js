@@ -35,7 +35,6 @@ class Scene extends React.Component {
             id="image"
             style={styles.image}
             source={require("../assets/waves.jpg")}
-            imageSizeHint={{ width: 640, height: 525 }}
             resizeMode="cover"
             easing={Easing.in(Easing.cubic)}
             duration={400}

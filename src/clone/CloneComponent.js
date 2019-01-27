@@ -1,5 +1,6 @@
+/* globals Promise */
 import React, { PureComponent } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import PropTypes from "prop-types";
 import { measureRelativeLayout } from "./measure";
 import { CloneOption } from "./CloneOption";
@@ -36,7 +37,8 @@ class MagicMoveCloneComponent extends PureComponent {
       );
     }
 
-    const layout = await measureRelativeLayout(component);
+    // Measure position & size
+    const layoutPromise = measureRelativeLayout(component);
     if (options & CloneOption.DEBUG) {
       //eslint-disable-next-line
       console.debug(
@@ -45,10 +47,34 @@ class MagicMoveCloneComponent extends PureComponent {
         } ${component}... DONE`
       );
     }
+
+    // In case this is an image, also measure the size
+    // of the underlying image, so we can perform "perfect"
+    // image transitions
+    const imageSource = component.props.source;
+    let imageSize;
+    if (imageSource) {
+      if (typeof imageSource === "number") {
+        imageSize = Image.resolveAssetSource(imageSource);
+      } else if (component.props.imageSizeHint) {
+        imageSize = component.props.imageSizeHint;
+      } else if (imageSource.uri) {
+        imageSize = await new Promise((resolve, reject) => {
+          Image.getSize(
+            imageSource.uri,
+            (width, height) => resolve({ width, height }),
+            reject
+          );
+        });
+      }
+    }
+
+    // All done
+    const layout = await layoutPromise;
     this._layout = layout;
-    if (component.props.imageSizeHint) {
-      this._layout.imageWidth = component.props.imageSizeHint.width;
-      this._layout.imageHeight = component.props.imageSizeHint.height;
+    if (imageSize) {
+      this._layout.imageWidth = imageSize.width;
+      this._layout.imageHeight = imageSize.height;
     }
     if (onLayout) onLayout(layout);
     else if (this._isMounted) this.forceUpdate();

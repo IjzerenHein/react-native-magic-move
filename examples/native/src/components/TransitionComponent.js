@@ -68,7 +68,6 @@ class TransitionComponent extends Component {
           <MagicMove.Image
             source={imageSource}
             resizeMode="cover"
-            imageSizeHint={imageSize}
             {...compProps}
           />
         ) : (

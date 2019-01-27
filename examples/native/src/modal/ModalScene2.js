@@ -36,8 +36,11 @@ class Scene extends React.Component {
       <MagicMove.Scene style={styles.container}>
         <MagicMove.Image
           id="scene6"
-          source={require("../assets/mario.png")}
-          imageSizeHint={{ width: 256, height: 256 }}
+          //source={require("../assets/mario.png")}
+          source={{
+            uri:
+              "https://www.friesmuseum.nl/uploads/scrollpages/fr/original/beeldweb.png"
+          }}
           style={styles.box}
         />
         <Animatable.Text
