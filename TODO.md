@@ -1,5 +1,6 @@
 - [ ] Native clone support Android
-- [ ] Morph
+- [ ] Get image size on non-native
+- [ ] Native snapshot transition don't always look right (especially when morphing)
 - [ ] Neva eva glitches
 - [ ] Transform (e.g. rotateZ) are not respected?
 - [ ] ShrinkAndGrow transition does the funky chicken on Android (seems like a bug in RN)

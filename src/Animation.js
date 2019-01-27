@@ -305,10 +305,30 @@ class MagicMoveAnimation extends PureComponent {
    */
   renderAnimationClones() {
     const { source, target } = this.props;
-    const { useNative } = this;
+    let { useNative } = this;
     const { sourceLayout, targetLayout, animValue } = this.state;
     const sourceStyle = StyleSheet.flatten([source.props.style]);
     const targetStyle = StyleSheet.flatten([target.props.style]);
+
+    // When a child is being animated, then disable native optimisations
+    // as these use a snapshot which also includes that child.
+    // Instead, that child should not be visible in this clone,
+    // otherwise it would be drawn twice.
+    if (
+      useNative &&
+      source.props.mmContext.administration.isAnimatingChildOf(source)
+    ) {
+      if (this.isDebug) {
+        // eslint-disable-next-line
+        console.debug(
+          `[MagicMove] Not using native snapshot optimisations for ${
+            source.debugName
+          }, because its child is also being animated`
+        );
+      }
+      useNative = false;
+    }
+
     const from = {
       isTarget: false,
       component: source,

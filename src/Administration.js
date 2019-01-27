@@ -161,6 +161,21 @@ class MagicMoveAdministration {
     return idx >= 0;
   }
 
+  isAnimatingChildOf(component) {
+    const { id } = component;
+    for (let i = 0; i < this._animations.length; i++) {
+      const anim = this._animations[i];
+      let { parent } = anim.source.props.mmContext;
+      while (parent) {
+        if (parent.id === id) return true;
+        parent = parent.props.mmContext
+          ? parent.props.mmContext.parent
+          : undefined;
+      }
+    }
+    return false;
+  }
+
   removeAnimation(id) {
     const idx = this._animations.findIndex(anim => anim.id === id);
     if (idx >= 0) {
