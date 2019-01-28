@@ -9,7 +9,7 @@ export default function flipTransition(
   // Calculate rotation interpolation based on count
   //
   function interpolateRotate(isTarget, count) {
-    if (!count) return "0deg";
+    if (!count) throw new Error("No count specified");
     const inputRange = [0];
     const outputRange = [isTarget ? "180deg" : "0deg"];
     const stepCount = count * 2 - 1;
@@ -56,10 +56,17 @@ export default function flipTransition(
     { translateX: interpolate(from.start.x, from.end.x, true) },
     { translateY: interpolate(from.start.y, from.end.y, true) },
     { scaleX: interpolate(from.start.scaleX, from.end.scaleX) },
-    { scaleY: interpolate(from.start.scaleY, from.end.scaleY) },
-    { rotateX: interpolateRotate(false, flipXCount) },
-    { rotateY: interpolateRotate(false, flipYCount) }
+    { scaleY: interpolate(from.start.scaleY, from.end.scaleY) }
   ];
+  if (flipXCount)
+    from.style.transform.push({
+      rotateX: interpolateRotate(false, flipXCount)
+    });
+  if (flipYCount)
+    from.style.transform.push({
+      rotateY: interpolateRotate(false, flipYCount)
+    });
+
   from.style.backfaceVisibility = "hidden";
 
   //
@@ -70,10 +77,12 @@ export default function flipTransition(
     { translateX: interpolate(to.start.x, to.end.x, true) },
     { translateY: interpolate(to.start.y, to.end.y, true) },
     { scaleX: interpolate(to.start.scaleX, to.end.scaleX) },
-    { scaleY: interpolate(to.start.scaleY, to.end.scaleY) },
-    { rotateX: interpolateRotate(true, flipXCount) },
-    { rotateY: interpolateRotate(true, flipYCount) }
+    { scaleY: interpolate(to.start.scaleY, to.end.scaleY) }
   ];
+  if (flipXCount)
+    to.style.transform.push({ rotateX: interpolateRotate(true, flipXCount) });
+  if (flipYCount)
+    to.style.transform.push({ rotateY: interpolateRotate(true, flipYCount) });
   to.style.backfaceVisibility = "hidden";
 
   //
