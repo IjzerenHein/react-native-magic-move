@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, MMOptions) {
 
 typedef NS_ENUM(NSInteger, MMContentType) {
   MMContentTypeChildren = 0,
-  MMContentTypeSnapshotImage = 1,
+  MMContentTypeSnapshot = 1,
   MMContentTypeRawImage = 2
 };
 
@@ -27,13 +27,13 @@ typedef NS_ENUM(NSInteger, MMContentType) {
 @property (readonly, nonatomic) NSString* sharedId;
 @property (readonly, nonatomic) NSString* key;
 @property (readonly, nonatomic) NSNumber* reactTag;
-@property (readonly, nonatomic) UIImage* snapshotImage;
+@property (readonly, nonatomic) UIView* snapshot;
 @property (readonly, nonatomic) UIImage* rawImage;
 @property (readonly, nonatomic) CGRect layout;
 @property (readonly, nonatomic) MMOptions options;
 @property (nonatomic) long refCount;
 
-- (instancetype)init:(NSString*)sharedId reactTag:(NSNumber *)reactTag layout:(CGRect)layout options:(MMOptions)options snapshotImage:(UIImage*) snapshotImage rawImage:(UIImage*) rawImage;
+- (instancetype)init:(NSString*)sharedId reactTag:(NSNumber *)reactTag layout:(CGRect)layout options:(MMOptions)options snapshot:(UIView*) snapshot rawImage:(UIImage*) rawImage;
 
 + (NSString*) keyForSharedId:(NSString*)sharedId options:(MMOptions)options;
 

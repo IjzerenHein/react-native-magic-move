@@ -120,5 +120,5 @@ export default function morphTransition({
 
 morphTransition.defaultProps = {
   useNativeDriver: true,
-  nativeContentType: "snapshotImage"
+  nativeContentType: "snapshot"
 };

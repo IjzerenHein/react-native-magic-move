@@ -15,8 +15,8 @@ function contentTypeFromString(str) {
   switch (str) {
     case "children":
       return MagicMoveClone.ContentType.CHILDREN;
-    case "snapshotImage":
-      return MagicMoveClone.ContentType.SNAPSHOTIMAGE;
+    case "snapshot":
+      return MagicMoveClone.ContentType.SNAPSHOT;
     case "rawImage":
       return MagicMoveClone.ContentType.RAWIMAGE;
     default:
@@ -333,7 +333,7 @@ class MagicMoveAnimation extends Component {
     // otherwise it would be drawn twice.
     if (
       MagicMoveClone.isNativeAvailable &&
-      nativeContentType === "snapshotImage" &&
+      nativeContentType === "snapshot" &&
       source.props.mmContext.administration.isAnimatingChildOf(source)
     ) {
       if (this.isDebug) {

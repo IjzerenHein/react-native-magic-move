@@ -92,10 +92,10 @@ RCT_REMAP_METHOD(init,
         return RCTLogError(@"[MagicMove] Invalid source tag specified, not found in registry: %@", sourceTag);
       }
       
-      // Get snapshot image
-      UIImage *snapshotImage;
+      // Get snapshot
+      UIView *snapshot;
       if ((options & MMOptionScene) == 0) {
-        CGRect bounds = layout;
+        /*CGRect bounds = layout;
         bounds.origin.x = 0;
         bounds.origin.y = 0;
         //NSLog(@"drawViewHierarchyInRect...");
@@ -103,7 +103,10 @@ RCT_REMAP_METHOD(init,
         [sourceView drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
         snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
-        //NSLog(@"drawViewHierarchyInRect... DONE");
+        //NSLog(@"drawViewHierarchyInRect... DONE");*/
+        //NSLog(@"snapshotViewAfterScreenUpdates...");
+        snapshot = [sourceView snapshotViewAfterScreenUpdates:NO];
+        //NSLog(@"snapshotViewAfterScreenUpdates... DONE");
       }
       
       // Get raw image
@@ -119,7 +122,7 @@ RCT_REMAP_METHOD(init,
       resolve(result);
       
       // Create data object
-      RCTMagicMoveCloneData* data = [[RCTMagicMoveCloneData alloc]init:sharedId reactTag:sourceTag layout:layout options:options snapshotImage:snapshotImage rawImage:rawImage];
+      RCTMagicMoveCloneData* data = [[RCTMagicMoveCloneData alloc]init:sharedId reactTag:sourceTag layout:layout options:options snapshot:snapshot rawImage:rawImage];
       [dataManager put:data];
       [view setInitialData:data contentType:contentType];
       calculateLayout = nil;

@@ -22,6 +22,7 @@
 {
   RCTMagicMoveCloneDataManager* _dataManager;
   RCTMagicMoveCloneData* _data;
+  UIView* _snapshot;
   UIVisualEffectView* _blurEffectView;
 }
 
@@ -36,6 +37,7 @@
     _data = nil;
     _options = 0;
     _contentType = MMContentTypeChildren;
+    _snapshot = nil;
     // self.layer.masksToBounds = YES; // overflow = 'hidden'
   }
   
@@ -60,9 +62,6 @@
     if (_contentType == MMContentTypeRawImage) {
       self.layer.contents =  _data.rawImage ? (id)_data.rawImage.CGImage : nil;
     }
-    else if (_contentType == MMContentTypeSnapshotImage) {
-      self.layer.contents =  _data.snapshotImage ? (id)_data.snapshotImage.CGImage : nil;
-    }
   }
 }
 
@@ -80,6 +79,13 @@
   _data = data;
   _options = data.options;
   _contentType = contentType;
+  
+  if ((contentType == MMContentTypeSnapshot) && (_options & MMOptionVisible)) {
+    _snapshot = [data.snapshot snapshotViewAfterScreenUpdates:NO];
+    _snapshot.frame = CGRectMake(0, 0, data.layout.size.width, data.layout.size.height);
+    [self addSubview:_snapshot];
+  }
+  
   [super reactSetFrame:_data.layout];
   [self.layer setNeedsDisplay];
 }
@@ -120,6 +126,25 @@
     NSString* key = [RCTMagicMoveCloneData keyForSharedId:_id options:_options];
     _data = [_dataManager acquire:key];
   }
+  
+  if ((_contentType == MMContentTypeSnapshot) && (_options & MMOptionVisible) && (_data != nil) && (_snapshot == nil)) {
+    _snapshot = [_data.snapshot snapshotViewAfterScreenUpdates:NO];
+    //_snapshot.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    _snapshot.frame = self.bounds;
+    _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self addSubview:_snapshot];
+  }
+  else if ((_snapshot != nil) && ((_contentType != MMContentTypeSnapshot) || ((_options & MMOptionVisible) == 0))) {
+    [_snapshot removeFromSuperview];
+    _snapshot = nil;
+  }
+  
+  if (_snapshot) {
+    if (_snapshot.autoresizingMask != (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)) {
+      _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    }
+  }
+  
   [self.layer setNeedsDisplay];
 }
 

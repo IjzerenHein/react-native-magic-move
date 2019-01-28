@@ -84,7 +84,7 @@ export default function flipTransition(
 
 flipTransition.defaultProps = {
   useNativeDriver: true,
-  nativeContentType: "snapshotImage"
+  nativeContentType: "snapshot"
 };
 
 function createFlipTransition({ x, y }) {

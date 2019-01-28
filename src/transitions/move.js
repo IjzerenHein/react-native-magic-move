@@ -191,7 +191,7 @@ export default function moveTransition(
 
 moveTransition.defaultProps = {
   useNativeDriver: true,
-  nativeContentType: "snapshotImage"
+  nativeContentType: "snapshot"
 };
 
 function createMoveTransition(moveTarget) {

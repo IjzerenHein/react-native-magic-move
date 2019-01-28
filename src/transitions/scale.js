@@ -20,5 +20,5 @@ export default function scaleTransition({ to, interpolate, render }) {
 
 scaleTransition.defaultProps = {
   useNativeDriver: true,
-  nativeContentType: "snapshotImage"
+  nativeContentType: "snapshot"
 };

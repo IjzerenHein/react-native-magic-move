@@ -8,7 +8,7 @@ const CloneOption = {
 
 const CloneContentType = {
   CHILDREN: 0,
-  SNAPSHOTIMAGE: 1,
+  SNAPSHOT: 1,
   RAWIMAGE: 2
 };
 
