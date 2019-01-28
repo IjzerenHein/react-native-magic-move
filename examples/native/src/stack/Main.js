@@ -60,7 +60,6 @@ class Main extends Component {
             source={source}
             resizeMode="cover"
             style={[styles.box, StyleSheet.absoluteFill]}
-            transition={MagicMove.Transition.morph}
           />
         </View>
       </TouchableOpacity>

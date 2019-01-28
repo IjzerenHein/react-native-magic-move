@@ -6,7 +6,6 @@ import * as MagicMove from "react-native-magic-move";
 import "react-navigation-magic-move";
 import { StoreProvider, storeObserver } from "./store";
 import DebugButton from "./components/DebugButton";
-import NativeButton from "./components/NativeButton";
 import Main from "./stack/Main";
 import Scene1 from "./stack/Scene1";
 import Scene2 from "./stack/Scene2";
@@ -38,7 +37,7 @@ const ModalIcon = props => <TabBarIcon name="arrow-round-up" {...props} />;
 const ExplorerIcon = props => <TabBarIcon name="rocket" {...props} />;
 
 const AppInner = storeObserver(({ store }) => (
-  <MagicMove.Provider debug={store.debug} useNativeOptimisations={store.native}>
+  <MagicMove.Provider debug={store.debug}>
     <Router>
       <Tabs>
         <Stack key="tab1" tabBarLabel={"Stack"} icon={StackIcon}>
@@ -47,7 +46,6 @@ const AppInner = storeObserver(({ store }) => (
             component={Main}
             title="react-native-magic-move"
             titleStyle={{ width: 300 }}
-            renderLeftButton={() => <NativeButton />}
             renderRightButton={() => <DebugButton />}
           />
           <Scene key="scene1" component={Scene1} title="Scale" />
@@ -65,7 +63,6 @@ const AppInner = storeObserver(({ store }) => (
           title="Transition Explorer"
           tabBarLabel="Explorer"
           icon={ExplorerIcon}
-          renderLeftButton={() => <NativeButton />}
           renderRightButton={() => <DebugButton />}
         />
         <Scene
@@ -73,7 +70,6 @@ const AppInner = storeObserver(({ store }) => (
           component={MultiScene}
           title="Tab"
           icon={MultiIcon}
-          renderLeftButton={() => <NativeButton />}
           renderRightButton={() => <DebugButton />}
         />
         <Scene
@@ -81,22 +77,15 @@ const AppInner = storeObserver(({ store }) => (
           component={DebugScene}
           title="Debug"
           icon={DebugIcon}
-          renderLeftButton={() => <NativeButton />}
         />
         <Modal
           key="modalTab"
           title="Modal"
           icon={ModalIcon}
-          renderLeftButton={() => <NativeButton />}
           renderRightButton={() => <DebugButton />}
         >
           <Scene key="modal1" component={ModalScene} title="Modal" />
-          <Scene
-            key="modal2"
-            component={ModalScene2}
-            title="Modal"
-            renderLeftButton={undefined}
-          />
+          <Scene key="modal2" component={ModalScene2} title="Modal" />
         </Modal>
       </Tabs>
     </Router>
