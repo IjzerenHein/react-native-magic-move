@@ -2,16 +2,16 @@ import React, { PureComponent } from "react";
 import { Animated, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 import { MagicMoveContextProvider, MagicMoveContextPropType } from "../Context";
-import JSCloneComponent from "./CloneComponent";
+import CloneComponent from "./CloneComponent";
 import NativeCloneComponent from "./NativeCloneComponent";
-import { CloneOption } from "./CloneOption";
+import { CloneOption, CloneContentType } from "./types";
 
 class MagicMoveClone extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
     options: PropTypes.number.isRequired,
+    nativeContentType: PropTypes.number.isRequired,
     mmContext: MagicMoveContextPropType,
-    useNative: PropTypes.bool,
     contentStyle: PropTypes.any,
     children: PropTypes.any,
     style: PropTypes.any,
@@ -20,6 +20,7 @@ class MagicMoveClone extends PureComponent {
   };
 
   static Option = CloneOption;
+  static ContentType = CloneContentType;
   static isNativeAvailable = NativeCloneComponent.isAvailable;
 
   get isClone() {
@@ -35,16 +36,14 @@ class MagicMoveClone extends PureComponent {
       children,
       style,
       options,
-      useNative,
       contentStyle,
+      nativeContentType,
       ...otherProps
     } = this.props;
-    const CloneComponent = useNative ? NativeCloneComponent : JSCloneComponent;
 
     // For convenience of reasoning, deconstruct the options
     const isInitial = options & CloneOption.INITIAL ? true : false;
     const isVisible = options & CloneOption.VISIBLE ? true : false;
-    const isScene = options & CloneOption.SCENE ? true : false;
 
     // Do now show the outer content, when an inner content style
     // is specified
@@ -59,19 +58,44 @@ class MagicMoveClone extends PureComponent {
 
     // Render content
     let content;
-    const cloneChildren = !useNative || isScene ? children : undefined;
-    if (useNative) {
-      content = (
-        <CloneComponent style={style} options={outerOptions} {...otherProps}>
-          <CloneComponent
-            style={contentStyle || StyleSheet.absoluteFill}
-            options={innerOptions}
+    const cloneChildren =
+      !NativeCloneComponent.isAvailable ||
+      nativeContentType === CloneContentType.CHILDREN
+        ? children
+        : undefined;
+    if (NativeCloneComponent.isAvailable) {
+      if (contentStyle) {
+        content = (
+          <NativeCloneComponent
+            style={style}
+            options={outerOptions}
+            contentType={
+              contentStyle ? CloneContentType.CHILDREN : nativeContentType
+            }
+            {...otherProps}
+          >
+            <NativeCloneComponent
+              style={contentStyle || StyleSheet.absoluteFill}
+              options={innerOptions}
+              contentType={nativeContentType}
+              {...otherProps}
+            >
+              {cloneChildren}
+            </NativeCloneComponent>
+          </NativeCloneComponent>
+        );
+      } else {
+        content = (
+          <NativeCloneComponent
+            style={style}
+            options={options}
+            contentType={nativeContentType}
             {...otherProps}
           >
             {cloneChildren}
-          </CloneComponent>
-        </CloneComponent>
-      );
+          </NativeCloneComponent>
+        );
+      }
     } else if (!isInitial && contentStyle) {
       content = (
         <Animated.View style={style} options={outerOptions}>

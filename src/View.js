@@ -17,7 +17,6 @@ class MagicMoveView extends Component {
     AnimatedComponent: PropTypes.any.isRequired,
     id: PropTypes.string.isRequired,
     useNativeDriver: PropTypes.bool,
-    useNativeOptimisations: PropTypes.bool,
     keepHidden: PropTypes.bool,
     duration: PropTypes.number,
     delay: PropTypes.number,
@@ -117,7 +116,6 @@ class MagicMoveView extends Component {
       id, // eslint-disable-line
       AnimatedComponent, // eslint-disable-line
       useNativeDriver, // eslint-disable-line
-      useNativeOptimisations, //eslint-disable-line
       keepHidden, // eslint-disable-line
       duration, // eslint-disable-line
       delay, // eslint-disable-line

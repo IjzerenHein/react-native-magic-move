@@ -16,11 +16,12 @@
 
 @property (nonatomic, assign) NSString* id;
 @property (nonatomic, assign) MMOptions options;
+@property (nonatomic, assign) MMContentType contentType;
 @property (nonatomic, assign) CGFloat blurRadius;
 
 - (instancetype)initWithDataManager:(RCTMagicMoveCloneDataManager*)dataManager;
 
-- (void) setInitialData:(RCTMagicMoveCloneData*)data;
+- (void) setInitialData:(RCTMagicMoveCloneData*)data contentType:(MMContentType)contentType;
 
 @end
 

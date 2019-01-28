@@ -124,5 +124,5 @@ export default function dottedTransition({ from, to, render, interpolate }) {
 
 dottedTransition.defaultProps = {
   useNativeDriver: true,
-  useNativeOptimisations: true
+  nativeContentType: "snapshotImage"
 };

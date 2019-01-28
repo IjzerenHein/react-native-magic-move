@@ -33,5 +33,5 @@ export default function dissolveTransition({ from, to, interpolate, render }) {
 
 dissolveTransition.defaultProps = {
   useNativeDriver: true,
-  useNativeOptimisations: true
+  nativeContentType: "snapshotImage"
 };

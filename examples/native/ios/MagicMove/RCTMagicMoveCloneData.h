@@ -13,8 +13,13 @@ typedef NS_ENUM(NSInteger, MMOptions) {
   MMOptionScene = 2,
   MMOptionTarget = 4,
   MMOptionVisible = 8,
-  MMOptionRawImage = 16,
-  MMOptionDebug = 32,
+  MMOptionDebug = 16,
+};
+
+typedef NS_ENUM(NSInteger, MMContentType) {
+  MMContentTypeChildren = 0,
+  MMContentTypeSnapshotImage = 1,
+  MMContentTypeRawImage = 2
 };
 
 @interface RCTMagicMoveCloneData : NSObject

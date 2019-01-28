@@ -6,12 +6,13 @@ import {
   findNodeHandle
 } from "react-native";
 import PropTypes from "prop-types";
-import { CloneOption } from "./CloneOption";
+import { CloneOption } from "./types";
 
 class MagicMoveNativeCloneComponent extends PureComponent {
   static propTypes = {
     component: PropTypes.any.isRequired,
     options: PropTypes.number.isRequired,
+    contentType: PropTypes.number.isRequired,
     onLayout: PropTypes.func,
     onShow: PropTypes.func,
     children: PropTypes.any,
@@ -63,7 +64,7 @@ class MagicMoveNativeCloneComponent extends PureComponent {
 
   async _init() {
     if (!this._ref) return;
-    const { options, component } = this.props;
+    const { options, component, contentType } = this.props;
     const { mmContext } = component.props;
     const { scene, parent } = mmContext;
     // console.log("INIT #1: ", component.ref, options);
@@ -74,7 +75,8 @@ class MagicMoveNativeCloneComponent extends PureComponent {
         id: options & CloneOption.SCENE ? component.id : component.props.id,
         source: sourceHandle,
         parent: parentHandle,
-        options
+        options,
+        contentType
       },
       findNodeHandle(this._ref)
     );
@@ -102,8 +104,8 @@ const RCTMagicMoveClone = (function() {
       : undefined;
     return AnimatedRCTMagicMoveClone;
   } catch (err) {
-    // eslint-disable-next-line
     MagicMoveNativeCloneComponent.isAvailable = false;
+    // eslint-disable-next-line
     console.error(
       `${
         err.message

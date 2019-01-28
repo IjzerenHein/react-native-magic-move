@@ -27,6 +27,7 @@
 
 @synthesize id = _id;
 @synthesize options = _options;
+@synthesize contentType = _contentType;
 
 - (instancetype)initWithDataManager:(RCTMagicMoveCloneDataManager*)dataManager
 {
@@ -34,7 +35,7 @@
     _dataManager = dataManager;
     _data = nil;
     _options = 0;
-    //self.userInteractionEnabled = NO; // Pointer-events = 'none'
+    _contentType = MMContentTypeChildren;
     // self.layer.masksToBounds = YES; // overflow = 'hidden'
   }
   
@@ -53,14 +54,15 @@
 {
   [super displayLayer:layer];
   
-  if (_data == nil || (_options & MMOptionVisible) == 0) {
-    self.layer.contents = nil;
-  }
-  else if (_options & MMOptionRawImage) {
-    self.layer.contents =  _data.rawImage ? (id)_data.rawImage.CGImage : nil;
-  }
-  else {
-    self.layer.contents = _data.snapshotImage ? (id)_data.snapshotImage.CGImage : nil;
+  if (_data == nil) return;
+  
+  if (_options & MMOptionVisible) {
+    if (_contentType == MMContentTypeRawImage) {
+      self.layer.contents =  _data.rawImage ? (id)_data.rawImage.CGImage : nil;
+    }
+    else if (_contentType == MMContentTypeSnapshotImage) {
+      self.layer.contents =  _data.snapshotImage ? (id)_data.snapshotImage.CGImage : nil;
+    }
   }
 }
 
@@ -73,10 +75,11 @@
   }
 }
 
-- (void) setInitialData:(RCTMagicMoveCloneData*) data
+- (void) setInitialData:(RCTMagicMoveCloneData*)data contentType:(MMContentType)contentType
 {
   _data = data;
   _options = data.options;
+  _contentType = contentType;
   [super reactSetFrame:_data.layout];
   [self.layer setNeedsDisplay];
 }

@@ -11,7 +11,22 @@ class MagicMoveRenderer extends PureComponent {
 
   componentDidMount() {
     const { administration } = this.props;
-    administration.addListener(() => this.forceUpdate());
+
+    // Animations may end at slightly different moments
+    // remove the animation from the render tree, until
+    // all other animations have finished as well.
+    // The currently used solution is a bit hackish, but works for now.
+    this._prevAnimCount = administration.animations.length;
+    administration.addListener(() => {
+      const animCount = administration.animations.length;
+      if (
+        this._prevAnimCount < animCount ||
+        (this._prevAnimCount && !animCount)
+      ) {
+        this._prevAnimCount = animCount;
+        this.forceUpdate();
+      }
+    });
   }
 
   render() {
@@ -46,22 +61,17 @@ class MagicMoveRenderer extends PureComponent {
           if (!scene) {
             return children;
           } else {
-            let useNative = MagicMoveClone.isNativeAvailable
-              ? undefined
-              : false;
-            if (useNative === undefined)
-              useNative = scene.props.useNativeOptimisations;
-            if (useNative === undefined)
-              useNative = scene.props.mmContext.useNativeOptimisations;
             return (
               <MagicMoveClone
                 key={`scene${sceneIndex + ""}`}
                 mmContext={scene.props.mmContext}
                 component={scene}
-                useNative={useNative || false}
                 options={
-                  MagicMoveClone.Option.INITIAL | MagicMoveClone.Option.SCENE
+                  MagicMoveClone.Option.INITIAL |
+                  MagicMoveClone.Option.SCENE |
+                  MagicMoveClone.Option.VISIBLE
                 }
+                nativeContentType={MagicMoveClone.ContentType.CHILDREN}
               >
                 {children}
               </MagicMoveClone>

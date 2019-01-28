@@ -80,7 +80,7 @@ export default function shrinkAndGrowTransition({
 
 shrinkAndGrowTransition.defaultProps = {
   useNativeDriver: true,
-  useNativeOptimisations: true,
+  nativeContentType: "snapshotImage",
   duration: 400,
   easing: Easing.elastic(1.5)
 };

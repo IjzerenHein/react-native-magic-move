@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { StyleSheet, Animated, Text, Easing } from "react-native";
 import PropTypes from "prop-types";
 import defaultTransition from "./transitions/move";
@@ -11,6 +11,21 @@ function resolveValue(value, def, other = 0) {
   return def || other;
 }
 
+function contentTypeFromString(str) {
+  switch (str) {
+    case "children":
+      return MagicMoveClone.ContentType.CHILDREN;
+    case "snapshotImage":
+      return MagicMoveClone.ContentType.SNAPSHOTIMAGE;
+    case "rawImage":
+      return MagicMoveClone.ContentType.RAWIMAGE;
+    default:
+      throw new Error(
+        `[MagicMove] Invalid nativeContentType specified: ${str}`
+      );
+  }
+}
+
 /**
  * 1. Hide to component
  * 2. Get layout to and from component
@@ -20,7 +35,7 @@ function resolveValue(value, def, other = 0) {
  * 6. Show to component
  * 7. Remove MagicMove component
  */
-class MagicMoveAnimation extends PureComponent {
+class MagicMoveAnimation extends Component {
   static propTypes = {
     source: PropTypes.object.isRequired,
     target: PropTypes.object.isRequired,
@@ -43,7 +58,7 @@ class MagicMoveAnimation extends PureComponent {
       //eslint-disable-next-line
       console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
     }
-    if (!this.useNative) {
+    if (!MagicMoveClone.isNativeAvailable) {
       props.target.setOpacity(0);
     }
   }
@@ -56,19 +71,14 @@ class MagicMoveAnimation extends PureComponent {
     return this.props.target.props.transition || defaultTransition;
   }
 
-  get useNative() {
-    const { target } = this.props;
-    if (!MagicMoveClone.isNativeAvailable) return false;
-    const comp = target.props.useNativeOptimisations;
-    if (comp !== undefined) return comp;
-    const context = target.props.mmContext.useNativeOptimisations;
-    if (context !== undefined) return context;
-    const transition = this.getTransition();
-    return (
-      (transition.defaultProps
-        ? transition.defaultProps.useNativeOptimisations
-        : undefined) || false
-    );
+  shouldComponentUpdate(nextProps, nextState) {
+    // Optimize render to only execute when both the source & target layout
+    // have been obtained.
+    return nextState.sourceLayout &&
+      nextState.targetLayout &&
+      (!this.state.sourceLayout || !this.state.targetLayout)
+      ? true
+      : false;
   }
 
   /**
@@ -178,18 +188,23 @@ class MagicMoveAnimation extends PureComponent {
    */
   renderInitialClones() {
     const { source, target } = this.props;
-    const { useNative } = this;
+    const transition = this.getTransition();
+    const nativeContentTypeString =
+      (transition.defaultProps
+        ? transition.defaultProps.nativeContentType
+        : undefined) || "children";
+    const nativeContentType = contentTypeFromString(nativeContentTypeString);
     return [
       <MagicMoveClone
         key="source0"
         component={source}
         mmContext={source.props.mmContext}
-        useNative={useNative}
         options={
           MagicMoveClone.Option.INITIAL |
           MagicMoveClone.Option.VISIBLE |
           (this.isDebug ? MagicMoveClone.Option.DEBUG : 0)
         }
+        nativeContentType={nativeContentType}
         onShow={this.onShowSourceClone}
       >
         {source.props.children}
@@ -198,12 +213,12 @@ class MagicMoveAnimation extends PureComponent {
         key="target0"
         component={target}
         mmContext={target.props.mmContext}
-        useNative={useNative}
         options={
           MagicMoveClone.Option.INITIAL |
           MagicMoveClone.Option.TARGET |
           (this.isDebug ? MagicMoveClone.Option.DEBUG : 0)
         }
+        nativeContentType={nativeContentType}
         onLayout={this.onLayoutTargetClone}
       >
         {target.props.children}
@@ -240,7 +255,7 @@ class MagicMoveAnimation extends PureComponent {
     this.setState({
       targetLayout: layout
     });
-    if (this.useNative) {
+    if (MagicMoveClone.isNativeAvailable) {
       this.props.target.setOpacity(0);
     }
   };
@@ -269,29 +284,27 @@ class MagicMoveAnimation extends PureComponent {
    * Renders a single animation clone onto the screen.
    */
   _renderAnimationClone = (clone, index = 0) => {
-    const {
-      style,
-      component,
-      isTarget,
-      useNative,
-      contentStyle,
-      useSnapshotImage
-    } = clone;
+    const { style, component, isTarget, contentStyle } = clone;
+    const nativeContentType = contentTypeFromString(clone.nativeContentType);
     const key = `${isTarget ? "target" : "source"}${index + ""}`;
+    /*console.log(
+      `_renderAnimationClone: ${
+        component.id
+      }, isTarget: ${isTarget}, nativeContentType: ${clone.nativeContentType}`
+    );*/
     return (
       <MagicMoveClone
         key={key}
         component={component}
         mmContext={component.props.mmContext}
-        useNative={useNative}
         options={
           MagicMoveClone.Option.VISIBLE |
           (isTarget ? MagicMoveClone.Option.TARGET : 0) |
-          (!useSnapshotImage ? MagicMoveClone.Option.RAWIMAGE : 0) |
           (this.isDebug ? MagicMoveClone.Option.DEBUG : 0)
         }
         style={{ ...style }}
         contentStyle={contentStyle}
+        nativeContentType={nativeContentType}
         // blurRadius={blurRadius}
       >
         {component.props.children}
@@ -305,28 +318,33 @@ class MagicMoveAnimation extends PureComponent {
    */
   renderAnimationClones() {
     const { source, target } = this.props;
-    let { useNative } = this;
     const { sourceLayout, targetLayout, animValue } = this.state;
     const sourceStyle = StyleSheet.flatten([source.props.style]);
     const targetStyle = StyleSheet.flatten([target.props.style]);
+    const transition = this.getTransition();
+    let nativeContentType =
+      (transition.defaultProps
+        ? transition.defaultProps.nativeContentType
+        : undefined) || "children";
 
     // When a child is being animated, then disable native optimisations
     // as these use a snapshot which also includes that child.
     // Instead, that child should not be visible in this clone,
     // otherwise it would be drawn twice.
     if (
-      useNative &&
+      MagicMoveClone.isNativeAvailable &&
+      nativeContentType === "snapshotImage" &&
       source.props.mmContext.administration.isAnimatingChildOf(source)
     ) {
       if (this.isDebug) {
         // eslint-disable-next-line
         console.debug(
-          `[MagicMove] Not using native snapshot optimisations for ${
+          `[MagicMove] Disabling native image snapshot for ${
             source.debugName
           }, because its child is also being animated`
         );
       }
-      useNative = false;
+      nativeContentType = "children";
     }
 
     const from = {
@@ -373,8 +391,7 @@ class MagicMoveAnimation extends PureComponent {
         marginRight: 0
       },
       contentStyle: undefined,
-      useNative,
-      useSnapshotImage: useNative
+      nativeContentType
     };
 
     const to = {
@@ -420,10 +437,9 @@ class MagicMoveAnimation extends PureComponent {
         marginRight: 0
       },
       contentStyle: undefined,
-      useNative,
-      useSnapshotImage: useNative
+      nativeContentType
     };
-    return this.getTransition()({
+    return transition({
       from,
       to,
       animValue,

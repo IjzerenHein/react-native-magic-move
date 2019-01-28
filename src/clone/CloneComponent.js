@@ -3,7 +3,7 @@ import React, { PureComponent } from "react";
 import { StyleSheet, View, Image } from "react-native";
 import PropTypes from "prop-types";
 import { measureRelativeLayout } from "./measure";
-import { CloneOption } from "./CloneOption";
+import { CloneOption } from "./types";
 
 class MagicMoveCloneComponent extends PureComponent {
   static propTypes = {
@@ -118,7 +118,6 @@ class MagicMoveCloneComponent extends PureComponent {
     delete otherProps.id;
     delete otherProps.Component;
     delete otherProps.useNativeDriver;
-    delete otherProps.useNativeOptimisations;
     delete otherProps.keepHidden;
     delete otherProps.duration;
     delete otherProps.delay;
@@ -147,7 +146,7 @@ class MagicMoveCloneComponent extends PureComponent {
         }
       ]);
 
-    if (!style && options & CloneOption.TARGET) {
+    if ((options & CloneOption.VISIBLE) === 0) {
       cloneStyle.opacity = 0;
     }
 

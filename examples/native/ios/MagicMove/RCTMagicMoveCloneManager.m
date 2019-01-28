@@ -40,6 +40,7 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_VIEW_PROPERTY(id, NSString);
 RCT_EXPORT_VIEW_PROPERTY(options, NSInteger);
+RCT_EXPORT_VIEW_PROPERTY(contentType, NSInteger);
 RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat);
 
 RCT_REMAP_METHOD(init,
@@ -51,6 +52,7 @@ RCT_REMAP_METHOD(init,
   // Destructure options
   NSString* sharedId = config[@"id"];
   MMOptions options = [config[@"options"] intValue];
+  MMContentType contentType = [config[@"contentType"] intValue];
   NSNumber* sourceTag = config[@"source"];
   NSNumber* parentTag = config[@"parent"];
   
@@ -114,7 +116,7 @@ RCT_REMAP_METHOD(init,
       // Create data object
       RCTMagicMoveCloneData* data = [[RCTMagicMoveCloneData alloc]init:sharedId reactTag:sourceTag layout:layout options:options snapshotImage:snapshotImage rawImage:rawImage];
       [dataManager put:data];
-      [view setInitialData:data];
+      [view setInitialData:data contentType:contentType];
       calculateLayout = nil;
     }];
   };

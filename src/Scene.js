@@ -16,7 +16,6 @@ class MagicMoveScene extends Component {
     disabled: PropTypes.bool,
     active: PropTypes.bool,
     debug: PropTypes.bool,
-    useNativeOptimisations: PropTypes.bool,
     mmContext: MagicMoveContextPropType
   };
 

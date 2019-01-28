@@ -149,7 +149,7 @@ export default function moveTransition(
   ) {
     const layout = getImageLayout(clone, otherClone);
     const otherLayout = getImageLayout(otherClone, clone);
-    console.log("YO, isTarget: ", clone.isTarget);
+    // console.log("YO, isTarget: ", clone.isTarget);
 
     const startScaleX = clone.isTarget
       ? otherLayout.width / layout.width / clone.start.scaleX
@@ -176,11 +176,11 @@ export default function moveTransition(
     // Clip the contents
     clone.style.overflow = "hidden";
 
-    // When using the native optimisations, make sure to
-    // turn off the usage of the 'snapshot' image, because
-    // the snapshot image is clipped and has the
-    // border-radii applied to the image
-    clone.useSnapshotImage = false;
+    // When using the native optimisations, we make sure
+    // to use the "raw" image as the source, as the snapshot
+    // image might be stretched, clipped or have border-radii
+    // applied to it.
+    clone.nativeContentType = "rawImage";
   }
 
   //
@@ -191,7 +191,7 @@ export default function moveTransition(
 
 moveTransition.defaultProps = {
   useNativeDriver: true,
-  useNativeOptimisations: true
+  nativeContentType: "snapshotImage"
 };
 
 function createMoveTransition(moveTarget) {
