@@ -93,13 +93,18 @@ RCT_REMAP_METHOD(init,
       }
       
       // Get snapshot image
-      CGRect bounds = layout;
-      bounds.origin.x = 0;
-      bounds.origin.y = 0;
-      UIGraphicsBeginImageContextWithOptions(layout.size, (options & MMOptionScene) ? YES : NO, 0.0f);
-      [sourceView drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
-      UIImage *snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
-      UIGraphicsEndImageContext();
+      UIImage *snapshotImage;
+      if ((options & MMOptionScene) == 0) {
+        CGRect bounds = layout;
+        bounds.origin.x = 0;
+        bounds.origin.y = 0;
+        //NSLog(@"drawViewHierarchyInRect...");
+        UIGraphicsBeginImageContextWithOptions(layout.size, (options & MMOptionScene) ? YES : NO, 0.0f);
+        [sourceView drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
+        snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        //NSLog(@"drawViewHierarchyInRect... DONE");
+      }
       
       // Get raw image
       UIImage *rawImage = nil;
