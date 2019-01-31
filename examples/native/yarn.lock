@@ -3962,7 +3962,7 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mobx-react@^5.4.3:
+mobx-react@^5.4.2:
   version "5.4.3"
   resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-5.4.3.tgz#6709b7dd89670c40e9815914ac2ca49cc02bfb47"
   integrity sha512-WC8yFlwvJ91hy8j6CrydAuFteUafcuvdITFQeHl3LRIf5ayfT/4W3M/byhEYD2BcJWejeXr8y4Rh2H26RunCRQ==
@@ -3970,10 +3970,10 @@ mobx-react@^5.4.3:
     hoist-non-react-statics "^3.0.0"
     react-lifecycles-compat "^3.0.2"
 
-mobx@^5.8.0:
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.8.0.tgz#cf59eae4baa2fde4387ffb6462b7ccf3b497b03c"
-  integrity sha512-NsZB+9bF5j+nv9Qwk6bNeE3np26a4TbTGkMpOLf6o1zXoM9BtHPQn/00px4uZ2AXJXtQML5P4MEWdMm6icMIfQ==
+mobx@^4.7.0:
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-4.9.2.tgz#b6ab4f3cbd47cd19ead3bca8cea7814919d70b9f"
+  integrity sha512-dMGeM4emHDTaXEA/Va4NhWSiEk8XkdcFQl4uiictXoou0Vbk0Sup4H/HDWGYcXVeRAWGPDYXDDkz1gXK4B1eZw==
 
 morgan@^1.9.0:
   version "1.9.1"
@@ -4724,7 +4724,7 @@ react-native-drawer-layout@1.3.2:
     react-native-dismiss-keyboard "1.0.0"
 
 "react-native-magic-move@file:.yalc/react-native-magic-move":
-  version "0.4.0-f4feef8a"
+  version "0.4.0-935e5866"
   dependencies:
     lodash.findlast "^4.6.0"
 
@@ -4854,7 +4854,7 @@ react-navigation-drawer@0.5.0:
     react-native-drawer-layout-polyfill "^1.3.2"
 
 "react-navigation-magic-move@file:.yalc/react-navigation-magic-move":
-  version "0.4.0-b87948a0"
+  version "0.4.0-7a792a26"
 
 react-navigation-stack@0.7.0:
   version "0.7.0"

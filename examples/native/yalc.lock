@@ -2,11 +2,11 @@
   "version": "v1",
   "packages": {
     "react-native-magic-move": {
-      "signature": "412acec8d8f2f89eb3177e8545c26e57",
+      "signature": "44f38fafed46c293ad1ec30713ffad82",
       "file": true
     },
     "react-navigation-magic-move": {
-      "signature": "b87948a05ac0a4ff11e26b32bf2830ea",
+      "signature": "fe1686dc63d80f63d14e30508ad49f27",
       "file": true
     }
   }
