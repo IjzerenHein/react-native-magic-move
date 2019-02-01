@@ -9,13 +9,16 @@ import com.facebook.react.uimanager.ThemedReactContext;
 //@SuppressLint("ViewConstructor")
 public class ReactMagicMoveCloneView extends ViewGroup {
 
+    private ReactMagicMoveCloneDataManager cloneDataManager;
+    private ReactMagicMoveCloneData data = null;
     private String mId = null;
     private int mOptions = 0;
     private int mContentType = 0;
     private float mBlurRadius = 0.0f;
     
-    public ReactMagicMoveCloneView(ThemedReactContext themedReactContext) {
+    public ReactMagicMoveCloneView(ThemedReactContext themedReactContext, ReactMagicMoveCloneDataManager cloneDataManager) {
         super(themedReactContext);
+        this.cloneDataManager = cloneDataManager;
     }
 
     @Override
@@ -43,8 +46,20 @@ public class ReactMagicMoveCloneView extends ViewGroup {
         }*/
     }
 
+    @Override
+    protected void onDetachedFromWindow () {
+        super.onDetachedFromWindow();
+        if (this.data != null) {
+            this.cloneDataManager.release(this.data);
+            this.data = null;
+        }
+    }
+
+    public void setInitialData(ReactMagicMoveCloneData data) {
+        this.data = data;
+    }
+
     public void setId(final String id) {
-        //setSrc(uriString, type, isNetwork, isAsset, requestHeaders, 0, 0);
         mId = id;
     }
 
@@ -60,13 +75,7 @@ public class ReactMagicMoveCloneView extends ViewGroup {
         mBlurRadius = blurRadius;
     }
 
-
     /*public void applyModifiers() {
         setResizeModeModifier(mResizeMode);
-        setRepeatModifier(mRepeat);
-        setPausedModifier(mPaused);
-        setMutedModifier(mMuted);
-        setProgressUpdateInterval(mProgressUpdateInterval);
-        setRateModifier(mRate);
     }*/
 }

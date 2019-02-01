@@ -6,7 +6,14 @@ import com.facebook.react.uimanager.ThemedReactContext;
 
 public class ReactMagicMoveCloneManager extends ViewGroupManager<ReactMagicMoveCloneView> {
 
+    private ReactMagicMoveCloneDataManager cloneDataManager;
+
     public static final String REACT_CLASS = "RCTMagicMoveClone";
+
+    ReactMagicMoveCloneManager(ReactMagicMoveCloneDataManager cloneDataManager) {
+        super();
+        this.cloneDataManager = cloneDataManager;
+    }
 
     @Override
     public String getName() {
@@ -15,8 +22,14 @@ public class ReactMagicMoveCloneManager extends ViewGroupManager<ReactMagicMoveC
 
     @Override
     protected ReactMagicMoveCloneView createViewInstance(ThemedReactContext themedReactContext) {
-        return new ReactMagicMoveCloneView(themedReactContext);
+        return new ReactMagicMoveCloneView(themedReactContext, this.cloneDataManager);
     }
+
+    /*
+    @Override
+    public void onDropViewInstance(ReactMagicMoveCloneView view) {
+        super.onDropViewInstance(view);
+    }*/
 
     @ReactProp(name = "id")
     public void setId(final ReactMagicMoveCloneView view, final String id) {
