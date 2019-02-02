@@ -29,9 +29,6 @@ class MagicMoveNativeCloneComponent extends PureComponent {
         "MagicMoveNativeCloneComponent is not available, did you forget to use `react-native link react-native-magic-move`?"
       );
     }
-    this.state = {
-      style: undefined
-    };
   }
 
   render() {
@@ -42,13 +39,14 @@ class MagicMoveNativeCloneComponent extends PureComponent {
       options,
       onLayout, // eslint-disable-line
       onShow, // eslint-disable-line
+      mmContext, // eslint-disable-line
       ...otherProps
     } = this.props;
     return (
       <RCTMagicMoveClone
         ref={options & CloneOption.INITIAL ? this._setRef : undefined}
         id={options & CloneOption.SCENE ? component.id : component.props.id}
-        style={style || this.state.style}
+        style={style}
         options={options}
         {...otherProps}
       >
