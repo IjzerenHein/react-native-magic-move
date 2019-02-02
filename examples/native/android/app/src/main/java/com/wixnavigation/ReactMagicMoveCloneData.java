@@ -2,47 +2,48 @@ package com.wixnavigation;
 
 import java.util.Map;
 
-public class ReactMagicMoveCloneData extends Object {
-    private String sharedId;
-    private int reactTag;
-    private Map<String, Float> layout;
-    private int options;
-    private int refCount;
+import android.view.View;
 
-    public ReactMagicMoveCloneData(String sharedId, int reactTag, Map<String, Float> layout, int options) {
-        this.sharedId = sharedId;
-        this.reactTag = reactTag;
-        this.layout = layout;
-        this.options = options;
-        this.refCount = 1;
+public class ReactMagicMoveCloneData extends Object {
+    private String mSharedId;
+    private View mView;
+    private Map<String, Float> mLayout;
+    private int mOptions;
+    private int mRefCount;
+
+    public ReactMagicMoveCloneData(String sharedId, View view, Map<String, Float> layout, int options) {
+        mSharedId = sharedId;
+        mView = view;
+        mOptions = options;
+        mRefCount = 1;
     }
 
     public String getSharedId() {
-        return this.sharedId;
+        return mSharedId;
     }
 
-    public int getReactTag() {
-        return this.reactTag;
+    public View getView() {
+        return mView;
     }
 
     public Map<String, Float> getLayout() {
-        return this.layout;
+        return mLayout;
     }
 
     public int getOptions() {
-        return this.options;
+        return mOptions;
     }
 
     public int getRefCount() {
-        return this.refCount;
+        return mRefCount;
     }
 
     public void setRefCount(int refCount) {
-        this.refCount = refCount;
+        mRefCount = refCount;
     }
 
     public String getKey() {
-        return keyForSharedId(this.sharedId, this.options);
+        return keyForSharedId(mSharedId, mOptions);
     }
 
     public static String keyForSharedId(String sharedId, int options) {

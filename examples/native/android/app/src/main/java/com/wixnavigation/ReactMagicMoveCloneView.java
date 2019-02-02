@@ -1,16 +1,14 @@
 package com.wixnavigation;
 
-import android.annotation.SuppressLint;
 import android.view.ViewGroup;
+import android.graphics.Canvas;
 
 import com.facebook.react.uimanager.ThemedReactContext;
-//import com.facebook.react.views.view.ReactViewGroup;
 
-//@SuppressLint("ViewConstructor")
 public class ReactMagicMoveCloneView extends ViewGroup {
 
-    private ReactMagicMoveCloneDataManager cloneDataManager;
-    private ReactMagicMoveCloneData data = null;
+    private ReactMagicMoveCloneDataManager mCloneDataManager;
+    private ReactMagicMoveCloneData mData = null;
     private String mId = null;
     private int mOptions = 0;
     private int mContentType = 0;
@@ -18,64 +16,54 @@ public class ReactMagicMoveCloneView extends ViewGroup {
     
     public ReactMagicMoveCloneView(ThemedReactContext themedReactContext, ReactMagicMoveCloneDataManager cloneDataManager) {
         super(themedReactContext);
-        this.cloneDataManager = cloneDataManager;
-    }
-
-    @Override
-    @SuppressLint("DrawAllocation")
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        //super.onLayout(changed, left, top, right, bottom);
-
-        /*if (!changed || !mMediaPlayerValid) {
-            return;
-        }
-
-        int videoWidth = getVideoWidth();
-        int videoHeight = getVideoHeight();
-
-        if (videoWidth == 0 || videoHeight == 0) {
-            return;
-        }
-
-        Size viewSize = new Size(getWidth(), getHeight());
-        Size videoSize = new Size(videoWidth, videoHeight);
-        ScaleManager scaleManager = new ScaleManager(viewSize, videoSize);
-        Matrix matrix = scaleManager.getScaleMatrix(mScalableType);
-        if (matrix != null) {
-            setTransform(matrix);
-        }*/
+        mCloneDataManager = cloneDataManager;
     }
 
     @Override
     protected void onDetachedFromWindow () {
+        // Called whenever the clone is destroyed.
+        // Releases our reference to the clone data
         super.onDetachedFromWindow();
-        if (this.data != null) {
-            this.cloneDataManager.release(this.data);
-            this.data = null;
+        if (mData != null) {
+            mCloneDataManager.release(mData);
+            mData = null;
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        // nop
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (mData != null) {
+            mData.getView().draw(canvas);
         }
     }
 
     public void setInitialData(ReactMagicMoveCloneData data) {
-        this.data = data;
+        mData = data;
+        invalidate();
     }
 
     public void setId(final String id) {
         mId = id;
+        invalidate();
     }
 
     public void setOptions(final int options) {
         mOptions = options;
+        invalidate();
     }
 
     public void setContentType(final int contentType) {
         mContentType = contentType;
+        invalidate();
     }
 
     public void setBlurRadius(final float blurRadius) {
         mBlurRadius = blurRadius;
+        invalidate();
     }
-
-    /*public void applyModifiers() {
-        setResizeModeModifier(mResizeMode);
-    }*/
 }

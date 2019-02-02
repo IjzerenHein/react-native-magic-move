@@ -4,11 +4,11 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class ReactMagicMoveCloneDataManager extends Object {
-    private Map<String, ReactMagicMoveCloneData> items = new HashMap<String, ReactMagicMoveCloneData>();
+    private Map<String, ReactMagicMoveCloneData> mItems = new HashMap<String, ReactMagicMoveCloneData>();
 
     public ReactMagicMoveCloneData acquire(String key) {
-        synchronized (this.items) {
-            ReactMagicMoveCloneData item = this.items.get(key);
+        synchronized (mItems) {
+            ReactMagicMoveCloneData item = mItems.get(key);
             if (item != null) {
                 item.setRefCount(item.getRefCount() + 1);
             }
@@ -17,18 +17,18 @@ public class ReactMagicMoveCloneDataManager extends Object {
     }
 
     public int release(ReactMagicMoveCloneData item) {
-        synchronized (this.items) {
+        synchronized (mItems) {
             item.setRefCount(item.getRefCount() - 1);
             if (item.getRefCount() == 0) {
-                this.items.remove(item.getKey());
+                mItems.remove(item.getKey());
             }
             return item.getRefCount();
         }
     }
 
     public void put (ReactMagicMoveCloneData item) {
-        synchronized (this.items) {
-            this.items.put(item.getKey(), item);
+        synchronized (mItems) {
+            mItems.put(item.getKey(), item);
         }
     }
 }
