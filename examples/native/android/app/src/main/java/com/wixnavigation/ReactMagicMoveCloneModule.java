@@ -76,6 +76,7 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                 styles.putDouble("width", layout.get("width"));
                 styles.putDouble("height", layout.get("height"));
                 styles.putInt("backgroundColor", 1);
+                styles.putString("overflow", "hidden");
                 uiManager.updateView(tag, "RCTMagicMoveClone", styles);
 
                 uiManager.prependUIBlock(new UIBlock() {

@@ -1,10 +1,11 @@
 package com.wixnavigation;
 
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.views.view.ReactViewManager;
+import com.facebook.react.views.view.ReactViewGroup;
 
-public class ReactMagicMoveCloneManager extends ViewGroupManager<ReactMagicMoveCloneView> {
+public class ReactMagicMoveCloneManager extends ReactViewManager {
 
     private ReactMagicMoveCloneDataManager mCloneDataManager;
 
@@ -21,14 +22,19 @@ public class ReactMagicMoveCloneManager extends ViewGroupManager<ReactMagicMoveC
     }
 
     @Override
-    protected ReactMagicMoveCloneView createViewInstance(ThemedReactContext themedReactContext) {
-        return new ReactMagicMoveCloneView(themedReactContext, mCloneDataManager);
+    public ReactViewGroup createViewInstance(ThemedReactContext context) {
+        return new ReactMagicMoveCloneView(context, mCloneDataManager);
+    }
+
+    @Override
+    public void onDropViewInstance(ReactViewGroup view) {
+        super.onDropViewInstance(view);
+        ((ReactMagicMoveCloneView)view).releaseData();
     }
 
     @ReactProp(name = "id")
     public void setId(final ReactMagicMoveCloneView view, final String id) {
         view.setId(id);
-        //view.setBackgroundColor(1);
     }
 
     @ReactProp(name = "options")
@@ -44,11 +50,5 @@ public class ReactMagicMoveCloneManager extends ViewGroupManager<ReactMagicMoveC
     @ReactProp(name = "blurRadius", defaultFloat = 0.0f)
     public void setBlurRadius(final ReactMagicMoveCloneView view, final float blurRadius) {
         view.setBlurRadius(blurRadius);
-    }
-
-    @Override
-    protected void onAfterUpdateTransaction(ReactMagicMoveCloneView view) {
-        super.onAfterUpdateTransaction(view);
-        view.onAfterUpdateTransition();
     }
 }
