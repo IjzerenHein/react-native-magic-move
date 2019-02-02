@@ -7,16 +7,21 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
+import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.NativeViewHierarchyManager;
 import com.facebook.react.uimanager.UIBlock;
 import com.facebook.react.uimanager.UIManagerModule;
+import com.facebook.react.uimanager.ReactStylesDiffMap;
 
 public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
     private ReactMagicMoveCloneDataManager mCloneDataManager;
@@ -63,6 +68,16 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                     layout.put("height", 100f);
                 }
 
+                // Update the layout props for the view
+                WritableMap styles = Arguments.createMap();
+                styles.putString("position", "absolute");
+                styles.putDouble("left", layout.get("x"));
+                styles.putDouble("top", layout.get("y"));
+                styles.putDouble("width", layout.get("width"));
+                styles.putDouble("height", layout.get("height"));
+                styles.putInt("backgroundColor", 1);
+                uiManager.updateView(tag, "RCTMagicMoveClone", styles);
+
                 uiManager.prependUIBlock(new UIBlock() {
                     @Override
                     public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
@@ -86,7 +101,7 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                         // Create clone data object
                         ReactMagicMoveCloneData data = new ReactMagicMoveCloneData(sharedId, sourceView, layout, options);
                         cloneDataManager.put(data);
-                        view.setInitialData(data);
+                        view.setInitialData(data, options, contentType);
                     }
                 });
             }

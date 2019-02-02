@@ -3,16 +3,22 @@ package com.wixnavigation;
 import java.util.Map;
 
 import android.view.View;
+import android.graphics.Rect;
 
 public class ReactMagicMoveCloneData extends Object {
     private String mSharedId;
     private View mView;
-    private Map<String, Float> mLayout;
+    private Rect mLayout;
     private int mOptions;
     private int mRefCount;
 
     public ReactMagicMoveCloneData(String sharedId, View view, Map<String, Float> layout, int options) {
         mSharedId = sharedId;
+        int x = Math.round(layout.get("x"));
+        int y = Math.round(layout.get("y"));
+        int width = Math.round(layout.get("width"));
+        int height = Math.round(layout.get("height"));
+        mLayout = new Rect(x, y, x + width, y + height);
         mView = view;
         mOptions = options;
         mRefCount = 1;
@@ -26,7 +32,7 @@ public class ReactMagicMoveCloneData extends Object {
         return mView;
     }
 
-    public Map<String, Float> getLayout() {
+    public Rect getLayout() {
         return mLayout;
     }
 
