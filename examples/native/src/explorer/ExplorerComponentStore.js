@@ -155,15 +155,23 @@ const POSITIONS = [
 ];
 
 const TRANSITIONS = [
+  { label: "Move", transition: Transition.move },
   { label: "Morph", transition: Transition.morph },
   { label: "Dissolve", transition: Transition.dissolve },
   { label: "Flip", transition: Transition.flip },
   { label: "Flip X", transition: Transition.flip.x },
   { label: "Flip Y", transition: Transition.flip.y },
-  { label: "Scale", transition: Transition.scale },
   { label: "Shrink & Grow", transition: Transition.shrinkAndGrow },
   { label: "Squash & Stretch", transition: Transition.squashAndStretch },
+  { label: "Move Source", transition: Transition.move.source },
+  { label: "Move Target", transition: Transition.move.target }
 ];
+if (Transition.fold)
+  TRANSITIONS.push({ label: "Fold", transition: Transition.fold });
+if (Transition.blur)
+  TRANSITIONS.push({ label: "Blur", transition: Transition.blur });
+if (Transition.dotted)
+  TRANSITIONS.push({ label: "Dotted", transition: Transition.dotted });
 
 const EASINGS = [
   { label: "In Out", easing: Easing.inOut(Easing.ease) },
