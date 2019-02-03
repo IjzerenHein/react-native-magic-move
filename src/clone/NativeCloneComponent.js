@@ -5,7 +5,8 @@ import {
   requireNativeComponent,
   NativeModules,
   findNodeHandle,
-  Image
+  Image,
+  Platform
 } from "react-native";
 import PropTypes from "prop-types";
 import { CloneOption } from "./types";
@@ -72,7 +73,7 @@ class MagicMoveNativeCloneComponent extends PureComponent {
     const { scene, parent } = mmContext;
     const sourceHandle = findNodeHandle(component.ref);
     const parentHandle = findNodeHandle(scene ? scene.ref : parent.ref);
-    const layout = await NativeModules.MagicMoveCloneManager.init(
+    const layoutPromise = NativeModules.MagicMoveCloneManager.init(
       {
         id: options & CloneOption.SCENE ? component.id : component.props.id,
         source: sourceHandle,
@@ -83,17 +84,18 @@ class MagicMoveNativeCloneComponent extends PureComponent {
       findNodeHandle(this._ref)
     );
 
-    // If the native side wasn't able to obtain
-    // the image size, try to obtain it here as a fallback
-    // measure
-    if (isImage && source && !layout.imageWidth) {
-      let imageSize;
+    // On Android the image-size cannot be obtained
+    // in the native code, so we therefore do it
+    // ourselves here after the `init` has been fired
+    // of the native side.
+    let imageSizePromise = Promise.resolve(undefined);
+    if (isImage && source && Platform.OS === "android") {
       if (typeof source === "number") {
-        imageSize = Image.resolveAssetSource(source);
+        imageSizePromise = Promise.resolve(Image.resolveAssetSource(source));
       } else if (imageSizeHint) {
-        imageSize = imageSizeHint;
+        imageSizePromise = Promise.resolve(imageSizeHint);
       } else if (source.uri && !onShow) {
-        imageSize = await new Promise((resolve, reject) => {
+        imageSizePromise = new Promise((resolve, reject) => {
           Image.getSize(
             source.uri,
             (width, height) => resolve({ width, height }),
@@ -101,10 +103,16 @@ class MagicMoveNativeCloneComponent extends PureComponent {
           );
         });
       }
-      if (imageSize) {
-        layout.imageWidth = imageSize.width;
-        layout.imageHeight = imageSize.height;
-      }
+    }
+
+    // Wait for the results
+    const layout = await layoutPromise;
+    const imageSize = await imageSizePromise;
+
+    // Update layout with retrieved image size
+    if (imageSize) {
+      layout.imageWidth = imageSize.width;
+      layout.imageHeight = imageSize.height;
     }
 
     // Call callbacks
