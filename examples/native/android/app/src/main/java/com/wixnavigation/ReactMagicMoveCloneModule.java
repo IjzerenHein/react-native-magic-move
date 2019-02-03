@@ -90,12 +90,6 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                         result.putDouble("width", layout.get("width"));
                         result.putDouble("height", layout.get("height"));
 
-                        // Get raw image & size
-                        if (ReactMagicMoveImageView.class.isInstance(sourceView)) {
-                            ReactMagicMoveImageView imageView = (ReactMagicMoveImageView) sourceView;
-                            Rect size = imageView.getSize();
-                        }
-
                         // Resolve promise with result
                         promise.resolve(result);
 
