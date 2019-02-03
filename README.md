@@ -25,6 +25,15 @@ Installation
 $ yarn add react-native-magic-move
 ```
 
+Link the native extensions *(\* recommended but not required)*
+
+```
+$ react-native link react-native-magic-move 
+```
+
+\* *The native extensions are recommended to get the best performance, but they are not required.
+This makes it possible to use `react-native-magic-move` with [expo](expo.io) or [react-native-web](https://github.com/necolas/react-native-web). If you're having trouble installing the native extensions, please see [this guide](./docs/NativeInstallation.md) on how to install them manually.*
+
 Wrap your app with the `<MagicMove.Provider>` context.
 
 ```jsx
@@ -91,33 +100,32 @@ MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
 
 ### Props
 
-| Property          | Type       | Default                      | Description                                                         |
-| ----------------- | ---------- | ---------------------------- | ------------------------------------------------------------------- |
-| `id`              | `string`   | **(required)**               | Unique id of the magic-move instance                                |
-| `transition`      | `function` | `MagicMove.Transition.morph` | Transition effect, see below                                        |
-| `duration`        | `number`   | `400`                        | Length of the animation (milliseconds)                              |
-| `delay`           | `number`   | `0`                          | Amount of msec to wait before starting the animation                |
-| `easing`          | `function` | `Easing.inOut(Easing.ease)`  | Easing function to define the curve                                 |
-| `disabled`        | `bool`     | `false`                      | Disables transitions to this component                              |
-| `useNativeDriver` | `boolean`  | `true`                       | Use the native-driver                                               |
-| `keepHidden`      | `boolean`  | `false`                      | Keeps the source component hidden after the animation has completed |
-| `debug`           | `boolean`  | `false`                      | Enables debug-mode to analyze animations                            |
+| Property          | Type       | Default                     | Description                                          |
+| ----------------- | ---------- | --------------------------- | ---------------------------------------------------- |
+| `id`              | `string`   | **(required)**              | Unique id of the magic-move instance                 |
+| `transition`      | `function` | `MagicMove.Transition.move` | Transition effect, see below                         |
+| `duration`        | `number`   | `400`                       | Length of the animation (milliseconds)               |
+| `delay`           | `number`   | `0`                         | Amount of msec to wait before starting the animation |
+| `easing`          | `function` | `Easing.inOut(Easing.ease)` | Easing function to define the curve                  |
+| `disabled`        | `bool`     | `false`                     | Disables transitions to this component               |
+| `useNativeDriver` | `boolean`  | `true`                      | Use the native-driver                                |
+| `debug`           | `boolean`  | `false`                     | Enables debug-mode to analyze animations             |
 
 ### Transitions
 
 The following transition functions are available out of the box.
 
-| Transition                                 | Description                                                                                                    |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `MagicMove.Transition.morph` **(default)** | Morphs the shape, size and colours  of the target to look like the source                                      |
-| `MagicMove.Transition.scale`               | Simple move that scales the target to the size of the source                                                   |
-| `MagicMove.Transition.dissolve`            | Cross fade the source into the target                                                                          |
-| `MagicMove.Transition.flip`                | Flip the source to reveal the target on the backside (auto choose axis)                                        |
-| `MagicMove.Transition.flip.x`              | Flip the source to reveal the target on the backside (over x-axis)                                             |
-| `MagicMove.Transition.flip.y`              | Flip the source to reveal the target on the backside (over y-axis)                                             |
-| `MagicMove.Transition.flip.xy`             | Flip the source to reveal the target on the backside (over x- and y-axes)                                      |
-| `MagicMove.Transition.shrinkAndGrow`       | Shrink and let the source disappear while letting the target appear and grow                                   |
-| `MagicMove.Transition.squashAndStretch`    | Scale the target to the size of the source and squash and stretch to give it the illusion of momentum and mass |
+| Transition                                | Description                                                                                                                                                            |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MagicMove.Transition.move` **(default)** | Moves the component while adjusting for border-radii and size. Takes the image `resizeMode` into account to create a seamless image transition without any stretching. |
+| `MagicMove.Transition.morph`              | Morphs the shape, size and colours  of the target to look like the source                                                                                              |
+| `MagicMove.Transition.dissolve`           | Cross fade the source into the target                                                                                                                                  |
+| `MagicMove.Transition.flip`               | Flip the source to reveal the target on the backside (auto choose axis)                                                                                                |
+| `MagicMove.Transition.flip.x`             | Flip the source to reveal the target on the backside (over x-axis)                                                                                                     |
+| `MagicMove.Transition.flip.y`             | Flip the source to reveal the target on the backside (over y-axis)                                                                                                     |
+| `MagicMove.Transition.flip.xy`            | Flip the source to reveal the target on the backside (over x- and y-axes)                                                                                              |
+| `MagicMove.Transition.shrinkAndGrow`      | Shrink and let the source disappear while letting the target appear and grow                                                                                           |
+| `MagicMove.Transition.squashAndStretch`   | Scale the target to the size of the source and squash and stretch to give it the illusion of momentum and mass                                                         |
 
 You can also create your own transition functions, see [`src/transitions`](./src/transitions) for examples.
 
@@ -127,10 +135,11 @@ Use `<MagicMove.Scene>` to mark the start of a scene within the rendering hierar
 This is important so that Magic Move can correctly assess the destination-position of an animation.
 `MagicMove.Scene` is implemented using a regular `View` and supports all its properties.
 
-| Property   | Type   | Default | Description                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------- | ------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `disabled` | `bool` | `false` | Disable transitions to this scene.                                                                                                                                                                                                                                                                                                                                                                                           |
-| `active`   | `bool` |         | This special prop is intended for integrating magic-move with 3rd party navigators such as `react-navigation`. *Do not use it unless you know what you are doing.* By setting it to `true` or `false` the navigation package can control which scene is active and which is no longer active. See [react-navigation-magic-move](https://github.com/IjzerenHein/react-navigation-magic-move) for an example on how to use it. |
+| Property   | Type      | Default | Description                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | --------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled` | `bool`    | `false` | Disable transitions to this scene.                                                                                                                                                                                                                                                                                                                                                                                           |
+| `active`   | `bool`    |         | This special prop is intended for integrating magic-move with 3rd party navigators such as `react-navigation`. *Do not use it unless you know what you are doing.* By setting it to `true` or `false` the navigation package can control which scene is active and which is no longer active. See [react-navigation-magic-move](https://github.com/IjzerenHein/react-navigation-magic-move) for an example on how to use it. |
+| `debug`    | `boolean` | `false` | Enables debug-mode to analyze animations                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ### Context
 
