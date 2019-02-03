@@ -1,9 +1,11 @@
+/* globals Promise */
 import React, { PureComponent } from "react";
 import {
   Animated,
   requireNativeComponent,
   NativeModules,
-  findNodeHandle
+  findNodeHandle,
+  Image
 } from "react-native";
 import PropTypes from "prop-types";
 import { CloneOption } from "./types";
@@ -62,10 +64,12 @@ class MagicMoveNativeCloneComponent extends PureComponent {
 
   async _init() {
     if (!this._ref) return;
-    const { options, component, contentType } = this.props;
-    const { mmContext } = component.props;
+    const { options, component, contentType, onLayout, onShow } = this.props;
+    const { mmContext, imageSizeHint, source } = component.props;
+    const { isImage } = component;
+
+    // Initialize native clone
     const { scene, parent } = mmContext;
-    // console.log("INIT #1: ", component.ref, options);
     const sourceHandle = findNodeHandle(component.ref);
     const parentHandle = findNodeHandle(scene ? scene.ref : parent.ref);
     const layout = await NativeModules.MagicMoveCloneManager.init(
@@ -78,14 +82,34 @@ class MagicMoveNativeCloneComponent extends PureComponent {
       },
       findNodeHandle(this._ref)
     );
-    if (layout.width * layout.height) {
-      if (this.props.onLayout) {
-        this.props.onLayout(layout);
+
+    // If the native side wasn't able to obtain
+    // the image size, try to obtain it here as a fallback
+    // measure
+    if (isImage && source && !layout.imageWidth) {
+      let imageSize;
+      if (typeof source === "number") {
+        imageSize = Image.resolveAssetSource(source);
+      } else if (imageSizeHint) {
+        imageSize = imageSizeHint;
+      } else if (source.uri && !onShow) {
+        imageSize = await new Promise((resolve, reject) => {
+          Image.getSize(
+            source.uri,
+            (width, height) => resolve({ width, height }),
+            reject
+          );
+        });
       }
-      if (this.props.onShow) {
-        this.props.onShow(layout);
+      if (imageSize) {
+        layout.imageWidth = imageSize.width;
+        layout.imageHeight = imageSize.height;
       }
     }
+
+    // Call callbacks
+    if (onLayout) onLayout(layout);
+    if (onShow) onShow(layout);
   }
 }
 

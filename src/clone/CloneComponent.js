@@ -51,7 +51,10 @@ class MagicMoveCloneComponent extends PureComponent {
     // In case this is an image, also measure the size
     // of the underlying image, so we can perform "perfect"
     // image transitions
-    const imageSource = component.props.source;
+    const imageSource =
+      component.props.ComponentType === "image"
+        ? component.props.source
+        : undefined;
     let imageSize;
     if (imageSource) {
       if (typeof imageSource === "number") {

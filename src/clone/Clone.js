@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Animated, StyleSheet } from "react-native";
+import { Animated, Platform } from "react-native";
 import PropTypes from "prop-types";
 import { MagicMoveContextProvider, MagicMoveContextPropType } from "../Context";
 import CloneComponent from "./CloneComponent";
@@ -44,6 +44,7 @@ class MagicMoveClone extends PureComponent {
     // For convenience of reasoning, deconstruct the options
     const isInitial = options & CloneOption.INITIAL ? true : false;
     const isVisible = options & CloneOption.VISIBLE ? true : false;
+    const { isImage } = this.props.component;
 
     // Do now show the outer content, when an inner content style
     // is specified
@@ -63,25 +64,47 @@ class MagicMoveClone extends PureComponent {
       nativeContentType === CloneContentType.CHILDREN
         ? children
         : undefined;
+
+    // Render inner clone
+    let innerClone;
+    if (contentStyle) {
+      if (
+        NativeCloneComponent.isAvailable &&
+        (!isImage || Platform.OS === "ios")
+      ) {
+        innerClone = (
+          <NativeCloneComponent
+            style={contentStyle}
+            options={innerOptions}
+            contentType={nativeContentType}
+            {...otherProps}
+          >
+            {cloneChildren}
+          </NativeCloneComponent>
+        );
+      } else {
+        innerClone = (
+          <CloneComponent
+            style={contentStyle}
+            options={innerOptions}
+            {...otherProps}
+          >
+            {cloneChildren}
+          </CloneComponent>
+        );
+      }
+    }
+
     if (NativeCloneComponent.isAvailable) {
-      if (contentStyle) {
+      if (innerClone) {
         content = (
           <NativeCloneComponent
             style={style}
             options={outerOptions}
-            contentType={
-              contentStyle ? CloneContentType.CHILDREN : nativeContentType
-            }
+            contentType={CloneContentType.CHILDREN}
             {...otherProps}
           >
-            <NativeCloneComponent
-              style={contentStyle || StyleSheet.absoluteFill}
-              options={innerOptions}
-              contentType={nativeContentType}
-              {...otherProps}
-            >
-              {cloneChildren}
-            </NativeCloneComponent>
+            {innerClone}
           </NativeCloneComponent>
         );
       } else {
@@ -96,16 +119,10 @@ class MagicMoveClone extends PureComponent {
           </NativeCloneComponent>
         );
       }
-    } else if (!isInitial && contentStyle) {
+    } else if (innerClone) {
       content = (
         <Animated.View style={style} options={outerOptions}>
-          <CloneComponent
-            style={contentStyle}
-            options={innerOptions}
-            {...otherProps}
-          >
-            {cloneChildren}
-          </CloneComponent>
+          {innerClone}
         </Animated.View>
       );
     } else {

@@ -14,6 +14,7 @@ import {
 class MagicMoveView extends Component {
   static propTypes = {
     Component: PropTypes.any.isRequired,
+    ComponentType: PropTypes.string,
     AnimatedComponent: PropTypes.any.isRequired,
     id: PropTypes.string.isRequired,
     useNativeDriver: PropTypes.bool,
@@ -33,6 +34,7 @@ class MagicMoveView extends Component {
 
   static defaultProps = {
     Component: View,
+    ComponentType: "view",
     AnimatedComponent: Animated.View,
     disabled: false,
     keepHidden: false
@@ -55,6 +57,10 @@ class MagicMoveView extends Component {
 
   get isComponent() {
     return true;
+  }
+
+  get isImage() {
+    return this.props.ComponentType === "image";
   }
 
   get ref() {

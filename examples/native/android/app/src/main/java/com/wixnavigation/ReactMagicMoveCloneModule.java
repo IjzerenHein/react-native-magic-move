@@ -2,26 +2,22 @@ package com.wixnavigation;
 
 import android.view.View;
 import android.os.Handler;
+import android.graphics.Rect;
 
 import java.util.Map;
 import java.util.HashMap;
 
 import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReadableMapKeySetIterator;
-import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.NativeViewHierarchyManager;
 import com.facebook.react.uimanager.UIBlock;
 import com.facebook.react.uimanager.UIManagerModule;
-import com.facebook.react.uimanager.ReactStylesDiffMap;
 
 public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
     private ReactMagicMoveCloneDataManager mCloneDataManager;
@@ -95,6 +91,10 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                         result.putDouble("height", layout.get("height"));
 
                         // Get raw image & size
+                        if (ReactMagicMoveImageView.class.isInstance(sourceView)) {
+                            ReactMagicMoveImageView imageView = (ReactMagicMoveImageView) sourceView;
+                            Rect size = imageView.getSize();
+                        }
 
                         // Resolve promise with result
                         promise.resolve(result);
