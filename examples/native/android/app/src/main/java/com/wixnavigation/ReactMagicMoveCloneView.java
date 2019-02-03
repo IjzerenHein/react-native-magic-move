@@ -1,6 +1,12 @@
 package com.wixnavigation;
 
+/*
 import android.util.Log;
+import android.graphics.Paint;
+import android.graphics.Color;
+import android.view.View;
+*/
+
 import android.graphics.Canvas;
 
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -47,7 +53,15 @@ public class ReactMagicMoveCloneView extends ReactViewGroup {
 
         if (mData == null) return;
         if ((mOptions & ReactMagicMoveCloneOption.VISIBLE) == 0) return;
-        if (mContentType == ReactMagicMoveContentType.CHILDREN) return;
+        if (mContentType == ReactMagicMoveContentType.CHILDREN) {
+            /*Paint paint = new Paint();
+            int width = this.getWidth();
+            int height = this.getHeight();
+            paint.setColor(Color.BLUE);
+            paint.setStyle(Paint.Style.FILL); //fill the background with blue color
+            canvas.drawRect(0, 0, width, height, paint);*/
+            return;
+        }
 
         mData.getView().draw(canvas);
     }
@@ -69,7 +83,13 @@ public class ReactMagicMoveCloneView extends ReactViewGroup {
 
     public void setOptions(final int options) {
         if (mOptions != options) {
+            // boolean wasVisible = ((mOptions & ReactMagicMoveCloneOption.VISIBLE) != 0);
+            // boolean isVisible = ((options & ReactMagicMoveCloneOption.VISIBLE) != 0);
             mOptions = options;
+            /*if (wasVisible && !isVisible) {
+                // setVisibility(View.INVISIBLE);
+                Log.d(LOG_TAG, "HIDE " + getDebugName() + ", left: " + getLeft() + ", top: " + getTop());
+            }*/
             invalidate();
         }
     }
