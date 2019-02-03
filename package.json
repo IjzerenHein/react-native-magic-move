@@ -16,7 +16,9 @@
   "main": "src/index.js",
   "react-native": "src/index.js",
   "files": [
-    "src"
+    "src",
+    "ios",
+    "android"
   ],
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./src"

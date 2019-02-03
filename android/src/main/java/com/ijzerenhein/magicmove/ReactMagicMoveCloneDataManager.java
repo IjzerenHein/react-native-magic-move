@@ -1,4 +1,4 @@
-package com.wixnavigation;
+package com.ijzerenhein.magicmove;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class ReactMagicMoveCloneDataManager extends Object {
         }
     }
 
-    public void put (ReactMagicMoveCloneData item) {
+    public void put(ReactMagicMoveCloneData item) {
         synchronized (mItems) {
             mItems.put(item.getKey(), item);
         }

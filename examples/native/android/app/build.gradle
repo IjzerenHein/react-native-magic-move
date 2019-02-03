@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-magic-move')
     compile project(':react-native-vector-icons')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"

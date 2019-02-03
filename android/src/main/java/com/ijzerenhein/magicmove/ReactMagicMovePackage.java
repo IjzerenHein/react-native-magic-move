@@ -1,4 +1,4 @@
-package com.wixnavigation;
+package com.ijzerenhein.magicmove;
 
 import java.util.*;
 
@@ -7,7 +7,7 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
-public class MainPackage implements ReactPackage {
+public class ReactMagicMovePackage implements ReactPackage {
     private ReactMagicMoveCloneDataManager cloneDataManager = new ReactMagicMoveCloneDataManager();
 
     @Override

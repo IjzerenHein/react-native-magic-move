@@ -1,4 +1,4 @@
-package com.wixnavigation;
+package com.ijzerenhein.magicmove;
 
 public class ReactMagicMoveContentType {
     public static final int CHILDREN = 0;

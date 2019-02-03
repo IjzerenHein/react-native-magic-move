@@ -1,4 +1,4 @@
-package com.wixnavigation;
+package com.ijzerenhein.magicmove;
 
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -29,7 +29,7 @@ public class ReactMagicMoveCloneManager extends ReactViewManager {
     @Override
     public void onDropViewInstance(ReactViewGroup view) {
         super.onDropViewInstance(view);
-        ((ReactMagicMoveCloneView)view).releaseData();
+        ((ReactMagicMoveCloneView) view).releaseData();
     }
 
     @ReactProp(name = "id")

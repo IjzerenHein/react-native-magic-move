@@ -1,4 +1,4 @@
-package com.wixnavigation;
+package com.ijzerenhein.magicmove;
 
 /*
 import android.util.Log;
@@ -22,8 +22,9 @@ public class ReactMagicMoveCloneView extends ReactViewGroup {
     private int mOptions = 0;
     private int mContentType = 0;
     private float mBlurRadius = 0.0f;
-    
-    public ReactMagicMoveCloneView(ThemedReactContext themedReactContext, ReactMagicMoveCloneDataManager cloneDataManager) {
+
+    public ReactMagicMoveCloneView(ThemedReactContext themedReactContext,
+            ReactMagicMoveCloneDataManager cloneDataManager) {
         super(themedReactContext);
         // Log.d(LOG_TAG, "Clone construct");
         mCloneDataManager = cloneDataManager;
@@ -44,22 +45,26 @@ public class ReactMagicMoveCloneView extends ReactViewGroup {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Log.d(LOG_TAG, "onDraw " + getDebugName() + ", width: " + canvas.getWidth() + ", height: " + canvas.getHeight());
+        // Log.d(LOG_TAG, "onDraw " + getDebugName() + ", width: " + canvas.getWidth() +
+        // ", height: " + canvas.getHeight());
         if ((mData == null) && (mId != null) && ((mOptions & ReactMagicMoveCloneOption.INITIAL) == 0)) {
-            // Log.d(LOG_TAG, "mCloneDataManager.acquire " + getDebugName() + ", options: " + mOptions);
+            // Log.d(LOG_TAG, "mCloneDataManager.acquire " + getDebugName() + ", options: "
+            // + mOptions);
             mData = mCloneDataManager.acquire(ReactMagicMoveCloneData.keyForSharedId(mId, mOptions));
             // if (mData != null) Log.d(LOG_TAG, "Success!!");
         }
 
-        if (mData == null) return;
-        if ((mOptions & ReactMagicMoveCloneOption.VISIBLE) == 0) return;
+        if (mData == null)
+            return;
+        if ((mOptions & ReactMagicMoveCloneOption.VISIBLE) == 0)
+            return;
         if (mContentType == ReactMagicMoveContentType.CHILDREN) {
-            /*Paint paint = new Paint();
-            int width = this.getWidth();
-            int height = this.getHeight();
-            paint.setColor(Color.BLUE);
-            paint.setStyle(Paint.Style.FILL); //fill the background with blue color
-            canvas.drawRect(0, 0, width, height, paint);*/
+            /*
+             * Paint paint = new Paint(); int width = this.getWidth(); int height =
+             * this.getHeight(); paint.setColor(Color.BLUE);
+             * paint.setStyle(Paint.Style.FILL); //fill the background with blue color
+             * canvas.drawRect(0, 0, width, height, paint);
+             */
             return;
         }
 
@@ -67,7 +72,8 @@ public class ReactMagicMoveCloneView extends ReactViewGroup {
     }
 
     public void setInitialData(ReactMagicMoveCloneData data, int options, int contentType) {
-        // Log.d(LOG_TAG, "setInitialData " + getDebugName() + ", layout: " + data.getLayout());
+        // Log.d(LOG_TAG, "setInitialData " + getDebugName() + ", layout: " +
+        // data.getLayout());
         mData = data;
         mOptions = options;
         mContentType = contentType;
@@ -86,10 +92,11 @@ public class ReactMagicMoveCloneView extends ReactViewGroup {
             // boolean wasVisible = ((mOptions & ReactMagicMoveCloneOption.VISIBLE) != 0);
             // boolean isVisible = ((options & ReactMagicMoveCloneOption.VISIBLE) != 0);
             mOptions = options;
-            /*if (wasVisible && !isVisible) {
-                // setVisibility(View.INVISIBLE);
-                Log.d(LOG_TAG, "HIDE " + getDebugName() + ", left: " + getLeft() + ", top: " + getTop());
-            }*/
+            /*
+             * if (wasVisible && !isVisible) { // setVisibility(View.INVISIBLE);
+             * Log.d(LOG_TAG, "HIDE " + getDebugName() + ", left: " + getLeft() + ", top: "
+             * + getTop()); }
+             */
             invalidate();
         }
     }

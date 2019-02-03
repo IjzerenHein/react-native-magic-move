@@ -1,4 +1,4 @@
-package com.wixnavigation;
+package com.ijzerenhein.magicmove;
 
 import java.util.Map;
 
@@ -56,8 +56,7 @@ public class ReactMagicMoveCloneData extends Object {
         String type;
         if ((options & ReactMagicMoveCloneOption.SCENE) != 0) {
             type = ((options & ReactMagicMoveCloneOption.TARGET) != 0) ? "TargetScene" : "SourceScene";
-        }
-        else {
+        } else {
             type = ((options & ReactMagicMoveCloneOption.TARGET) != 0) ? "TargetComponent" : "SourceComponent";
         }
         return type + ":" + sharedId;

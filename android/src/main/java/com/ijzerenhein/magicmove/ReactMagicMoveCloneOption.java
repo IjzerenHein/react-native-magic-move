@@ -1,4 +1,4 @@
-package com.wixnavigation;
+package com.ijzerenhein.magicmove;
 
 public class ReactMagicMoveCloneOption {
     public static final int INITIAL = 1;

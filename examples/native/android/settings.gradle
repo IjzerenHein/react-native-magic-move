@@ -1,4 +1,6 @@
 rootProject.name = 'wixNavigation'
+include ':react-native-magic-move'
+project(':react-native-magic-move').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-magic-move/android')
 include ':react-native-vector-icons'
 project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
 

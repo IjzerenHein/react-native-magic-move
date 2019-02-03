@@ -1,4 +1,4 @@
-package com.wixnavigation;
+package com.ijzerenhein.magicmove;
 
 import android.view.View;
 import android.os.Handler;
@@ -22,7 +22,8 @@ import com.facebook.react.uimanager.UIManagerModule;
 public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
     private ReactMagicMoveCloneDataManager mCloneDataManager;
 
-    public ReactMagicMoveCloneModule(ReactApplicationContext reactContext, ReactMagicMoveCloneDataManager cloneDataManager) {
+    public ReactMagicMoveCloneModule(ReactApplicationContext reactContext,
+            ReactMagicMoveCloneDataManager cloneDataManager) {
         super(reactContext);
         mCloneDataManager = cloneDataManager;
     }
@@ -59,7 +60,8 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                 layout.put("height", ((Float) args[3]).floatValue());
 
                 if (layout.get("width") == 0f || layout.get("height") == 0f) {
-                    //promise.reject("measure_failed", "measureLayout returned 0 for width/height after 3 times");
+                    // promise.reject("measure_failed", "measureLayout returned 0 for width/height
+                    // after 3 times");
                     layout.put("width", 100f);
                     layout.put("height", 100f);
                 }
@@ -80,7 +82,8 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                     public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
 
                         // Get views
-                        ReactMagicMoveCloneView view = (ReactMagicMoveCloneView) nativeViewHierarchyManager.resolveView(tag);
+                        ReactMagicMoveCloneView view = (ReactMagicMoveCloneView) nativeViewHierarchyManager
+                                .resolveView(tag);
                         View sourceView = nativeViewHierarchyManager.resolveView(source);
 
                         // Prepare result
@@ -94,7 +97,8 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                         promise.resolve(result);
 
                         // Create clone data object
-                        ReactMagicMoveCloneData data = new ReactMagicMoveCloneData(sharedId, sourceView, layout, options);
+                        ReactMagicMoveCloneData data = new ReactMagicMoveCloneData(sharedId, sourceView, layout,
+                                options);
                         cloneDataManager.put(data);
                         view.setInitialData(data, options, contentType);
                     }
@@ -112,7 +116,6 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
             }
         };
 
-
         // Try a couple times to measure the layout.
         // I know, I know, this solution down here is a "regelrechte" mess.
         // I couldn't figure out how to do a generic delayed retry mechanism
@@ -123,45 +126,46 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
         uiManager.measureLayout(source, parent, measureErrorCallback, new Callback() {
             @Override
             public void invoke(Object... args) {
-                if ( ((Float) args[2]).floatValue() == 0f ||  ((Float) args[3]).floatValue() == 0f) {
+                if (((Float) args[2]).floatValue() == 0f || ((Float) args[3]).floatValue() == 0f) {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             uiManager.measureLayout(source, parent, measureErrorCallback, new Callback() {
                                 @Override
                                 public void invoke(Object... args) {
-                                    if ( ((Float) args[2]).floatValue() == 0f ||  ((Float) args[3]).floatValue() == 0f) {
+                                    if (((Float) args[2]).floatValue() == 0f || ((Float) args[3]).floatValue() == 0f) {
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                uiManager.measureLayout(source, parent, measureErrorCallback, new Callback() {
-                                                    @Override
-                                                    public void invoke(Object... args) {
-                                                        if ( ((Float) args[2]).floatValue() == 0f ||  ((Float) args[3]).floatValue() == 0f) {
-                                                            handler.postDelayed(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    uiManager.measureLayout(source, parent, measureErrorCallback, measureSuccessCallback);
+                                                uiManager.measureLayout(source, parent, measureErrorCallback,
+                                                        new Callback() {
+                                                            @Override
+                                                            public void invoke(Object... args) {
+                                                                if (((Float) args[2]).floatValue() == 0f
+                                                                        || ((Float) args[3]).floatValue() == 0f) {
+                                                                    handler.postDelayed(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            uiManager.measureLayout(source, parent,
+                                                                                    measureErrorCallback,
+                                                                                    measureSuccessCallback);
+                                                                        }
+                                                                    }, 4);
+                                                                } else {
+                                                                    measureSuccessCallback.invoke(args);
                                                                 }
-                                                            }, 4);
-                                                        }
-                                                        else {
-                                                            measureSuccessCallback.invoke(args);
-                                                        }
-                                                    }
-                                                });
+                                                            }
+                                                        });
                                             }
                                         }, 4);
-                                    }
-                                    else {
+                                    } else {
                                         measureSuccessCallback.invoke(args);
                                     }
                                 }
                             });
                         }
                     }, 4);
-                }
-                else {
+                } else {
                     measureSuccessCallback.invoke(args);
                 }
             }
