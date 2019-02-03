@@ -25,6 +25,10 @@ Create magical move transitions between scenes in react-native
 - **[BREAKING CHANGE]** Custom transition functions are now required to return an array, and can no longer return a single clone or `React.Fragment`.
 - Removed behaviour that selected the transition of the source when no transition was defined on the target (this proved to be counter productive)
 
+### Deprecated
+
+- The `scale` transition has been deprecated and will be removed in the near future. Use the default `move` transition instead.
+
 ## [0.4.0] - 2019-01-09
 
 ### Added

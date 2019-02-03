@@ -38,16 +38,8 @@ class Scene extends React.Component {
     const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
-        <MagicMove.View
-          id="scene1"
-          style={styles.background}
-          transition={MagicMove.Transition.scale}
-        >
-          <MagicMove.Text
-            id="scene1.title"
-            style={styles.title}
-            transition={MagicMove.Transition.scale}
-          >
+        <MagicMove.View id="scene1" style={styles.background}>
+          <MagicMove.Text id="scene1.title" style={styles.title}>
             Scale
           </MagicMove.Text>
           <MagicMove.Context>

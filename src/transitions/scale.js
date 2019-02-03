@@ -1,24 +1,12 @@
 /* eslint react/prop-types: 0 */
+import moveTransition from "./move";
 
-export default function scaleTransition({ to, interpolate, render }) {
-  //
-  // Move & scale target component from starting
-  // position/size to the ending position
-  //
-  to.style.transform = [
-    { translateX: interpolate(to.start.x, to.end.x) },
-    { translateY: interpolate(to.start.y, to.end.y) },
-    { scaleX: interpolate(to.start.scaleX, to.end.scaleX) },
-    { scaleY: interpolate(to.start.scaleY, to.end.scaleY) }
-  ];
-
-  //
-  // Render
-  //
-  return [render(to)];
+export default function scaleTransition(config) {
+  // eslint-disable-next-line
+  console.warn(
+    `[MagicMove] Scale transition has been deprecated and will be removed in the near future, use the default 'move' transition instead`
+  );
+  return moveTransition(config);
 }
 
-scaleTransition.defaultProps = {
-  useNativeDriver: true,
-  nativeContentType: "snapshot"
-};
+scaleTransition.defaultProps = moveTransition.defaultProps;
