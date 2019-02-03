@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Animated, Text, Easing } from "react-native";
+import { StyleSheet, Animated, Text, Easing, Platform } from "react-native";
 import PropTypes from "prop-types";
 import defaultTransition from "./transitions/move";
 import MagicMoveClone from "./clone";
@@ -58,7 +58,7 @@ class MagicMoveAnimation extends Component {
       //eslint-disable-next-line
       console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
     }
-    if (!MagicMoveClone.isNativeAvailable) {
+    if (!MagicMoveClone.isNativeAvailable || Platform.OS === "android") {
       props.target.setOpacity(0);
     }
   }
@@ -196,20 +196,6 @@ class MagicMoveAnimation extends Component {
     const nativeContentType = contentTypeFromString(nativeContentTypeString);
     return [
       <MagicMoveClone
-        key="source0"
-        component={source}
-        mmContext={source.props.mmContext}
-        options={
-          MagicMoveClone.Option.INITIAL |
-          MagicMoveClone.Option.VISIBLE |
-          (this.isDebug ? MagicMoveClone.Option.DEBUG : 0)
-        }
-        nativeContentType={nativeContentType}
-        onShow={this.onShowSourceClone}
-      >
-        {source.props.children}
-      </MagicMoveClone>,
-      <MagicMoveClone
         key="target0"
         component={target}
         mmContext={target.props.mmContext}
@@ -222,6 +208,20 @@ class MagicMoveAnimation extends Component {
         onLayout={this.onLayoutTargetClone}
       >
         {target.props.children}
+      </MagicMoveClone>,
+      <MagicMoveClone
+        key="source0"
+        component={source}
+        mmContext={source.props.mmContext}
+        options={
+          MagicMoveClone.Option.INITIAL |
+          MagicMoveClone.Option.VISIBLE |
+          (this.isDebug ? MagicMoveClone.Option.DEBUG : 0)
+        }
+        nativeContentType={nativeContentType}
+        onShow={this.onShowSourceClone}
+      >
+        {source.props.children}
       </MagicMoveClone>
     ];
   }
@@ -255,7 +255,7 @@ class MagicMoveAnimation extends Component {
     this.setState({
       targetLayout: layout
     });
-    if (MagicMoveClone.isNativeAvailable) {
+    if (MagicMoveClone.isNativeAvailable && Platform.OS === "ios") {
       this.props.target.setOpacity(0);
     }
   };

@@ -1,4 +1,3 @@
-import { Animated, Text as CoreText, Image as CoreImage } from "react-native";
 import MagicMoveView from "./View";
 import MagicMoveProvider from "./Provider";
 import MagicMoveScene from "./Scene";
@@ -9,7 +8,10 @@ import {
 } from "./Context";
 import createComponent from "./createMagicMoveComponent";
 import * as MagicMoveTransition from "./transitions";
-import AnimatedText from "./AnimatedText";
+import BaseImage from "./image/Image";
+import AnimatedImage from "./image/AnimatedImage";
+import BaseText from "./text/Text";
+import AnimatedText from "./text/AnimatedText";
 
 export const Provider = MagicMoveProvider;
 export const Scene = MagicMoveScene;
@@ -18,6 +20,6 @@ export const ContextPropType = MagicMoveContextPropType;
 export const withContext = withMagicMoveContext;
 export const createMagicMoveComponent = createComponent;
 export const View = MagicMoveView;
-export const Text = createComponent(CoreText, AnimatedText);
-export const Image = createComponent(CoreImage, Animated.Image);
+export const Text = createComponent(BaseText, AnimatedText);
+export const Image = createComponent(BaseImage, AnimatedImage);
 export const Transition = MagicMoveTransition;

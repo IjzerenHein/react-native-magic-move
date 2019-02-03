@@ -55,10 +55,10 @@ public class ReactMagicMoveCloneData extends Object {
     public static String keyForSharedId(String sharedId, int options) {
         String type;
         if ((options & ReactMagicMoveCloneOption.SCENE) != 0) {
-            type = ((options & ReactMagicMoveCloneOption.SCENE) != 0) ? "TargetScene" : "SourceScene";
+            type = ((options & ReactMagicMoveCloneOption.TARGET) != 0) ? "TargetScene" : "SourceScene";
         }
         else {
-            type = ((options & ReactMagicMoveCloneOption.SCENE) != 0) ? "TargetComponent" : "SourceComponent";
+            type = ((options & ReactMagicMoveCloneOption.TARGET) != 0) ? "TargetComponent" : "SourceComponent";
         }
         return type + ":" + sharedId;
     }
