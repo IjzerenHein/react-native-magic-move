@@ -1,5 +1,4 @@
-- [ ] Native clone support Android
-- [ ] Native target is briefly visible when animation starts
+- [ ] Native target is sometimes briefly visible when animation starts
 - [ ] Transform (e.g. rotateZ) are not respected?
 - [ ] ShrinkAndGrow transition does the funky chicken on Android (seems like a bug in RN)
 - [ ] Scene transitions
