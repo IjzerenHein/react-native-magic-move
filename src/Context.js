@@ -12,10 +12,10 @@ class MagicMoveContextValue {
     return this._parent;
   }
 
-  get administration() {
+  get provider() {
     let parent = this._parent;
     while (parent) {
-      if (parent.isProvider) return parent.administration;
+      if (parent.isProvider) return parent;
       parent = parent.props.mmContext
         ? parent.props.mmContext.parent
         : undefined;
@@ -25,6 +25,11 @@ class MagicMoveContextValue {
       "[MagicMove] Component could not find Provider, did you forget to wrap your App in `<MagicMove.Provider>`?"
     );
     return undefined;
+  }
+
+  get administration() {
+    const { provider } = this;
+    return provider ? provider.administration : undefined;
   }
 
   get scene() {

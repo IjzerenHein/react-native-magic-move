@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import MagicMoveAdministration from "./Administration";
 import { MagicMoveContextProvider } from "./Context";
 import MagicMoveRenderer from "./Renderer";
+import { measureLayout } from "./clone/measure";
 
 const styles = StyleSheet.create({
   container: {
@@ -23,6 +24,7 @@ class MagicMoveProvider extends Component {
 
   _administration = new MagicMoveAdministration();
   _ref = undefined;
+  _lastMeasureResult = undefined;
 
   get isProvider() {
     return true;
@@ -48,7 +50,12 @@ class MagicMoveProvider extends Component {
     const { children } = this.props; //eslint-disable-line
     return (
       <MagicMoveContextProvider value={this}>
-        <View style={styles.container} collapsable={false} ref={this._setRef}>
+        <View
+          style={styles.container}
+          collapsable={false}
+          ref={this._setRef}
+          onLayout={this._onLayout}
+        >
           {children}
         </View>
         <MagicMoveRenderer administration={this._administration} />
@@ -59,6 +66,17 @@ class MagicMoveProvider extends Component {
   _setRef = ref => {
     this._ref = ref;
   };
+
+  _onLayout = () => {
+    this._lastMeasureResult = measureLayout(this);
+  };
+
+  measure() {
+    if (!this._lastMeasureResult) {
+      this._lastMeasureResult = measureLayout(this);
+    }
+    return this._lastMeasureResult;
+  }
 }
 
 export default MagicMoveProvider;

@@ -6,6 +6,7 @@ import {
   MagicMoveContextProvider,
   MagicMoveContextPropType
 } from "./Context";
+import { measureLayout } from "./clone/measure";
 
 /**
  * An Animated view that is magically "moved" to the
@@ -158,6 +159,10 @@ class MagicMoveView extends Component {
         opacity: val
       });
     }
+  }
+
+  measure() {
+    return measureLayout(this);
   }
 }
 

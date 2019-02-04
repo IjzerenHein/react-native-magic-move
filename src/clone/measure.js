@@ -1,46 +1,47 @@
 /* globals Promise */
-import { findNodeHandle } from "react-native";
+import fbPerformanceNow from "fbjs/lib/performanceNow";
+export const performanceNow =
+  global.nativePerformanceNow || global.performanceNow || fbPerformanceNow;
 
-export async function measureRelativeLayout(component) {
-  const { mmContext } = component.props;
-  const { scene, parent } = mmContext;
-  const sceneRef = scene ? scene.ref : parent.ref;
+export function measureLayout(component) {
   let i = 0;
   return new Promise((resolve, reject) => {
-    function onSuccess(x, y, width, height) {
+    function onMeasure(x, y, width, height, pageX, pageY) {
       if (width || height) {
         return resolve({
-          x,
-          y,
+          x: pageX,
+          y: pageY,
           width,
           height
         });
       }
-      if (i++ >= 3)
+      i++;
+      if (x === undefined || i >= 3)
         return reject(
           new Error(`[MagicMove] Failed to measure ${component.debugName}`)
         );
       requestAnimationFrame(() => {
-        component.ref.measureLayout(
-          findNodeHandle(sceneRef),
-          onSuccess,
-          onFail
-        );
+        component.ref.measure(onMeasure);
       });
     }
-    function onFail() {
-      if (i++ >= 3)
-        return reject(
-          new Error(`[MagicMove] Failed to measure ${component.debugName}`)
-        );
-      requestAnimationFrame(() => {
-        component.ref.measureLayout(
-          findNodeHandle(sceneRef),
-          onSuccess,
-          onFail
-        );
-      });
-    }
-    component.ref.measureLayout(findNodeHandle(sceneRef), onSuccess, onFail);
+    // console.debug(`[MagicMove] Measuring ${component.debugName} ...`);
+    component.ref.measure(onMeasure);
   });
+}
+
+export async function measureRelativeLayout(component) {
+  const { mmContext } = component.props;
+  const { scene, provider } = mmContext;
+
+  const layouts = await Promise.all([
+    component.measure(),
+    (scene || provider).measure()
+  ]);
+
+  return {
+    x: layouts[0].x - layouts[1].x,
+    y: layouts[0].y - layouts[1].y,
+    width: layouts[0].width,
+    height: layouts[0].height
+  };
 }

@@ -6,6 +6,7 @@ import {
   MagicMoveContextProvider,
   MagicMoveContextPropType
 } from "./Context";
+import { performanceNow, measureLayout } from "./clone/measure";
 
 let autoId = 0;
 
@@ -26,6 +27,8 @@ class MagicMoveScene extends Component {
   _ref = undefined;
   _uniqueId = "__autoSceneId" + autoId++;
   _active = undefined;
+  _lastMeasureResult = undefined;
+  _lastMeasureTime = 0;
 
   get isScene() {
     return true;
@@ -109,6 +112,16 @@ class MagicMoveScene extends Component {
 
   get isActive() {
     return this.props.active;
+  }
+
+  measure() {
+    const now = performanceNow();
+    if (this._lastMeasureResult && now - this._lastMeasureTime <= 100) {
+      return this._lastMeasureResult;
+    }
+    this._lastMeasureTime = now;
+    this._lastMeasureResult = measureLayout(this);
+    return this._lastMeasureResult;
   }
 }
 
