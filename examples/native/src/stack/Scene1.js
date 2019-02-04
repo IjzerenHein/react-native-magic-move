@@ -40,7 +40,7 @@ class Scene extends React.Component {
       <MagicMove.Scene style={styles.container}>
         <MagicMove.View id="scene1" style={styles.background}>
           <MagicMove.Text id="scene1.title" style={styles.title}>
-            Scale
+            Magic Move
           </MagicMove.Text>
           <MagicMove.Context>
             {({ isClone, isTarget }) =>

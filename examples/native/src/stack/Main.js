@@ -71,18 +71,37 @@ class Main extends Component {
       <MagicMove.Scene style={styles.container}>
         <View style={styles.row}>
           {this.renderItem({
-            id: "list5",
-            text: "Morph",
+            id: "scene1",
+            text: "Move",
             style: {
-              backgroundColor: "purple",
-              borderBottomRightRadius: 0
+              backgroundColor: "blueviolet"
             },
-            onPress: () => Actions.push("scene2")
+            onPress: () => Actions.push("scene1")
           })}
           {this.renderImageItem({
             id: "image",
-            source: require("../assets/waves.jpg"),
+            source: require("../assets/waterfall.jpg"),
             onPress: () => Actions.push("scene3")
+          })}
+        </View>
+        <View style={styles.row}>
+          {this.renderItem({
+            id: "list5",
+            text: "ScrollView",
+            style: {
+              backgroundColor: "purple",
+              borderRadius: 0
+            },
+            onPress: () => Actions.push("scene2")
+          })}
+          {this.renderItem({
+            id: "scene4",
+            text: "Morph",
+            style: {
+              backgroundColor: "orange",
+              borderTopLeftRadius: 0
+            },
+            onPress: () => Actions.push("scene4")
           })}
         </View>
         <View style={styles.row}>
@@ -119,26 +138,6 @@ class Main extends Component {
               backgroundColor: "steelblue"
             },
             onPress: () => Actions.push("scene8")
-          })}
-        </View>
-        <View style={styles.row}>
-          {this.renderItem({
-            id: "scene1",
-            text: "Scale",
-            style: {
-              backgroundColor: "blueviolet",
-              borderRadius: 0
-            },
-            onPress: () => Actions.push("scene1")
-          })}
-          {this.renderItem({
-            id: "scene4",
-            text: "Color Change",
-            style: {
-              backgroundColor: "orange",
-              borderTopLeftRadius: 0
-            },
-            onPress: () => Actions.push("scene4")
           })}
         </View>
       </MagicMove.Scene>

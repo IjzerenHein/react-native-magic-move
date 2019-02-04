@@ -43,7 +43,6 @@ class Scene extends React.Component {
             styles.item,
             { backgroundColor: isEnabled ? "purple" : getColor(i) }
           ]}
-          //transition={MagicMove.Transition.morph}
           disabled={!isEnabled}
         >
           <MagicMove.Text

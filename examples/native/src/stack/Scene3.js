@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: Dimensions.get("window").width,
-    height: 240
+    height: Dimensions.get("window").height * 0.65
   },
   text: {
     margin: 20,
@@ -34,7 +34,7 @@ class Scene extends React.Component {
           <MagicMove.Image
             id="image"
             style={styles.image}
-            source={require("../assets/waves.jpg")}
+            source={require("../assets/waterfall.jpg")}
             resizeMode="cover"
             easing={Easing.in(Easing.cubic)}
             duration={400}
@@ -45,17 +45,17 @@ class Scene extends React.Component {
             delay={400}
             duration={500}
           >
-            Arise from sleep, old cat, And with great yawns and stretchings...
-            Amble out for love
+            Images are animated seamlessly to reveal the full content, without
+            any stretching or tearing
           </Animatable.Text>
-          <Animatable.Text
+          {/*<Animatable.Text
             style={styles.signature}
             animation="fadeInUp"
             delay={600}
             duration={500}
           >
             - Issa, Japanese Haiku
-          </Animatable.Text>
+          </Animatable.Text>*/}
         </ScrollView>
       </MagicMove.Scene>
     );

@@ -51,7 +51,7 @@ class Scene extends React.Component {
           delay={400}
           duration={500}
         >
-          Magically animate your component from one scene to another.
+          {'Flip either the "x" or "y" axis, or both'}
         </Animatable.Text>
       </MagicMove.Scene>
     );

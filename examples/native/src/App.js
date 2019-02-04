@@ -40,7 +40,7 @@ const AppInner = storeObserver(({ store }) => (
   <MagicMove.Provider debug={store.debug}>
     <Router>
       <Tabs>
-        <Stack key="tab1" tabBarLabel={"Stack"} icon={StackIcon}>
+        <Stack key="tab1" tabBarLabel={"Main"} icon={StackIcon}>
           <Scene
             key="mainTab"
             component={Main}
@@ -61,14 +61,14 @@ const AppInner = storeObserver(({ store }) => (
           key="explorerTab"
           component={ExplorerView}
           title="Transition Explorer"
-          tabBarLabel="Explorer"
+          tabBarLabel="Explore"
           icon={ExplorerIcon}
           renderRightButton={() => <DebugButton />}
         />
         <Scene
           key="multiTab"
           component={MultiScene}
-          title="Tab"
+          title="Multi"
           icon={MultiIcon}
           renderRightButton={() => <DebugButton />}
         />

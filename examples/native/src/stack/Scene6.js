@@ -51,7 +51,7 @@ class Scene extends React.Component {
           delay={400}
           duration={500}
         >
-          Magically animate your component from one scene to another.
+          {'Dissolve "cross-fades" the source into the target'}
         </Animatable.Text>
       </MagicMove.Scene>
     );
