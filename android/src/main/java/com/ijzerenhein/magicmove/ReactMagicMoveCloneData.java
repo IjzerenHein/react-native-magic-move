@@ -3,22 +3,18 @@ package com.ijzerenhein.magicmove;
 import java.util.Map;
 
 import android.view.View;
-import android.graphics.Rect;
+import android.graphics.RectF;
 
 public class ReactMagicMoveCloneData extends Object {
     private String mSharedId;
     private View mView;
-    private Rect mLayout;
+    private RectF mLayout;
     private int mOptions;
     private int mRefCount;
 
-    public ReactMagicMoveCloneData(String sharedId, View view, Map<String, Float> layout, int options) {
+    public ReactMagicMoveCloneData(String sharedId, View view, RectF layout, int options) {
         mSharedId = sharedId;
-        int x = Math.round(layout.get("x"));
-        int y = Math.round(layout.get("y"));
-        int width = Math.round(layout.get("width"));
-        int height = Math.round(layout.get("height"));
-        mLayout = new Rect(x, y, x + width, y + height);
+        mLayout = layout;
         mView = view;
         mOptions = options;
         mRefCount = 1;
@@ -32,7 +28,7 @@ public class ReactMagicMoveCloneData extends Object {
         return mView;
     }
 
-    public Rect getLayout() {
+    public RectF getLayout() {
         return mLayout;
     }
 

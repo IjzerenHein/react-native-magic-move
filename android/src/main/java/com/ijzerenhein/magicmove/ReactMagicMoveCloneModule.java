@@ -3,9 +3,9 @@ package com.ijzerenhein.magicmove;
 import android.view.View;
 import android.os.Handler;
 import android.graphics.Rect;
-
-import java.util.Map;
-import java.util.HashMap;
+import android.graphics.RectF;
+import android.view.ViewGroup;
+import android.util.Log;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
@@ -16,11 +16,14 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.NativeViewHierarchyManager;
+import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.UIBlock;
 import com.facebook.react.uimanager.UIManagerModule;
 
 public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
     private ReactMagicMoveCloneDataManager mCloneDataManager;
+
+    static String LOG_TAG = "MagicMove";
 
     public ReactMagicMoveCloneModule(ReactApplicationContext reactContext,
             ReactMagicMoveCloneDataManager cloneDataManager) {
@@ -40,43 +43,33 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
         final String sharedId = config.getString("id");
         final int options = config.getInt("options");
         final int contentType = config.getInt("contentType");
-        final int source = config.getInt("source");
-        final int parent = config.getInt("parent");
+        final int sourceTag = config.getInt("source");
+        final int parentTag = config.getInt("parent");
 
         final ReactApplicationContext context = getReactApplicationContext();
         final UIManagerModule uiManager = context.getNativeModule(UIManagerModule.class);
-
-        final Map<String, Float> layout = new HashMap<String, Float>();
         final ReactMagicMoveCloneDataManager cloneDataManager = mCloneDataManager;
+        final Handler handler = new Handler();
 
         // Called whenever the view has been successfully measured
         // or the number of measure retries has been exceeded.
         final Callback measureSuccessCallback = new Callback() {
             @Override
             public void invoke(Object... args) {
-                layout.put("x", ((Float) args[0]).floatValue());
-                layout.put("y", ((Float) args[1]).floatValue());
-                layout.put("width", ((Float) args[2]).floatValue());
-                layout.put("height", ((Float) args[3]).floatValue());
+                Float x = ((Float) args[0]).floatValue();
+                Float y = ((Float) args[1]).floatValue();
+                Float width = ((Float) args[2]).floatValue();
+                Float height = ((Float) args[3]).floatValue();
+                final RectF initialLayout = new RectF(x, y, x + width, y + height);
 
-                if (layout.get("width") == 0f || layout.get("height") == 0f) {
+                if ((width == 0f) || (height == 0f)) {
                     // promise.reject("measure_failed", "measureLayout returned 0 for width/height
                     // after 3 times");
-                    layout.put("width", 100f);
-                    layout.put("height", 100f);
+                    width = 100f;
+                    height = 100f;
                 }
 
-                // Update the layout props for the view
-                WritableMap styles = Arguments.createMap();
-                styles.putString("position", "absolute");
-                styles.putDouble("left", layout.get("x"));
-                styles.putDouble("top", layout.get("y"));
-                styles.putDouble("width", layout.get("width"));
-                styles.putDouble("height", layout.get("height"));
-                styles.putInt("backgroundColor", 1);
-                styles.putString("overflow", "hidden");
-                uiManager.updateView(tag, "RCTMagicMoveClone", styles);
-
+                // Get source view
                 uiManager.prependUIBlock(new UIBlock() {
                     @Override
                     public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
@@ -84,14 +77,39 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                         // Get views
                         ReactMagicMoveCloneView view = (ReactMagicMoveCloneView) nativeViewHierarchyManager
                                 .resolveView(tag);
-                        View sourceView = nativeViewHierarchyManager.resolveView(source);
+                        View sourceView = nativeViewHierarchyManager.resolveView(sourceTag);
+                        ViewGroup parentView = (ViewGroup) nativeViewHierarchyManager.resolveView(parentTag);
+
+                        // Calculate adjusted position
+                        Rect rawLayout = new Rect();
+                        sourceView.getDrawingRect(rawLayout);
+                        parentView.offsetDescendantRectToMyCoords(sourceView, rawLayout);
+                        final RectF layout = new RectF(PixelUtil.toDIPFromPixel(rawLayout.left),
+                                PixelUtil.toDIPFromPixel(rawLayout.top), PixelUtil.toDIPFromPixel(rawLayout.right),
+                                PixelUtil.toDIPFromPixel(rawLayout.bottom));
+
+                        // Update the layout props for the view
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                WritableMap styles = Arguments.createMap();
+                                styles.putString("position", "absolute");
+                                styles.putDouble("left", layout.left);
+                                styles.putDouble("top", layout.top);
+                                styles.putDouble("width", layout.width());
+                                styles.putDouble("height", layout.height());
+                                styles.putInt("backgroundColor", 1); // This is a bit hackish
+                                styles.putString("overflow", "hidden");
+                                uiManager.updateView(tag, "RCTMagicMoveClone", styles);
+                            }
+                        });
 
                         // Prepare result
                         final WritableMap result = Arguments.createMap();
-                        result.putDouble("x", layout.get("x"));
-                        result.putDouble("y", layout.get("y"));
-                        result.putDouble("width", layout.get("width"));
-                        result.putDouble("height", layout.get("height"));
+                        result.putDouble("x", layout.left);
+                        result.putDouble("y", layout.top);
+                        result.putDouble("width", layout.width());
+                        result.putDouble("height", layout.height());
 
                         // Resolve promise with result
                         promise.resolve(result);
@@ -122,35 +140,37 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
         // without tripping up Java...
         // If you read this code and you know how to (without using external libs),
         // let me know at: https://github.com/IjzerenHein/react-native-magic-move
-        final Handler handler = new Handler();
-        uiManager.measureLayout(source, parent, measureErrorCallback, new Callback() {
+        uiManager.measureLayout(sourceTag, parentTag, measureErrorCallback, new Callback() {
             @Override
             public void invoke(Object... args) {
                 if (((Float) args[2]).floatValue() == 0f || ((Float) args[3]).floatValue() == 0f) {
+                    // Log.d(LOG_TAG, "Retrying layout #1...");
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            uiManager.measureLayout(source, parent, measureErrorCallback, new Callback() {
+                            uiManager.measureLayout(sourceTag, parentTag, measureErrorCallback, new Callback() {
                                 @Override
                                 public void invoke(Object... args) {
                                     if (((Float) args[2]).floatValue() == 0f || ((Float) args[3]).floatValue() == 0f) {
+                                        // Log.d(LOG_TAG, "Retrying layout #2...");
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                uiManager.measureLayout(source, parent, measureErrorCallback,
+                                                uiManager.measureLayout(sourceTag, parentTag, measureErrorCallback,
                                                         new Callback() {
                                                             @Override
                                                             public void invoke(Object... args) {
                                                                 if (((Float) args[2]).floatValue() == 0f
                                                                         || ((Float) args[3]).floatValue() == 0f) {
+                                                                    // Log.d(LOG_TAG, "Retrying layout #3...");
                                                                     handler.postDelayed(new Runnable() {
                                                                         @Override
                                                                         public void run() {
-                                                                            uiManager.measureLayout(source, parent,
-                                                                                    measureErrorCallback,
+                                                                            uiManager.measureLayout(sourceTag,
+                                                                                    parentTag, measureErrorCallback,
                                                                                     measureSuccessCallback);
                                                                         }
-                                                                    }, 4);
+                                                                    }, 8);
                                                                 } else {
                                                                     measureSuccessCallback.invoke(args);
                                                                 }
