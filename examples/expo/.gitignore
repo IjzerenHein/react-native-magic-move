@@ -7,3 +7,4 @@ npm-debug.*
 *.mobileprovision
 yarn-error.log
 .yalc
+yalc.lock
