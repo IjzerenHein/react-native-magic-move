@@ -27,7 +27,7 @@
 2. Append the following lines to `android/settings.gradle`:
    ```
    include ':react-native-magic-move'
-   project(':react-native-magic-move').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-magic-move/android')
+   project(':react-native-magic-move').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-magic-move/android')
    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
    ```
