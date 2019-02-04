@@ -4,6 +4,8 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+## [0.5.0] - 2019-02-04
+
 ### Added
 
 - Added new _smart_ `move` transition, for seamless transitions when source and target are the same, but are sized differently or use different border radii
