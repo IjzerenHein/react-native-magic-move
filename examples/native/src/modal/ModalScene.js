@@ -1,36 +1,37 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 import { Actions } from "react-native-router-flux";
-import Button from "../components/Button";
+import content from "./content";
+
+const ITEM_SIZE = Math.round(Dimensions.get("window").width / 3);
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: "space-around",
+    padding: 20
   },
-  box: {
-    marginTop: 40,
-    alignSelf: "center",
-    backgroundColor: "seagreen",
-    width: 260,
-    height: 260,
-    borderRadius: 130,
-    flexDirection: "column",
-    justifyContent: "center"
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-around"
+  },
+  image: {
+    width: ITEM_SIZE,
+    height: ITEM_SIZE,
+    borderRadius: ITEM_SIZE / 2
   },
   title: {
-    alignSelf: "center",
     textAlign: "center",
-    color: "white",
-    fontSize: 37
+    color: "#222222",
+    fontSize: 26,
+    fontWeight: "bold"
   },
   text: {
+    alignSelf: "center",
     color: "seagreen",
-    margin: 24,
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 19,
@@ -39,42 +40,50 @@ const styles = StyleSheet.create({
 });
 
 class Scene extends React.Component {
+  renderItem(content) {
+    const { id, image } = content;
+    return (
+      <TouchableOpacity
+        activeOpacity={0.5}
+        onPress={() => Actions.modal2({ content })}
+      >
+        <MagicMove.Image
+          id={id}
+          style={styles.image}
+          resizeMode="cover"
+          source={image}
+        />
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     return (
       <MagicMove.Scene style={styles.container}>
-        <Animatable.View
-          iterationCount="infinite"
-          iterationDelay={10000}
-          animation="rubberBand"
-        >
-          <Button onPress={this.onPressShow} label="Show Modal" />
-        </Animatable.View>
-        <MagicMove.Image
-          id="scene6"
-          style={styles.box}
-          resizeMode="cover"
-          //source={require("../assets/mario.png")}
-          source={{
-            uri:
-              "https://www.friesmuseum.nl/uploads/scrollpages/fr/original/beeldweb.png"
-          }}
-          transition={MagicMove.Transition.flip.x}
-        />
+        {/*<Text style={styles.title}>Homage to Escher</Text>*/}
+        <View style={styles.row}>
+          {this.renderItem(content.waterfall)}
+          {this.renderItem(content.cycle)}
+        </View>
+        <View style={styles.row}>
+          {this.renderItem(content.relativity)}
+          {this.renderItem(content.metamorphosis)}
+        </View>
+        <View style={styles.row}>
+          {this.renderItem(content.hands)}
+          {this.renderItem(content.escher)}
+        </View>
         <Animatable.Text
           style={styles.text}
           animation="fadeInUp"
           delay={400}
           duration={500}
         >
-          Magically animate your component from one scene to another.
+          Tap an item to open a Modal
         </Animatable.Text>
       </MagicMove.Scene>
     );
   }
-
-  onPressShow = () => {
-    Actions.modal2();
-  };
 }
 
 export default Scene;

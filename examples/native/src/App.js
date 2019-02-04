@@ -84,7 +84,7 @@ const AppInner = storeObserver(({ store }) => (
           icon={ModalIcon}
           renderRightButton={() => <DebugButton />}
         >
-          <Scene key="modal1" component={ModalScene} title="Modal" />
+          <Scene key="modal1" component={ModalScene} title="Homage to Escher" />
           <Scene key="modal2" component={ModalScene2} title="Modal" />
         </Modal>
       </Tabs>
