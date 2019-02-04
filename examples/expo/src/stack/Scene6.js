@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
-import { storeObserver, StorePropType } from "../store";
 import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 
@@ -36,18 +35,13 @@ const styles = StyleSheet.create({
 });
 
 class Scene extends React.Component {
-  static propTypes = {
-    store: StorePropType
-  };
   render() {
-    const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
         <MagicMove.View
           id="scene6"
           style={styles.box}
           transition={MagicMove.Transition.dissolve}
-          debug={debug}
         >
           <Text style={styles.title}>Magic Move</Text>
         </MagicMove.View>
@@ -57,10 +51,10 @@ class Scene extends React.Component {
           delay={400}
           duration={500}
         >
-          Magically animate your component from one scene to another.
+          {'Dissolve "cross-fades" the source into the target'}
         </Animatable.Text>
       </MagicMove.Scene>
     );
   }
 }
-export default storeObserver(Scene);
+export default Scene;

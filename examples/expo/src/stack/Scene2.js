@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import { storeObserver, StorePropType } from "../store";
 import * as MagicMove from "react-native-magic-move";
 import randomColor from "randomcolor";
 
@@ -32,11 +31,7 @@ function getColor(idx) {
 }
 
 class Scene extends React.Component {
-  static propTypes = {
-    store: StorePropType
-  };
   render() {
-    const { debug } = this.props.store;
     const items = [];
     for (let i = 1; i < 100; i++) {
       const isEnabled = i === 5;
@@ -48,13 +43,12 @@ class Scene extends React.Component {
             styles.item,
             { backgroundColor: isEnabled ? "purple" : getColor(i) }
           ]}
-          debug={debug}
           disabled={!isEnabled}
         >
           <MagicMove.Text
             id={`list${i}.title`}
             style={styles.text}
-            debug={debug}
+            transition={MagicMove.Transition.morph}
           >
             {"Item " + i}
           </MagicMove.Text>
@@ -69,4 +63,4 @@ class Scene extends React.Component {
   }
 }
 
-export default storeObserver(Scene);
+export default Scene;

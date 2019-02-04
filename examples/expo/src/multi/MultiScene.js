@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { storeObserver, StorePropType } from "../store";
 import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
 import Bar from "./Bar";
@@ -40,11 +39,7 @@ const styles = StyleSheet.create({
 });
 
 class Scene extends React.Component {
-  static propTypes = {
-    store: StorePropType
-  };
   render() {
-    const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
         <Bar hideId="scene5" />
@@ -53,7 +48,6 @@ class Scene extends React.Component {
             id="scene5"
             style={styles.box}
             transition={MagicMove.Transition.flip.x}
-            debug={debug}
           >
             <Text style={styles.title}>Magic Move</Text>
           </MagicMove.View>
@@ -70,4 +64,4 @@ class Scene extends React.Component {
     );
   }
 }
-export default storeObserver(Scene);
+export default Scene;

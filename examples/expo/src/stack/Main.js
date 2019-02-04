@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import * as MagicMove from "react-native-magic-move";
 import { Actions } from "react-native-router-flux";
-import { storeObserver, StorePropType } from "../store";
 
 const styles = StyleSheet.create({
   container: {
@@ -32,16 +31,19 @@ const styles = StyleSheet.create({
 });
 
 class Main extends Component {
-  static propTypes = {
-    store: StorePropType
-  };
-
   renderItem({ id, style, text, onPress }) {
-    const { debug } = this.props.store;
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
-        <MagicMove.View id={id} style={[styles.box, style]} debug={debug}>
-          <MagicMove.Text id={`${id}.title`} style={styles.text} debug={debug}>
+        <MagicMove.View
+          id={id}
+          style={[styles.box, style]}
+          transition={MagicMove.Transition.morph}
+        >
+          <MagicMove.Text
+            id={`${id}.title`}
+            style={styles.text}
+            transition={MagicMove.Transition.morph}
+          >
             {text}
           </MagicMove.Text>
         </MagicMove.View>
@@ -50,15 +52,14 @@ class Main extends Component {
   }
 
   renderImageItem({ id, source, onPress }) {
-    const { debug } = this.props.store;
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
         <View style={styles.box}>
           <MagicMove.Image
             id={id}
             source={source}
+            resizeMode="cover"
             style={[styles.box, StyleSheet.absoluteFill]}
-            debug={debug}
           />
         </View>
       </TouchableOpacity>
@@ -70,18 +71,37 @@ class Main extends Component {
       <MagicMove.Scene style={styles.container}>
         <View style={styles.row}>
           {this.renderItem({
-            id: "list5",
-            text: "Morph",
+            id: "scene1",
+            text: "Move",
             style: {
-              backgroundColor: "purple",
-              borderBottomRightRadius: 0
+              backgroundColor: "blueviolet"
             },
-            onPress: () => Actions.push("scene2")
+            onPress: () => Actions.push("scene1")
           })}
           {this.renderImageItem({
             id: "image",
-            source: require("../assets/waves.jpg"),
+            source: require("../assets/waterfall.jpg"),
             onPress: () => Actions.push("scene3")
+          })}
+        </View>
+        <View style={styles.row}>
+          {this.renderItem({
+            id: "list5",
+            text: "ScrollView",
+            style: {
+              backgroundColor: "purple",
+              borderRadius: 0
+            },
+            onPress: () => Actions.push("scene2")
+          })}
+          {this.renderItem({
+            id: "scene4",
+            text: "Morph",
+            style: {
+              backgroundColor: "orange",
+              borderTopLeftRadius: 0
+            },
+            onPress: () => Actions.push("scene4")
           })}
         </View>
         <View style={styles.row}>
@@ -120,29 +140,9 @@ class Main extends Component {
             onPress: () => Actions.push("scene8")
           })}
         </View>
-        <View style={styles.row}>
-          {this.renderItem({
-            id: "scene1",
-            text: "Scale",
-            style: {
-              backgroundColor: "blueviolet",
-              borderRadius: 0
-            },
-            onPress: () => Actions.push("scene1")
-          })}
-          {this.renderItem({
-            id: "scene4",
-            text: "Color Change",
-            style: {
-              backgroundColor: "orange",
-              borderTopLeftRadius: 0
-            },
-            onPress: () => Actions.push("scene4")
-          })}
-        </View>
       </MagicMove.Scene>
     );
   }
 }
 
-export default storeObserver(Main);
+export default Main;

@@ -3895,7 +3895,7 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mobx-react@^5.4.3:
+mobx-react@^5.4.2:
   version "5.4.3"
   resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-5.4.3.tgz#6709b7dd89670c40e9815914ac2ca49cc02bfb47"
   integrity sha512-WC8yFlwvJ91hy8j6CrydAuFteUafcuvdITFQeHl3LRIf5ayfT/4W3M/byhEYD2BcJWejeXr8y4Rh2H26RunCRQ==
@@ -3903,10 +3903,10 @@ mobx-react@^5.4.3:
     hoist-non-react-statics "^3.0.0"
     react-lifecycles-compat "^3.0.2"
 
-mobx@^5.8.0:
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.8.0.tgz#cf59eae4baa2fde4387ffb6462b7ccf3b497b03c"
-  integrity sha512-NsZB+9bF5j+nv9Qwk6bNeE3np26a4TbTGkMpOLf6o1zXoM9BtHPQn/00px4uZ2AXJXtQML5P4MEWdMm6icMIfQ==
+mobx@^4.7.0:
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-4.9.2.tgz#b6ab4f3cbd47cd19ead3bca8cea7814919d70b9f"
+  integrity sha512-dMGeM4emHDTaXEA/Va4NhWSiEk8XkdcFQl4uiictXoou0Vbk0Sup4H/HDWGYcXVeRAWGPDYXDDkz1gXK4B1eZw==
 
 moment-timezone@^0.5.23:
   version "0.5.23"
@@ -4616,7 +4616,7 @@ react-native-gesture-handler@1.0.12:
     prop-types "^15.5.10"
 
 "react-native-magic-move@file:.yalc/react-native-magic-move":
-  version "0.4.0-2b7bfa3b"
+  version "0.5.0-rc0-20541824"
   dependencies:
     lodash.findlast "^4.6.0"
 
@@ -4773,10 +4773,8 @@ react-navigation-drawer@0.5.0:
   dependencies:
     react-native-drawer-layout-polyfill "^1.3.2"
 
-react-navigation-magic-move@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/react-navigation-magic-move/-/react-navigation-magic-move-0.4.0.tgz#6778c1361daca6ee4f62f2ae10abd4afc8369bb5"
-  integrity sha512-a9sAyVQ7m+3TXAqMbFepgIHkUd0bqKJeIC4dTYNZ6IpnFEri4j44tShNgWlueldE7Vfxr+GinGH6sr7vOe/kqQ==
+"react-navigation-magic-move@file:.yalc/react-navigation-magic-move":
+  version "0.4.1-fe1686dc"
 
 react-navigation-stack@0.7.0:
   version "0.7.0"

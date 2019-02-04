@@ -4,7 +4,7 @@ import { Router, Stack, Scene, Tabs, Modal } from "react-native-router-flux";
 import { Ionicons } from "@expo/vector-icons";
 import * as MagicMove from "react-native-magic-move";
 import "react-navigation-magic-move";
-import { StoreProvider } from "./store";
+import { StoreProvider, storeObserver } from "./store";
 import DebugButton from "./components/DebugButton";
 import Main from "./stack/Main";
 import Scene1 from "./stack/Scene1";
@@ -36,62 +36,68 @@ const DebugIcon = props => <TabBarIcon name="bug" {...props} />;
 const ModalIcon = props => <TabBarIcon name="arrow-round-up" {...props} />;
 const ExplorerIcon = props => <TabBarIcon name="rocket" {...props} />;
 
+const AppInner = storeObserver(({ store }) => (
+  <MagicMove.Provider debug={store.debug}>
+    <Router>
+      <Tabs>
+        <Stack key="tab1" tabBarLabel={"Main"} icon={StackIcon}>
+          <Scene
+            key="mainTab"
+            component={Main}
+            title="react-native-magic-move"
+            titleStyle={{ width: 300 }}
+            renderRightButton={() => <DebugButton />}
+          />
+          <Scene key="scene1" component={Scene1} title="Scale" />
+          <Scene key="scene2" component={Scene2} title="ScrollView" />
+          <Scene key="scene3" component={Scene3} title="Image" />
+          <Scene key="scene4" component={Scene4} title="Color Change" />
+          <Scene key="scene5" component={Scene5} title="Flip" />
+          <Scene key="scene6" component={Scene6} title="Dissolve" />
+          <Scene key="scene7" component={Scene7} title="Shrink & Grow" />
+          <Scene key="scene8" component={Scene8} title="Squash & Stretch" />
+        </Stack>
+        <Scene
+          key="explorerTab"
+          component={ExplorerView}
+          title="Transition Explorer"
+          tabBarLabel="Explore"
+          icon={ExplorerIcon}
+          renderRightButton={() => <DebugButton />}
+        />
+        <Scene
+          key="multiTab"
+          component={MultiScene}
+          title="Multi"
+          icon={MultiIcon}
+          renderRightButton={() => <DebugButton />}
+        />
+        <Scene
+          key="debugTab"
+          component={DebugScene}
+          title="Debug"
+          icon={DebugIcon}
+        />
+        <Modal
+          key="modalTab"
+          title="Modal"
+          icon={ModalIcon}
+          renderRightButton={() => <DebugButton />}
+        >
+          <Scene key="modal1" component={ModalScene} title="Homage to Escher" />
+          <Scene key="modal2" component={ModalScene2} title="Modal" />
+        </Modal>
+      </Tabs>
+    </Router>
+  </MagicMove.Provider>
+));
+
 const App = () => (
   <View style={{ margin: 0, flex: 1 }}>
-    <MagicMove.Provider>
-      <StoreProvider>
-        <Router>
-          <Tabs>
-            <Stack key="tab1" tabBarLabel={"Stack"} icon={StackIcon}>
-              <Scene
-                key="main"
-                component={Main}
-                title="react-native-magic-move"
-                titleStyle={{ width: 300 }}
-                renderRightButton={() => <DebugButton />}
-              />
-              <Scene key="scene1" component={Scene1} title="Scale" />
-              <Scene key="scene2" component={Scene2} title="ScrollView" />
-              <Scene key="scene3" component={Scene3} title="Image" />
-              <Scene key="scene4" component={Scene4} title="Color Change" />
-              <Scene key="scene5" component={Scene5} title="Flip" />
-              <Scene key="scene6" component={Scene6} title="Dissolve" />
-              <Scene key="scene7" component={Scene7} title="Shrink & Grow" />
-              <Scene key="scene8" component={Scene8} title="Squash & Stretch" />
-            </Stack>
-            <Scene
-              key="explorer"
-              component={ExplorerView}
-              title="Transition Explorer"
-              tabBarLabel="Explorer"
-              icon={ExplorerIcon}
-              renderRightButton={() => <DebugButton />}
-            />
-            <Scene
-              key="tab2"
-              component={MultiScene}
-              title="Tab"
-              icon={MultiIcon}
-              renderRightButton={() => <DebugButton />}
-            />
-            <Scene
-              key="tab3"
-              component={DebugScene}
-              title="Debug"
-              icon={DebugIcon}
-            />
-            <Modal
-              title="Modal"
-              icon={ModalIcon}
-              renderRightButton={() => <DebugButton />}
-            >
-              <Scene key="tab3" component={ModalScene} title="Modal" />
-              <Scene key="modal" component={ModalScene2} title="Modal" />
-            </Modal>
-          </Tabs>
-        </Router>
-      </StoreProvider>
-    </MagicMove.Provider>
+    <StoreProvider>
+      <AppInner />
+    </StoreProvider>
   </View>
 );
+
 export default App;

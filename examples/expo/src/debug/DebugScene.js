@@ -47,7 +47,7 @@ class DebugScene extends React.Component {
     const { debug } = this.props.store;
     return (
       <MagicMove.Scene style={styles.container}>
-        <Bar hideId="scene8" debug={true} />
+        <Bar hideId="scene8" />
         <View style={styles.content}>
           <MagicMove.View
             id="scene8"
@@ -63,7 +63,8 @@ class DebugScene extends React.Component {
             delay={400}
             duration={500}
           >
-            Magically animate your component from one scene to another.
+            Set the `debug` prop on your component, scene or provider to slow
+            down the animation and log to the console
           </Animatable.Text>
         </View>
       </MagicMove.Scene>
