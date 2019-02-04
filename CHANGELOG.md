@@ -15,9 +15,10 @@ Create magical move transitions between scenes in react-native
 
 ### Fixed
 
+- Fixed layout position when view was inside scrollview; and the scrollview offset wasn't zero
 - Fixed animations overlapping the scene bounds
-- Fixed `backfaceVisibility` prop warnings in the `flip` transition
 - Fixed image flickering through new native optimisations
+- Fixed `backfaceVisibility` prop warnings in the `flip` transition
 
 ### Changes
 
