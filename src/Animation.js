@@ -3,6 +3,7 @@ import { StyleSheet, Animated, Text, Easing, Platform } from "react-native";
 import PropTypes from "prop-types";
 import defaultTransition from "./transitions/move";
 import MagicMoveClone from "./clone";
+import AnimationClone from "./AnimationClone";
 
 const defaultEasingFn = Easing.inOut(Easing.ease);
 
@@ -265,7 +266,7 @@ class MagicMoveAnimation extends Component {
    * a shorthand notation to be used when writing
    * transition functions.
    */
-  interpolate = (from, to, clamp) => {
+  _interpolateAnimationCloneLegacy = (from, to, clamp) => {
     if (to === from) return to;
     if (clamp) {
       return this.state.animValue.interpolate({
@@ -283,7 +284,7 @@ class MagicMoveAnimation extends Component {
   /**
    * Renders a single animation clone onto the screen.
    */
-  _renderAnimationClone = (clone, index = 0) => {
+  _renderAnimationCloneLegacy = (clone, index = 0) => {
     const { style, component, isTarget, contentStyle } = clone;
     const nativeContentType = contentTypeFromString(clone.nativeContentType);
     const key = `${isTarget ? "target" : "source"}${index + ""}`;
@@ -316,7 +317,7 @@ class MagicMoveAnimation extends Component {
    * Renders the animated clones using the configured
    * transition function.
    */
-  renderAnimationClones() {
+  renderAnimationClonesLegacy() {
     const { source, target } = this.props;
     const { sourceLayout, targetLayout, animValue } = this.state;
     const sourceStyle = StyleSheet.flatten([source.props.style]);
@@ -369,7 +370,6 @@ class MagicMoveAnimation extends Component {
         scaleY: targetLayout.height / sourceLayout.height,
         opacity: targetStyle.opacity !== undefined ? targetStyle.opacity : 1
       },
-      initial: from,
       props: {
         ...source.props
       },
@@ -443,8 +443,88 @@ class MagicMoveAnimation extends Component {
       from,
       to,
       animValue,
-      render: this._renderAnimationClone,
-      interpolate: this.interpolate
+      render: this._renderAnimationCloneLegacy,
+      interpolate: this._interpolateAnimationCloneLegacy
+    });
+  }
+
+  /**
+   * Renders the animated clones using the configured
+   * transition function.
+   */
+  renderAnimationClones() {
+    const transition = this.getTransition();
+    if (!transition.defaultProps || !transition.defaultProps.nextGen) {
+      return this.renderAnimationClonesLegacy();
+    }
+    const { source, target } = this.props;
+    const { sourceLayout, targetLayout, animValue } = this.state;
+    let nativeContentType =
+      (transition.defaultProps
+        ? transition.defaultProps.nativeContentType
+        : undefined) || "children";
+
+    // When a child is being animated, then disable native optimisations
+    // as these use a snapshot which also includes that child.
+    // Instead, that child should not be visible in this clone,
+    // otherwise it would be drawn twice.
+    if (
+      MagicMoveClone.isNativeAvailable &&
+      nativeContentType === "snapshot" &&
+      source.props.mmContext.administration.isAnimatingChildOf(source)
+    ) {
+      if (this.isDebug) {
+        // eslint-disable-next-line
+        console.debug(
+          `[MagicMove] Disabling native image snapshot for ${
+            source.debugName
+          }, because its child is also being animated`
+        );
+      }
+      nativeContentType = "children";
+    }
+    return transition({
+      source: AnimationClone.create({
+        component: source,
+        isTarget: false,
+        layout: sourceLayout,
+        nativeContentType
+      }),
+      target: AnimationClone.create({
+        component: target,
+        isTarget: true,
+        layout: targetLayout,
+        nativeContentType
+      })
+    }).map((clone, index) => {
+      const { component, isTarget } = clone;
+      const {
+        style,
+        props,
+        contentStyle,
+        contentProps,
+        nativeContentType
+      } = clone.getAnimatedProps(animValue);
+      const key = `${isTarget ? "target" : "source"}${index + ""}`;
+      return (
+        <MagicMoveClone
+          key={key}
+          {...props}
+          component={component}
+          mmContext={component.props.mmContext}
+          options={
+            MagicMoveClone.Option.VISIBLE |
+            (isTarget ? MagicMoveClone.Option.TARGET : 0) |
+            (this.isDebug ? MagicMoveClone.Option.DEBUG : 0)
+          }
+          style={style}
+          contentStyle={contentStyle}
+          contentProps={contentProps}
+          nativeContentType={contentTypeFromString(nativeContentType)}
+        >
+          {component.props.children}
+        </MagicMoveClone>
+      );
     });
   }
 
