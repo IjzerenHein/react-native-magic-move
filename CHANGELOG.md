@@ -4,6 +4,10 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+### Removed
+
+- Removed the deprecated `scale` transition
+
 ## [0.5.0] - 2019-02-04
 
 ### Added
