@@ -3,7 +3,7 @@ import { StyleSheet, Animated, Text, Easing, Platform } from "react-native";
 import PropTypes from "prop-types";
 import defaultTransition from "./transitions/move";
 import MagicMoveClone from "./clone";
-import AnimationClone from "./AnimationClone";
+import MagicMoveComposer from "./MagicMoveComposer";
 
 const defaultEasingFn = Easing.inOut(Easing.ease);
 
@@ -266,7 +266,7 @@ class MagicMoveAnimation extends Component {
    * a shorthand notation to be used when writing
    * transition functions.
    */
-  _interpolateAnimationCloneLegacy = (from, to, clamp) => {
+  _interpolateMagicMoveComposerLegacy = (from, to, clamp) => {
     if (to === from) return to;
     if (clamp) {
       return this.state.animValue.interpolate({
@@ -284,12 +284,12 @@ class MagicMoveAnimation extends Component {
   /**
    * Renders a single animation clone onto the screen.
    */
-  _renderAnimationCloneLegacy = (clone, index = 0) => {
+  _renderMagicMoveComposerLegacy = (clone, index = 0) => {
     const { style, component, isTarget, contentStyle } = clone;
     const nativeContentType = contentTypeFromString(clone.nativeContentType);
     const key = `${isTarget ? "target" : "source"}${index + ""}`;
     /*console.log(
-      `_renderAnimationClone: ${
+      `_renderMagicMoveComposer: ${
         component.id
       }, isTarget: ${isTarget}, nativeContentType: ${clone.nativeContentType}`
     );*/
@@ -317,7 +317,7 @@ class MagicMoveAnimation extends Component {
    * Renders the animated clones using the configured
    * transition function.
    */
-  renderAnimationClonesLegacy() {
+  renderMagicMoveComposersLegacy() {
     const { source, target } = this.props;
     const { sourceLayout, targetLayout, animValue } = this.state;
     const sourceStyle = StyleSheet.flatten([source.props.style]);
@@ -443,8 +443,8 @@ class MagicMoveAnimation extends Component {
       from,
       to,
       animValue,
-      render: this._renderAnimationCloneLegacy,
-      interpolate: this._interpolateAnimationCloneLegacy
+      render: this._renderMagicMoveComposerLegacy,
+      interpolate: this._interpolateMagicMoveComposerLegacy
     });
   }
 
@@ -452,10 +452,10 @@ class MagicMoveAnimation extends Component {
    * Renders the animated clones using the configured
    * transition function.
    */
-  renderAnimationClones() {
+  renderMagicMoveComposers() {
     const transition = this.getTransition();
     if (!transition.defaultProps || !transition.defaultProps.nextGen) {
-      return this.renderAnimationClonesLegacy();
+      return this.renderMagicMoveComposersLegacy();
     }
     const { source, target } = this.props;
     const { sourceLayout, targetLayout, animValue } = this.state;
@@ -484,13 +484,13 @@ class MagicMoveAnimation extends Component {
       nativeContentType = "children";
     }
     return transition({
-      source: AnimationClone.create({
+      source: MagicMoveComposer.create({
         component: source,
         isTarget: false,
         layout: sourceLayout,
         nativeContentType
       }),
-      target: AnimationClone.create({
+      target: MagicMoveComposer.create({
         component: target,
         isTarget: true,
         layout: targetLayout,
@@ -538,7 +538,7 @@ class MagicMoveAnimation extends Component {
         {this.renderDebugSourcePlaceholder()}
         {this.renderDebugTargetPlaceholder()}
         {sourceLayout && targetLayout
-          ? this.renderAnimationClones()
+          ? this.renderMagicMoveComposers()
           : this.renderInitialClones()}
       </React.Fragment>
     );

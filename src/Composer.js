@@ -62,7 +62,7 @@ const STRIP_STYLE_PROPS = [
   "aspectRatio"
 ];
 
-class AnimationClone {
+class MagicMoveComposer {
   constructor(backingData, props, parent, weightOrBreak) {
     this._backingData = backingData;
     this._props = props;
@@ -83,7 +83,7 @@ class AnimationClone {
         delete style[propName];
       }
     });
-    return new AnimationClone(
+    return new MagicMoveComposer(
       {
         isTarget,
         component,
@@ -140,7 +140,7 @@ class AnimationClone {
         const weight = weightOrBreak[i];
         const newProps = {};
         propNames.forEach(name => (newProps[name] = props[name][i]));
-        parent = new AnimationClone(
+        parent = new MagicMoveComposer(
           this._backingData,
           newProps,
           parent,
@@ -149,7 +149,7 @@ class AnimationClone {
       }
       return parent;
     }
-    return new AnimationClone(this._backingData, props, this, weightOrBreak);
+    return new MagicMoveComposer(this._backingData, props, this, weightOrBreak);
   }
 
   get props() {
@@ -290,7 +290,7 @@ class AnimationClone {
 
   /**
    * Breaks the animation chain.
-   * @return {AnimationClone}
+   * @return {MagicMoveComposer}
    */
   break() {
     return this.add(undefined, undefined);
@@ -299,7 +299,7 @@ class AnimationClone {
   /**
    * Delays the operations for the given weight strength
    * @param {Number} [weight] Optional weight (default = 1)
-   * @return {AnimationClone}
+   * @return {MagicMoveComposer}
    */
   delay(weight = 1) {
     return this.add(weight);
@@ -309,7 +309,7 @@ class AnimationClone {
    * Sets the opacity to the given value
    * @param {Number} opacity Opacity: 0..1
    * @param {Number} [weight] Optional weight (default = 1)
-   * @return {AnimationClone}
+   * @return {MagicMoveComposer}
    */
   opacity(opacity, weight = 1) {
     return this.add(weight, {
@@ -321,7 +321,7 @@ class AnimationClone {
    * Fade the content. When the content is a source, it is
    * faded-out, otherwise it is faded in.
    * @param {Number} [weight] Optional weight (default = 1)
-   * @return {AnimationClone}
+   * @return {MagicMoveComposer}
    */
   fade(weight = 1) {
     return this.add(weight, {
@@ -331,9 +331,9 @@ class AnimationClone {
 
   /**
    * Move the content towards the given clone.
-   * @param {AnimationClone} Animation-clone to move towards
+   * @param {MagicMoveComposer} Animation-clone to move towards
    * @param {Number} [weight] Optional weight (default = 1)
-   * @return {AnimationClone}
+   * @return {MagicMoveComposer}
    */
   move({ props }, weight = 1) {
     const { width, height } = this.props;
@@ -345,9 +345,9 @@ class AnimationClone {
 
   /**
    * Scales the content to the size of the given clone.
-   * @param {AnimationClone} Animation-clone to use as a size reference
+   * @param {MagicMoveComposer} Animation-clone to use as a size reference
    * @param {Number} [weight] Optional weight (default = 1)
-   * @return {AnimationClone}
+   * @return {MagicMoveComposer}
    */
   scale({ props }, weight = 1) {
     const { width, height } = this.props;
@@ -368,8 +368,8 @@ class AnimationClone {
   flipX(weight = 1) {
     const back = this.props.rotateX === "180deg";
     return this.add([0, weight / 2, 0, weight / 2], {
-      rotateX: AnimationClone[back ? "BACKFLIP_ROTATE" : "FLIP_ROTATE"],
-      opacity: AnimationClone[back ? "BACKFLIP_OPACITY" : "FLIP_OPACITY"]
+      rotateX: MagicMoveComposer[back ? "BACKFLIP_ROTATE" : "FLIP_ROTATE"],
+      opacity: MagicMoveComposer[back ? "BACKFLIP_OPACITY" : "FLIP_OPACITY"]
     });
   }
 
@@ -380,8 +380,8 @@ class AnimationClone {
   flipY(weight = 1) {
     const back = this.props.rotateY === "180deg";
     return this.add([0, weight / 2, 0, weight / 2], {
-      rotateY: AnimationClone[back ? "BACKFLIP_ROTATE" : "FLIP_ROTATE"],
-      opacity: AnimationClone[back ? "BACKFLIP_OPACITY" : "FLIP_OPACITY"]
+      rotateY: MagicMoveComposer[back ? "BACKFLIP_ROTATE" : "FLIP_ROTATE"],
+      opacity: MagicMoveComposer[back ? "BACKFLIP_OPACITY" : "FLIP_OPACITY"]
     });
   }
 
@@ -439,4 +439,4 @@ class AnimationClone {
   }
 }
 
-export default AnimationClone;
+export default MagicMoveComposer;

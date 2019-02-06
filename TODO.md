@@ -1,5 +1,5 @@
-- [ ] Fix elasticity on new AnimationClone (fix clamping on interpolate)
-- [ ] Optimize AnimationClone to ignore non animated props (deal with this efficiently)
+- [ ] Fix elasticity on new MagicMoveComposer (fix clamping on interpolate)
+- [ ] Optimize MagicMoveComposer to ignore non animated props (deal with this efficiently)
 - [ ] Native target is sometimes briefly visible when animation starts
 - [ ] Transform (e.g. rotateZ) are not respected?
 - [ ] ShrinkAndGrow transition does the funky chicken on Android (seems like a bug in RN)
