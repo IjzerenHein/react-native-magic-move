@@ -4,8 +4,8 @@ import flipTransition from "./flip";
 import dissolveTransition from "./dissolve";
 import shrinkAndGrowTransition from "./shrinkAndGrow";
 import squashAndStretchTransition from "./squashAndStretch";
+import fadeTransition from "./fade";
 // import foldTransition from "./fold";
-// import fadeTransition from "./fade";
 // import blurTransition from "./blur";
 // import dottedTransition from "./dotted";
 
@@ -15,7 +15,7 @@ export const flip = flipTransition;
 export const dissolve = dissolveTransition;
 export const shrinkAndGrow = shrinkAndGrowTransition;
 export const squashAndStretch = squashAndStretchTransition;
+export const fade = fadeTransition;
 // export const fold = foldTransition;
-// export const fade = fadeTransition;
 // export const blur = blurTransition;
 // export const dotted = dottedTransition;
