@@ -182,6 +182,9 @@ class AnimationClone {
           ? this.getInterpolatedProp(propName, animValue)
           : otherProps[propName];
       if (flags & Flag.CONTENT) {
+        propName = `${propName
+          .substring(7, 8)
+          .toLowerCase()}${propName.substring(8)}`;
         if (flags & Flag.PROP) {
           contentProps = contentProps || [];
           contentProps[propName] = value;
@@ -261,9 +264,14 @@ class AnimationClone {
       }
     }
 
+    // If no weight available, use the last value
+    const totalWeight = weights.reduce((acc, weight) => acc + weight, 0);
+    if (!totalWeight) {
+      return values[0];
+    }
+
     // Calculate input-range based on weight distribution
     let currentWeight = 0;
-    const totalWeight = weights.reduce((acc, weight) => acc + weight, 0);
     const inputRange = weights.map(weight => {
       if (isTarget) {
         const result = currentWeight;
@@ -386,14 +394,22 @@ class AnimationClone {
    * @param {Number} [bottom]
    */
   clip(left = 0, top = 0, right = 0, bottom = 0) {
-    const { width, height } = this.props;
+    const { width, height, translateX, translateY } = this.props;
     return this.add(undefined, {
       width: width - left - right,
       height: height - top - bottom,
-      translateX: left,
-      translateY: top,
-      contentTranslateX: -left,
-      contentTranslateY: -top
+      translateX: translateX + left,
+      translateY: translateY + top,
+      overflow: "hidden",
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+      backgroundColor: undefined,
+      contentWidth: width,
+      contentHeight: height,
+      contentTranslateX: 0 - left,
+      contentTranslateY: 0 - top
     });
   }
 
@@ -413,8 +429,8 @@ class AnimationClone {
           this.clip(
             col * tileWidth,
             row * tileHeight,
-            (col + 1) * tileWidth,
-            (row + 1) * tileHeight
+            width - (col + 1) * tileWidth,
+            height - (row + 1) * tileHeight
           )
         );
       }
