@@ -1,5 +1,10 @@
 import { StyleSheet } from "react-native";
 
+function resolveValue(value, def, other = 0) {
+  if (value !== undefined) return value;
+  return def || other;
+}
+
 const Flag = {
   DEFAULT: 0,
   ANIMATED: 1,
@@ -32,7 +37,11 @@ const PROPS = {
   contentRotateY: Flag.CONTENT | Flag.ANIMATED | Flag.TRANSFORM,
   contentRotateZ: Flag.CONTENT | Flag.TRANSFORM,
   // animatable props
-  blurRadius: Flag.PROP | Flag.ANIMATED
+  blurRadius: Flag.PROP | Flag.ANIMATED,
+  borderTopLeftRadius: Flag.ANIMATED,
+  borderTopRightRadius: Flag.ANIMATED,
+  borderBottomLeftRadius: Flag.ANIMATED,
+  borderBottomRightRadius: Flag.ANIMATED
   // all other props will be treated as 'Flag.PROP'
 };
 
@@ -101,7 +110,23 @@ class MagicMoveComposer {
         scaleX: 1,
         scaleY: 1,
         rotateX: "0deg",
-        rotateY: "0deg"
+        rotateY: "0deg",
+        borderTopLeftRadius: resolveValue(
+          style.borderTopLeftRadius,
+          style.borderRadius
+        ),
+        borderTopRightRadius: resolveValue(
+          style.borderTopRightRadius,
+          style.borderRadius
+        ),
+        borderBottomLeftRadius: resolveValue(
+          style.borderBottomLeftRadius,
+          style.borderRadius
+        ),
+        borderBottomRightRadius: resolveValue(
+          style.borderBottomRightRadius,
+          style.borderRadius
+        )
       },
       undefined,
       0
@@ -314,6 +339,45 @@ class MagicMoveComposer {
   opacity(opacity, weight = 1) {
     return this.add(weight, {
       opacity
+    });
+  }
+
+  /**
+   * Sets the x-scale to the given value
+   * @param {Number} scaleX
+   * @param {Number} [weight] Optional weight (default = 1)
+   * @return {MagicMoveComposer}
+   */
+  scaleX(scaleX, weight = 1) {
+    return this.add(weight, {
+      scaleX
+    });
+  }
+
+  /**
+   * Sets the y-scale to the given value
+   * @param {Number} scaleY
+   * @param {Number} [weight] Optional weight (default = 1)
+   * @return {MagicMoveComposer}
+   */
+  scaleY(scaleY, weight = 1) {
+    return this.add(weight, {
+      scaleY
+    });
+  }
+
+  /**
+   * Sets the y-scale to the given value
+   * @param {Number} scaleY
+   * @param {Number} [weight] Optional weight (default = 1)
+   * @return {MagicMoveComposer}
+   */
+  borderRadius(borderRadius, weight = 1) {
+    return this.add(weight, {
+      borderTopLeftRadius: borderRadius,
+      borderTopRightRadius: borderRadius,
+      borderBottomLeftRadius: borderRadius,
+      borderBottomRightRadius: borderRadius
     });
   }
 

@@ -3,7 +3,7 @@ import { StyleSheet, Animated, Text, Easing, Platform } from "react-native";
 import PropTypes from "prop-types";
 import defaultTransition from "./transitions/move";
 import MagicMoveClone from "./clone";
-import MagicMoveComposer from "./MagicMoveComposer";
+import MagicMoveComposer from "./Composer";
 
 const defaultEasingFn = Easing.inOut(Easing.ease);
 
