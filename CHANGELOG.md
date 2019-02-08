@@ -4,6 +4,12 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+## [0.5.1] - 2019-02-08
+
+### Fixed
+
+- Fixed `BlurEffectWithAmount` linker collission on iOS/Xcode
+
 ## [0.5.0] - 2019-02-04
 
 ### Added
