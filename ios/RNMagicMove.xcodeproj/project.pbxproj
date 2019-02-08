@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		21B64D5722073E540034B27D /* BlurEffectWithAmount.m in Sources */ = {isa = PBXBuildFile; fileRef = 21B64D4D22073E540034B27D /* BlurEffectWithAmount.m */; };
+		21B64D5722073E540034B27D /* RCTMagicMoveBlurEffectWithAmount.m in Sources */ = {isa = PBXBuildFile; fileRef = 21B64D4D22073E540034B27D /* RCTMagicMoveBlurEffectWithAmount.m */; };
 		21B64D5822073E540034B27D /* RCTMagicMoveCloneData.m in Sources */ = {isa = PBXBuildFile; fileRef = 21B64D4F22073E540034B27D /* RCTMagicMoveCloneData.m */; };
 		21B64D5922073E540034B27D /* RCTMagicMoveClone.m in Sources */ = {isa = PBXBuildFile; fileRef = 21B64D5422073E540034B27D /* RCTMagicMoveClone.m */; };
 		21B64D5A22073E540034B27D /* RCTMagicMoveCloneDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 21B64D5522073E540034B27D /* RCTMagicMoveCloneDataManager.m */; };
@@ -28,10 +28,10 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMagicMove.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicMove.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		21B64D4D22073E540034B27D /* BlurEffectWithAmount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlurEffectWithAmount.m; sourceTree = "<group>"; };
+		21B64D4D22073E540034B27D /* RCTMagicMoveBlurEffectWithAmount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMagicMoveBlurEffectWithAmount.m; sourceTree = "<group>"; };
 		21B64D4E22073E540034B27D /* RCTMagicMoveCloneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMagicMoveCloneManager.h; sourceTree = "<group>"; };
 		21B64D4F22073E540034B27D /* RCTMagicMoveCloneData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMagicMoveCloneData.m; sourceTree = "<group>"; };
-		21B64D5022073E540034B27D /* BlurEffectWithAmount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurEffectWithAmount.h; sourceTree = "<group>"; };
+		21B64D5022073E540034B27D /* RCTMagicMoveBlurEffectWithAmount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMagicMoveBlurEffectWithAmount.h; sourceTree = "<group>"; };
 		21B64D5122073E540034B27D /* RCTMagicMoveClone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMagicMoveClone.h; sourceTree = "<group>"; };
 		21B64D5222073E540034B27D /* RCTMagicMoveCloneData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMagicMoveCloneData.h; sourceTree = "<group>"; };
 		21B64D5322073E540034B27D /* RCTMagicMoveCloneDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMagicMoveCloneDataManager.h; sourceTree = "<group>"; };
@@ -62,8 +62,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				21B64D5022073E540034B27D /* BlurEffectWithAmount.h */,
-				21B64D4D22073E540034B27D /* BlurEffectWithAmount.m */,
+				21B64D5022073E540034B27D /* RCTMagicMoveBlurEffectWithAmount.h */,
+				21B64D4D22073E540034B27D /* RCTMagicMoveBlurEffectWithAmount.m */,
 				21B64D5122073E540034B27D /* RCTMagicMoveClone.h */,
 				21B64D5422073E540034B27D /* RCTMagicMoveClone.m */,
 				21B64D5222073E540034B27D /* RCTMagicMoveCloneData.h */,
@@ -136,7 +136,7 @@
 				21B64D5A22073E540034B27D /* RCTMagicMoveCloneDataManager.m in Sources */,
 				21B64D5922073E540034B27D /* RCTMagicMoveClone.m in Sources */,
 				21B64D5822073E540034B27D /* RCTMagicMoveCloneData.m in Sources */,
-				21B64D5722073E540034B27D /* BlurEffectWithAmount.m in Sources */,
+				21B64D5722073E540034B27D /* RCTMagicMoveBlurEffectWithAmount.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

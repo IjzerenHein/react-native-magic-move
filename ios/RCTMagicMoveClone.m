@@ -9,7 +9,7 @@
 #import <React/UIView+React.h>
 #import "RCTMagicMoveClone.h"
 #import "RCTMagicMoveCloneDataManager.h"
-#import "BlurEffectWithAmount.h"
+#import "RCTMagicMoveBlurEffectWithAmount.h"
 
 #ifdef DEBUG
 #define DebugLog(...) NSLog(__VA_ARGS__)
@@ -103,7 +103,7 @@
         //[self.layer setNeedsDisplay];
         
         if (blurRadius) {
-            BlurEffectWithAmount* blurEffect = [BlurEffectWithAmount effectWithStyle:UIBlurEffectStyleLight andBlurAmount:@(blurRadius)];
+            RCTMagicMoveBlurEffectWithAmount* blurEffect = [RCTMagicMoveBlurEffectWithAmount effectWithStyle:UIBlurEffectStyleLight andBlurAmount:@(blurRadius)];
             if (_blurEffectView == nil) {
                 _blurEffectView = [[UIVisualEffectView alloc] init];
                 _blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
