@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 
-@interface BlurEffectWithAmount : UIBlurEffect
+@interface RCTMagicMoveBlurEffectWithAmount : UIBlurEffect
 @property (nonatomic, strong) NSNumber *blurAmount;
 
 + (instancetype)effectWithStyle:(UIBlurEffectStyle)style andBlurAmount:(NSNumber*)blurAmount;
