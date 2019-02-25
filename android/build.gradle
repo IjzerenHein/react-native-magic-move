@@ -1,3 +1,6 @@
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
 
 buildscript {
     repositories {
@@ -12,14 +15,14 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion safeExtGet('compileSdkVersion', 23)
+    buildToolsVersion safeExtGet('buildToolsVersion', '23.0.1')
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion safeExtGet('minSdkVersion', 16)
+        targetSdkVersion safeExtGet('targetSdkVersion', 22)
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
     }
     lintOptions {
         abortOnError false
