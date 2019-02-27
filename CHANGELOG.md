@@ -4,11 +4,21 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+## [0.6.0] - 2019-02-27
+
+### Added
+
+- Added `zIndex` for setting the render-order when multiple animations are executed
+
+### Fixed
+
+- Fixed Android build on certain RN/SDK combinations due to hardcoded Android version numbers (thanks @stpch)
+
 ## [0.5.1] - 2019-02-08
 
 ### Fixed
 
-- Fixed `BlurEffectWithAmount` linker collission on iOS/Xcode
+- Fixed `BlurEffectWithAmount` linker collision on iOS/Xcode when `react-native-blur` is also installed
 
 ## [0.5.0] - 2019-02-04
 
