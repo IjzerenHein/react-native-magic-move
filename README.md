@@ -95,7 +95,14 @@ The following magic-move components are supported out of the box.
 You can also create your own custom MagicMove components.
 
 ```js
-MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
+const MyMagicMoveComponent = MagicMove.createMagicMoveComponent(MyComponent);
+
+// When creating a custom image component (e.g. FastImage) also specify the `image` attribute
+// so that the `move` transition treats this as an image.
+const MagicMoveFastImage = MagicMove.createMagicMoveComponent(FastImage, undefined, 'image');
+
+// Full signature
+// MagicMove.createMagicMoveComponent(Component, [AnimatedComponent], [type]);
 ```
 
 ### Props
