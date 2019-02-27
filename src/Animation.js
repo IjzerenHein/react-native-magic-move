@@ -476,7 +476,7 @@ class MagicMoveAnimation extends Component {
     if (sourceLayout && targetLayout && !this._isAnimationStarted) {
       const { source, target, onCompleted } = this.props;
       this._isAnimationStarted = true;
-      const targetProps = source.props;
+      const targetProps = target.props;
       const { duration, easing, delay } = targetProps;
       const transition = this.getTransition();
       if (this.isDebug) {
@@ -486,7 +486,7 @@ class MagicMoveAnimation extends Component {
 
       // Determine whether the native driver should be used
       const toND = targetProps.useNativeDriver;
-      const fromND = target.props.useNativeDriver;
+      const fromND = source.props.useNativeDriver;
       let useNativeDriver =
         toND === false || fromND === false
           ? false
