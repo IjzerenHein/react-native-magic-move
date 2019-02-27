@@ -26,6 +26,7 @@ class MagicMoveView extends Component {
     debug: PropTypes.bool,
     disabled: PropTypes.bool,
     transition: PropTypes.func,
+    zIndex: PropTypes.number,
     imageSizeHint: PropTypes.shape({
       width: PropTypes.number,
       height: PropTypes.number
@@ -131,6 +132,7 @@ class MagicMoveView extends Component {
       disabled, // eslint-disable-line
       transition, // eslint-disable-line
       imageSizeHint, // eslint-disable-line
+      zIndex, // eslint-disable-line
       ...otherProps
     } = this.props;
 

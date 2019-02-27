@@ -100,16 +100,17 @@ MyCustomComponent = MagicMove.createMagicMoveComponent(MyCustomComponent);
 
 ### Props
 
-| Property          | Type       | Default                     | Description                                          |
-| ----------------- | ---------- | --------------------------- | ---------------------------------------------------- |
-| `id`              | `string`   | **(required)**              | Unique id of the magic-move instance                 |
-| `transition`      | `function` | `MagicMove.Transition.move` | Transition effect, see below                         |
-| `duration`        | `number`   | `400`                       | Length of the animation (milliseconds)               |
-| `delay`           | `number`   | `0`                         | Amount of msec to wait before starting the animation |
-| `easing`          | `function` | `Easing.inOut(Easing.ease)` | Easing function to define the curve                  |
-| `disabled`        | `bool`     | `false`                     | Disables transitions to this component               |
-| `useNativeDriver` | `boolean`  | `true`                      | Use the native-driver                                |
-| `debug`           | `boolean`  | `false`                     | Enables debug-mode to analyze animations             |
+| Property          | Type       | Default                     | Description                                                                                                                                                      |
+| ----------------- | ---------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`              | `string`   | **(required)**              | Unique id of the magic-move instance                                                                                                                             |
+| `transition`      | `function` | `MagicMove.Transition.move` | Transition effect, see below                                                                                                                                     |
+| `duration`        | `number`   | `400`                       | Length of the animation (milliseconds)                                                                                                                           |
+| `delay`           | `number`   | `0`                         | Amount of msec to wait before starting the animation                                                                                                             |
+| `easing`          | `function` | `Easing.inOut(Easing.ease)` | Easing function to define the curve                                                                                                                              |
+| `disabled`        | `bool`     | `false`                     | Disables transitions to this component                                                                                                                           |
+| `zIndex`          | `number`   | `0`                         | Z-index to control the drawing order of the rendered animation. A component with a greater z-index is always drawn in front of a component with a lower z-index. |
+| `useNativeDriver` | `boolean`  | `true`                      | Use the native-driver                                                                                                                                            |
+| `debug`           | `boolean`  | `false`                     | Enables debug-mode to analyze animations                                                                                                                         |
 
 ### Transitions
 

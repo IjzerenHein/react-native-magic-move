@@ -50,6 +50,11 @@ class MagicMoveRenderer extends PureComponent {
         {scenes.map((scene, sceneIndex) => {
           const children = administration.animations
             .filter(({ source }) => source.scene === scene)
+            .sort(
+              (a, b) =>
+                (a.source.props.zIndex || 0) - (b.source.props.zIndex || 0) ||
+                (a.target.props.zIndex || 0) - (b.target.props.zIndex || 0)
+            )
             .map(({ id, source, target }) => (
               <MagicMoveAnimation
                 key={id}
