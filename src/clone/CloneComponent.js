@@ -39,14 +39,6 @@ class MagicMoveCloneComponent extends PureComponent {
 
     // Measure position & size
     const layoutPromise = measureRelativeLayout(component);
-    if (options & CloneOption.DEBUG) {
-      //eslint-disable-next-line
-      console.debug(
-        `[MagicMove] Measuring ${
-          options & CloneOption.TARGET ? "target" : "source"
-        } ${component}... DONE`
-      );
-    }
 
     // In case this is an image, also measure the size
     // of the underlying image, so we can perform "perfect"
@@ -78,6 +70,14 @@ class MagicMoveCloneComponent extends PureComponent {
     if (imageSize) {
       this._layout.imageWidth = imageSize.width;
       this._layout.imageHeight = imageSize.height;
+    }
+    if (options & CloneOption.DEBUG) {
+      //eslint-disable-next-line
+      console.debug(
+        `[MagicMove] Measuring ${
+          options & CloneOption.TARGET ? "target" : "source"
+        } ${component.debugName}... DONE (${JSON.stringify(layout)})`
+      );
     }
     if (onLayout) onLayout(layout);
     else if (this._isMounted) this.forceUpdate();
