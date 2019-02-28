@@ -33,10 +33,22 @@ export async function measureRelativeLayout(component) {
   const { mmContext } = component.props;
   const { scene, provider } = mmContext;
 
-  const layouts = await Promise.all([
+  let layouts = await Promise.all([
     component.measure(),
     (scene || provider).measure()
   ]);
+
+  // If the component is outside the scene, then perform one more attempt
+  // to measure the scene. This fixes an issue with react-navigation
+  // which moves content out of the view-port when it is not visible
+  if (
+    layouts[0].x + layouts[0].width < layouts[1].x ||
+    layouts[0].y + layouts[0].height < layouts[1].y ||
+    layouts[0].x > layouts[1].x + layouts[1].width ||
+    layouts[0].y > layouts[1].y + layouts[1].height
+  ) {
+    layouts[1] = await (scene || provider).measure(true);
+  }
 
   return {
     x: layouts[0].x - layouts[1].x,

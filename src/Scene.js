@@ -118,9 +118,13 @@ class MagicMoveScene extends Component {
     return this.props.active;
   }
 
-  measure() {
+  measure(forceRemeasure) {
     const now = performanceNow();
-    if (this._lastMeasureResult && now - this._lastMeasureTime <= 100) {
+    if (
+      this._lastMeasureResult &&
+      (now - this._lastMeasureTime < 16 ||
+        (now - this._lastMeasureTime <= 100 && !forceRemeasure))
+    ) {
       return this._lastMeasureResult;
     }
     this._lastMeasureTime = now;

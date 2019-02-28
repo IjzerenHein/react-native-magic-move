@@ -15,6 +15,7 @@ Create magical move transitions between scenes in react-native
 
 - Fixed Android build on certain RN/SDK combinations due to hardcoded Android version numbers (thanks @stpch)
 - Fixed `duration`, `delay` and `easing` props, which were used from the source component, but they should have been used from the target component.
+- Fixed animations wrongly coming from the bottom when using the react-navigation Tabs.
 
 ### Changes
 
