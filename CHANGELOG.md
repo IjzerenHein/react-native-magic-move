@@ -15,7 +15,10 @@ Create magical move transitions between scenes in react-native
 
 - Fixed Android build on certain RN/SDK combinations due to hardcoded Android version numbers (thanks @stpch)
 - Fixed `duration`, `delay` and `easing` props, which were used from the source component, but they should have been used from the target component.
-- Fixed `createMagicMoveComponent` signature, so that the new `type` argument is optional. Also improved docs for this.
+
+### Changes
+
+- **[BREAKING CHANGE]** Changed `createMagicMoveComponent` signature to allow pass-through of props (`createMagicMoveComponent(Component, props)`)
 
 ## [0.5.1] - 2019-02-08
 

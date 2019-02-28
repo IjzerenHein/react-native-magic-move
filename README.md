@@ -99,10 +99,14 @@ const MyMagicMoveComponent = MagicMove.createMagicMoveComponent(MyComponent);
 
 // When creating a custom image component (e.g. FastImage) also specify the `image` attribute
 // so that the `move` transition treats this as an image.
-const MagicMoveFastImage = MagicMove.createMagicMoveComponent(FastImage, undefined, 'image');
+const MagicMoveFastImage = MagicMove.createMagicMoveComponent(FastImage, {ComponentType: 'image'});
 
 // Full signature
-// MagicMove.createMagicMoveComponent(Component, [AnimatedComponent], [type]);
+/* MagicMove.createMagicMoveComponent(Component, {
+  AnimatedComponent,
+  ComponentType,
+  ...props
+});*/
 ```
 
 ### Props

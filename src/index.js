@@ -20,6 +20,12 @@ export const ContextPropType = MagicMoveContextPropType;
 export const withContext = withMagicMoveContext;
 export const createMagicMoveComponent = createComponent;
 export const View = MagicMoveView;
-export const Text = createComponent(BaseText, AnimatedText, "text");
-export const Image = createComponent(BaseImage, AnimatedImage, "image");
+export const Text = createComponent(BaseText, {
+  AnimatedComponent: AnimatedText,
+  ComponentType: "text"
+});
+export const Image = createComponent(BaseImage, {
+  AnimatedComponent: AnimatedImage,
+  ComponentType: "image"
+});
 export const Transition = MagicMoveTransition;
