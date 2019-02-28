@@ -8,7 +8,8 @@ Create magical move transitions between scenes in react-native
 
 ### Added
 
-- Added `zIndex` for setting the render-order when multiple animations are executed
+- Added `zIndex` prop for setting the render-order when multiple animations are executed
+- Added `useNativeClone` prop for explicitely disabling/enabling the use of native-clones
 
 ### Fixed
 

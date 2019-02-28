@@ -7,6 +7,7 @@ import {
   MagicMoveContextPropType
 } from "./Context";
 import { measureLayout } from "./clone/measure";
+import MagicMoveClone from "./clone/Clone";
 
 /**
  * An Animated view that is magically "moved" to the
@@ -27,6 +28,7 @@ class MagicMoveView extends Component {
     disabled: PropTypes.bool,
     transition: PropTypes.func,
     zIndex: PropTypes.number,
+    useNativeClone: PropTypes.bool,
     imageSizeHint: PropTypes.shape({
       width: PropTypes.number,
       height: PropTypes.number
@@ -38,6 +40,7 @@ class MagicMoveView extends Component {
     Component: View,
     ComponentType: "view",
     AnimatedComponent: Animated.View,
+    useNativeClone: MagicMoveClone.isNativeAvailable,
     disabled: false,
     keepHidden: false
   };
@@ -133,6 +136,7 @@ class MagicMoveView extends Component {
       transition, // eslint-disable-line
       imageSizeHint, // eslint-disable-line
       zIndex, // eslint-disable-line
+      useNativeClone, // eslint-disable-line
       ...otherProps
     } = this.props;
 

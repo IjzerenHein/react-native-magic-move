@@ -58,7 +58,7 @@ class MagicMoveAnimation extends Component {
       //eslint-disable-next-line
       console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
     }
-    if (!MagicMoveClone.isNativeAvailable || Platform.OS === "android") {
+    if (!props.target.props.useNativeClone || Platform.OS === "android") {
       props.target.setOpacity(0);
     }
   }
@@ -255,7 +255,7 @@ class MagicMoveAnimation extends Component {
     this.setState({
       targetLayout: layout
     });
-    if (MagicMoveClone.isNativeAvailable && Platform.OS === "ios") {
+    if (this.props.target.props.useNativeClone && Platform.OS === "ios") {
       this.props.target.setOpacity(0);
     }
   };
@@ -332,7 +332,7 @@ class MagicMoveAnimation extends Component {
     // Instead, that child should not be visible in this clone,
     // otherwise it would be drawn twice.
     if (
-      MagicMoveClone.isNativeAvailable &&
+      target.props.useNativeClone &&
       nativeContentType === "snapshot" &&
       source.props.mmContext.administration.isAnimatingChildOf(source)
     ) {

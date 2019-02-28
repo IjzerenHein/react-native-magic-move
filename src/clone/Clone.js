@@ -45,6 +45,7 @@ class MagicMoveClone extends PureComponent {
     const isInitial = options & CloneOption.INITIAL ? true : false;
     const isVisible = options & CloneOption.VISIBLE ? true : false;
     const { isImage } = this.props.component;
+    const { useNativeClone } = this.props.component.props;
 
     // Do now show the outer content, when an inner content style
     // is specified
@@ -60,18 +61,14 @@ class MagicMoveClone extends PureComponent {
     // Render content
     let content;
     const cloneChildren =
-      !NativeCloneComponent.isAvailable ||
-      nativeContentType === CloneContentType.CHILDREN
+      !useNativeClone || nativeContentType === CloneContentType.CHILDREN
         ? children
         : undefined;
 
     // Render inner clone
     let innerClone;
     if (contentStyle) {
-      if (
-        NativeCloneComponent.isAvailable &&
-        (!isImage || Platform.OS === "ios")
-      ) {
+      if (useNativeClone && (!isImage || Platform.OS === "ios")) {
         innerClone = (
           <NativeCloneComponent
             style={contentStyle}
@@ -95,7 +92,7 @@ class MagicMoveClone extends PureComponent {
       }
     }
 
-    if (NativeCloneComponent.isAvailable) {
+    if (useNativeClone) {
       if (innerClone) {
         content = (
           <NativeCloneComponent

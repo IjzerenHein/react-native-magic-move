@@ -7,6 +7,7 @@ import {
   MagicMoveContextPropType
 } from "./Context";
 import { performanceNow, measureLayout } from "./clone/measure";
+import MagicMoveClone from "./clone/Clone";
 
 let autoId = 0;
 
@@ -17,11 +18,13 @@ class MagicMoveScene extends Component {
     disabled: PropTypes.bool,
     active: PropTypes.bool,
     debug: PropTypes.bool,
+    useNativeClone: PropTypes.bool,
     mmContext: MagicMoveContextPropType
   };
 
   static defaultProps = {
-    disabled: false
+    disabled: false,
+    useNativeClone: MagicMoveClone.isNativeAvailable
   };
 
   _ref = undefined;
@@ -77,6 +80,7 @@ class MagicMoveScene extends Component {
       active, // eslint-disable-line
       debug, // eslint-disable-line
       mmContext, // eslint-disable-line
+      useNativeClone, // eslint-disable-line
       ...otherProps
     } = this.props;
     return (
