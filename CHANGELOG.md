@@ -4,22 +4,22 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
-## [0.6.0] - 2019-02-27
+## [0.6.0] - 2019-02-28
 
 ### Added
 
 - Added `zIndex` prop for setting the render-order when multiple animations are executed
-- Added `useNativeClone` prop for explicitely disabling/enabling the use of native-clones
+- Added `useNativeClone` prop for explicitly disabling/enabling the use of native-clones
 
 ### Fixed
 
 - Fixed Android build on certain RN/SDK combinations due to hardcoded Android version numbers (thanks @stpch)
-- Fixed `duration`, `delay` and `easing` props, which were used from the source component, but they should have been used from the target component.
-- Fixed animations wrongly coming from the bottom when using the react-navigation Tabs.
+- Fixed `duration`, `delay` and `easing` props, which were used from the source component, but they should have been used from the target component
+- Fixed animations wrongly coming from the bottom when using the react-navigation Tabs
 
 ### Changes
 
-- **[BREAKING CHANGE]** Changed `createMagicMoveComponent` signature to allow pass-through of props (`createMagicMoveComponent(Component, props)`)
+- **[BREAKING CHANGE]** Changed `createMagicMoveComponent` signature to allow pass-through of props (NOW: `createMagicMoveComponent(Component, props)`, see README)
 
 ## [0.5.1] - 2019-02-08
 
