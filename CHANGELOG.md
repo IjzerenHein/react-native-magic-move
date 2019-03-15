@@ -4,6 +4,10 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+## [0.6.1] - 2019-03-15
+
+- Fixed build warning on Android "Configuration 'compile' is obsolete"
+
 ## [0.6.0] - 2019-02-28
 
 ### Added
