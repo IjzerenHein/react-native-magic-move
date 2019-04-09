@@ -51,7 +51,7 @@ class MagicMoveView extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      opacity: 1,
+      hidden: false,
       id: props.id
     };
     if (props.id === undefined) {
@@ -142,12 +142,12 @@ class MagicMoveView extends Component {
 
     const { isClone, administration } = mmContext;
     const isAnimating = isClone && administration.isAnimatingComponent(this);
-    const opacity = isAnimating ? 0 : this.state.opacity;
+    const hidden = this.state.hidden || isAnimating;
     return (
       <MagicMoveContextProvider value={this}>
         <Component
           ref={isAnimating ? undefined : this._setRef}
-          style={[style, opacity !== undefined ? { opacity } : undefined]}
+          style={[style, hidden ? { opacity: 0 } : undefined]}
           {...otherProps}
           collapsable={isAnimating ? otherProps.collapsable : false}
         />
@@ -159,10 +159,10 @@ class MagicMoveView extends Component {
     this._ref = ref;
   };
 
-  setOpacity(val) {
-    if (this.state.opacity !== val && this._isMounted) {
+  setHidden(hidden) {
+    if (this.state.hidden !== hidden && this._isMounted) {
       this.setState({
-        opacity: val
+        hidden
       });
     }
   }

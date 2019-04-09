@@ -26,6 +26,8 @@ function contentTypeFromString(str) {
   }
 }
 
+const DELAYED_HIDE_IOS = true;
+
 /**
  * 1. Hide to component
  * 2. Get layout to and from component
@@ -58,8 +60,12 @@ class MagicMoveAnimation extends Component {
       //eslint-disable-next-line
       console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
     }
-    if (!props.target.props.useNativeClone || Platform.OS === "android") {
-      props.target.setOpacity(0);
+    if (
+      !props.target.props.useNativeClone ||
+      Platform.OS === "android" ||
+      !DELAYED_HIDE_IOS
+    ) {
+      props.target.setHidden(true);
     }
   }
 
@@ -238,7 +244,7 @@ class MagicMoveAnimation extends Component {
       //eslint-disable-next-line
       console.debug(`[MagicMove] Hiding source ${source.debugName}`);
     }
-    source.setOpacity(0);
+    source.setHidden(true);
     this.setState({
       sourceLayout: layout
     });
@@ -255,8 +261,12 @@ class MagicMoveAnimation extends Component {
     this.setState({
       targetLayout: layout
     });
-    if (this.props.target.props.useNativeClone && Platform.OS === "ios") {
-      this.props.target.setOpacity(0);
+    if (
+      DELAYED_HIDE_IOS &&
+      this.props.target.props.useNativeClone &&
+      Platform.OS === "ios"
+    ) {
+      this.props.target.setHidden(true);
     }
   };
 
@@ -530,13 +540,13 @@ class MagicMoveAnimation extends Component {
           //eslint-disable-next-line
           console.debug(`[MagicMove] Showing target ${target.debugName}`);
         }
-        target.setOpacity(undefined);
+        target.setHidden(false);
         if (!source.props.keepHidden) {
           if (this.isDebug) {
             //eslint-disable-next-line
             console.debug(`[MagicMove] Showing source ${source.debugName}`);
           }
-          source.setOpacity(undefined);
+          source.setHidden(false);
         }
         onCompleted();
       });
