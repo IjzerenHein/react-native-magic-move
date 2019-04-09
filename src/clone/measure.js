@@ -12,7 +12,9 @@ export function measureLayout(component) {
           x: pageX,
           y: pageY,
           width,
-          height
+          height,
+          scaleX: 1,
+          scaleY: 1
         });
       }
       i++;
@@ -30,7 +32,7 @@ export function measureLayout(component) {
 }
 
 export async function measureRelativeLayout(component) {
-  const { mmContext } = component.props;
+  const { mmContext, scaleHint } = component.props;
   const { scene, provider } = mmContext;
 
   let layouts = await Promise.all([
@@ -50,10 +52,31 @@ export async function measureRelativeLayout(component) {
     layouts[1] = await (scene || provider).measure(true);
   }
 
-  return {
-    x: layouts[0].x - layouts[1].x,
-    y: layouts[0].y - layouts[1].y,
-    width: layouts[0].width,
-    height: layouts[0].height
-  };
+  if (scaleHint !== undefined) {
+    const scaleX = scaleHint;
+    const scaleY = scaleHint;
+    return {
+      x:
+        layouts[0].x -
+        layouts[1].x +
+        (layouts[0].width - layouts[0].width / scaleX) / 2,
+      y:
+        layouts[0].y -
+        layouts[1].y +
+        (layouts[0].height - layouts[0].height / scaleY) / 2,
+      width: layouts[0].width / scaleX,
+      height: layouts[0].height / scaleY,
+      scaleX,
+      scaleY
+    };
+  } else {
+    return {
+      x: layouts[0].x - layouts[1].x,
+      y: layouts[0].y - layouts[1].y,
+      width: layouts[0].width,
+      height: layouts[0].height,
+      scaleX: scaleHint || 1,
+      scaleY: scaleHint || 1
+    };
+  }
 }

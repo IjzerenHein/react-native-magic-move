@@ -140,7 +140,12 @@ class MagicMoveCloneComponent extends PureComponent {
           top: 0,
           width: layout.width,
           height: layout.height,
-          transform: [{ translateX: layout.x }, { translateY: layout.y }],
+          transform: [
+            { translateX: layout.x },
+            { translateY: layout.y },
+            { scaleX: layout.scaleX },
+            { scaleY: layout.scaleY }
+          ],
           margin: 0,
           marginTop: 0,
           marginBottom: 0,

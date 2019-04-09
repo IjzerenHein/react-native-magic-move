@@ -115,6 +115,10 @@ class MagicMoveNativeCloneComponent extends PureComponent {
       layout.imageHeight = imageSize.height;
     }
 
+    // Set default scale
+    layout.scaleX = 1;
+    layout.scaleY = 1;
+
     // Call callbacks
     if (onLayout) onLayout(layout);
     if (onShow) onShow(layout);
