@@ -1,5 +1,6 @@
 import React from "react";
-import { Animated, Text, StyleSheet } from "react-native";
+import { Animated, Text } from "react-native";
+import { splitTextStyles } from "./TextUtils";
 
 /**
  * Custom AnimatedText that works around an issue with RN on iOS
@@ -9,51 +10,7 @@ import { Animated, Text, StyleSheet } from "react-native";
  */
 const AnimatedText = props => {
   const { style, ...otherProps } = props;
-  const {
-    color,
-    fontSize,
-    fontStyle,
-    fontWeight,
-    fontFamily,
-    fontVariant,
-    letterSpacing,
-    lineHeight,
-    includeFontPadding,
-    textAlign,
-    textAlignVertical,
-    textDecorationLine,
-    textDecorationColor,
-    textDecorationStyle,
-    textShadowColor,
-    textShadowRadius,
-    textShadowOffset,
-    textTransform,
-    writingDirection,
-    ...otherStyles
-  } = StyleSheet.flatten([style]);
-
-  const textStyles = {
-    color,
-    fontSize,
-    fontStyle,
-    fontWeight,
-    fontFamily,
-    fontVariant,
-    letterSpacing,
-    lineHeight,
-    includeFontPadding,
-    textAlign,
-    textAlignVertical,
-    textDecorationLine,
-    textDecorationColor,
-    textDecorationStyle,
-    textShadowColor,
-    textShadowRadius,
-    textShadowOffset,
-    textTransform,
-    writingDirection
-  };
-
+  const { textStyles, otherStyles } = splitTextStyles(style);
   return (
     <Animated.View style={otherStyles}>
       <Text style={textStyles} {...otherProps} />
