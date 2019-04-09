@@ -4,7 +4,20 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+## [0.6.2] - 2019-04-09
+
+### Added
+
+- Added `parentScaleHint` prop to make it possible to render scaled content correctly
+- Added missing docs for `imageSizeHint` and `useNativeClone` props
+
+### Fixed
+
+- Fixed scene not visible when no explicit style was provided to the Scene component
+
 ## [0.6.1] - 2019-03-15
+
+### Fixed
 
 - Fixed build warning on Android "Configuration 'compile' is obsolete"
 
