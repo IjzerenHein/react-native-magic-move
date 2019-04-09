@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { PropTypes } from "prop-types";
 import {
   withMagicMoveContext,
@@ -8,6 +8,12 @@ import {
 } from "./Context";
 import { performanceNow, measureLayout } from "./clone/measure";
 import MagicMoveClone from "./clone/Clone";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  }
+});
 
 let autoId = 0;
 
@@ -84,7 +90,12 @@ class MagicMoveScene extends Component {
       ...otherProps
     } = this.props;
     return (
-      <View ref={this._setRef} {...otherProps} collapsable={false}>
+      <View
+        ref={this._setRef}
+        style={styles.container}
+        {...otherProps}
+        collapsable={false}
+      >
         <MagicMoveContextProvider value={this}>
           {children}
         </MagicMoveContextProvider>
