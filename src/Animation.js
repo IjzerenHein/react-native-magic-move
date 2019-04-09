@@ -357,59 +357,32 @@ class MagicMoveAnimation extends Component {
       nativeContentType = "children";
     }
 
-    const fromLayout = sourceLayout;
-    const toLayout = targetLayout;
-    /*const fromLayout = {
-      ...sourceLayout,
-      width: sourceLayout.width / sourceLayout.scaleX,
-      height: sourceLayout.height / sourceLayout.scaleY,
-      x:
-        sourceLayout.x +
-        (sourceLayout.width - sourceLayout.width / sourceLayout.scaleX) / 2,
-      y:
-        sourceLayout.y +
-        (sourceLayout.height - sourceLayout.height / sourceLayout.scaleY) / 2
-    };
-
-    const toLayout = {
-      ...targetLayout,
-      width: targetLayout.width / targetLayout.scaleX,
-      height: targetLayout.height / targetLayout.scaleY,
-      x:
-        targetLayout.x +
-        (targetLayout.width - targetLayout.width / targetLayout.scaleX) / 2,
-      y:
-        targetLayout.y +
-        (targetLayout.height - targetLayout.height / targetLayout.scaleY) / 2
-    };*/
-
     const from = {
       isTarget: false,
       component: source,
-      width: fromLayout.width,
-      height: fromLayout.height,
-      imageWidth: fromLayout.imageWidth,
-      imageHeight: fromLayout.imageHeight,
+      width: sourceLayout.width,
+      height: sourceLayout.height,
+      imageWidth: sourceLayout.imageWidth,
+      imageHeight: sourceLayout.imageHeight,
       blurRadius: 0,
       start: {
-        x: fromLayout.x,
-        y: fromLayout.y,
-        scaleX: fromLayout.scaleX,
-        scaleY: fromLayout.scaleY,
+        x: sourceLayout.x,
+        y: sourceLayout.y,
+        scaleX: sourceLayout.scaleX,
+        scaleY: sourceLayout.scaleY,
         opacity: sourceStyle.opacity !== undefined ? sourceStyle.opacity : 1
       },
       end: {
-        x: toLayout.x - (fromLayout.width - toLayout.width) / 2,
-        y: toLayout.y - (fromLayout.height - toLayout.height) / 2,
+        x: targetLayout.x - (sourceLayout.width - targetLayout.width) / 2,
+        y: targetLayout.y - (sourceLayout.height - targetLayout.height) / 2,
         scaleX:
-          ((toLayout.width * toLayout.scaleX) /
-            (fromLayout.width * fromLayout.scaleX)) *
-          fromLayout.scaleX,
-        //scaleY: (targetLayout.height / sourceLayout.height) * fromLayout.scaleY,
+          ((targetLayout.width * targetLayout.scaleX) /
+            (sourceLayout.width * sourceLayout.scaleX)) *
+          sourceLayout.scaleX,
         scaleY:
-          ((toLayout.height * toLayout.scaleY) /
-            (fromLayout.height * fromLayout.scaleY)) *
-          fromLayout.scaleY,
+          ((targetLayout.height * targetLayout.scaleY) /
+            (sourceLayout.height * sourceLayout.scaleY)) *
+          sourceLayout.scaleY,
         opacity: targetStyle.opacity !== undefined ? targetStyle.opacity : 1
       },
       initial: from,
@@ -419,15 +392,15 @@ class MagicMoveAnimation extends Component {
       style: {
         ...sourceStyle,
         position: "absolute",
-        width: fromLayout.width,
-        height: fromLayout.height,
+        width: sourceLayout.width,
+        height: sourceLayout.height,
         left: 0,
         top: 0,
         transform: [
-          { translateX: fromLayout.x },
-          { translateY: fromLayout.y },
-          { scaleX: fromLayout.scaleX },
-          { scaleY: fromLayout.scaleY }
+          { translateX: sourceLayout.x },
+          { translateY: sourceLayout.y },
+          { scaleX: sourceLayout.scaleX },
+          { scaleY: sourceLayout.scaleY }
         ],
         margin: 0,
         marginTop: 0,
@@ -442,32 +415,29 @@ class MagicMoveAnimation extends Component {
     const to = {
       isTarget: true,
       component: target,
-      width: toLayout.width,
-      height: toLayout.height,
-      imageWidth: toLayout.imageWidth,
-      imageHeight: toLayout.imageHeight,
+      width: targetLayout.width,
+      height: targetLayout.height,
+      imageWidth: targetLayout.imageWidth,
+      imageHeight: targetLayout.imageHeight,
       blurRadius: 0,
       start: {
-        x: fromLayout.x - (toLayout.width - fromLayout.width) / 2,
-        y: fromLayout.y - (toLayout.height - fromLayout.height) / 2,
+        x: sourceLayout.x - (targetLayout.width - sourceLayout.width) / 2,
+        y: sourceLayout.y - (targetLayout.height - sourceLayout.height) / 2,
         scaleX:
-          ((fromLayout.width * fromLayout.scaleX) /
-            (toLayout.width * toLayout.scaleX)) *
-          toLayout.scaleX,
+          ((sourceLayout.width * sourceLayout.scaleX) /
+            (targetLayout.width * targetLayout.scaleX)) *
+          targetLayout.scaleX,
         scaleY:
-          ((fromLayout.height * fromLayout.scaleY) /
-            (toLayout.height * toLayout.scaleY)) *
-          toLayout.scaleY,
-
-        //scaleX: (sourceLayout.width / targetLayout.width) * toLayout.scaleX,
-        //scaleY: (sourceLayout.height / targetLayout.height) * toLayout.scaleY,
+          ((sourceLayout.height * sourceLayout.scaleY) /
+            (targetLayout.height * targetLayout.scaleY)) *
+          targetLayout.scaleY,
         opacity: sourceStyle.opacity !== undefined ? sourceStyle.opacity : 1
       },
       end: {
-        x: toLayout.x,
-        y: toLayout.y,
-        scaleX: toLayout.scaleX,
-        scaleY: toLayout.scaleY,
+        x: targetLayout.x,
+        y: targetLayout.y,
+        scaleX: targetLayout.scaleX,
+        scaleY: targetLayout.scaleY,
         opacity: targetStyle.opacity !== undefined ? targetStyle.opacity : 1
       },
       props: {
@@ -476,15 +446,15 @@ class MagicMoveAnimation extends Component {
       style: {
         ...targetStyle,
         position: "absolute",
-        width: toLayout.width,
-        height: toLayout.height,
+        width: targetLayout.width,
+        height: targetLayout.height,
         left: 0,
         top: 0,
         transform: [
-          { translateX: toLayout.x },
-          { translateY: toLayout.y },
-          { scaleX: toLayout.scaleX },
-          { scaleY: toLayout.scaleY }
+          { translateX: targetLayout.x },
+          { translateY: targetLayout.y },
+          { scaleX: targetLayout.scaleX },
+          { scaleY: targetLayout.scaleY }
         ],
         margin: 0,
         marginTop: 0,

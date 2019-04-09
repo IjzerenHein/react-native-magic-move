@@ -32,7 +32,7 @@ export function measureLayout(component) {
 }
 
 export async function measureRelativeLayout(component) {
-  const { mmContext, scaleHint } = component.props;
+  const { mmContext, parentScaleHint } = component.props;
   const { scene, provider } = mmContext;
 
   let layouts = await Promise.all([
@@ -52,9 +52,11 @@ export async function measureRelativeLayout(component) {
     layouts[1] = await (scene || provider).measure(true);
   }
 
-  if (scaleHint !== undefined) {
-    const scaleX = scaleHint;
-    const scaleY = scaleHint;
+  if (parentScaleHint !== undefined) {
+    const scaleX =
+      typeof parentScaleHint === "number" ? parentScaleHint : parentScaleHint.x;
+    const scaleY =
+      typeof parentScaleHint === "number" ? parentScaleHint : parentScaleHint.y;
     return {
       x:
         layouts[0].x -
@@ -75,8 +77,8 @@ export async function measureRelativeLayout(component) {
       y: layouts[0].y - layouts[1].y,
       width: layouts[0].width,
       height: layouts[0].height,
-      scaleX: scaleHint || 1,
-      scaleY: scaleHint || 1
+      scaleX: 1,
+      scaleY: 1
     };
   }
 }

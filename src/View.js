@@ -33,7 +33,13 @@ class MagicMoveView extends Component {
       width: PropTypes.number,
       height: PropTypes.number
     }),
-    scaleHint: PropTypes.any,
+    parentScaleHint: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.shape({
+        x: PropTypes.number,
+        y: PropTypes.number
+      })
+    ]),
     mmContext: MagicMoveContextPropType
   };
 
@@ -138,7 +144,7 @@ class MagicMoveView extends Component {
       imageSizeHint, // eslint-disable-line
       zIndex, // eslint-disable-line
       useNativeClone, // eslint-disable-line
-      scaleHint, // eslint-disable-line
+      parentScaleHint, // eslint-disable-line
       ...otherProps
     } = this.props;
 
