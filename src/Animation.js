@@ -56,15 +56,15 @@ class MagicMoveAnimation extends Component {
    */
   constructor(props) {
     super(props);
-    if (this.isDebug) {
-      //eslint-disable-next-line
-      console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
-    }
     if (
       !props.target.props.useNativeClone ||
       Platform.OS === "android" ||
       !DELAYED_HIDE_IOS
     ) {
+      if (this.isDebug) {
+        //eslint-disable-next-line
+        console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
+      }
       props.target.setHidden(true);
     }
   }
@@ -258,16 +258,22 @@ class MagicMoveAnimation extends Component {
    * animation between the two.
    */
   onLayoutTargetClone = layout => {
-    this.setState({
-      targetLayout: layout
-    });
     if (
       DELAYED_HIDE_IOS &&
       this.props.target.props.useNativeClone &&
       Platform.OS === "ios"
     ) {
+      if (this.isDebug) {
+        //eslint-disable-next-line
+        console.debug(
+          `[MagicMove] Hiding target ${this.props.target.debugName}`
+        );
+      }
       this.props.target.setHidden(true);
     }
+    this.setState({
+      targetLayout: layout
+    });
   };
 
   /**
