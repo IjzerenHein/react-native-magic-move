@@ -70,13 +70,16 @@ RCT_REMAP_METHOD(init,
         
         // If the layout is not yet available, try again in a bit
         if (!(uncorrectedLayout.size.width * uncorrectedLayout.size.height)) {
+            // NSLog(@"[MagicMove] calculateLayout failed for view %@, retrying...", sharedId);
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4 * NSEC_PER_MSEC));
             dispatch_after(popTime, self.bridge.uiManager.methodQueue, calculateLayout);
             return;
         }
+        // NSLog(@"[MagicMove] calculateLayout succeeded for view %@, width: %lf..., height: %lf", sharedId, uncorrectedLayout.size.width, uncorrectedLayout.size.height);
         
         // And inform the clone of the layout and other props
         [self.bridge.uiManager prependUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+            // NSLog(@"[MagicMove] Prepend UI block complete for view %@", sharedId);
             RCTMagicMoveClone *view = (RCTMagicMoveClone*) viewRegistry[reactTag];
             if (![view isKindOfClass:[RCTMagicMoveClone class]]) {
                 return RCTLogError(@"[MagicMove] Invalid view returned from registry, expecting RCTMagicMoveClone, got: %@", view);
