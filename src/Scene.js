@@ -26,8 +26,10 @@ class MagicMoveScene extends Component {
     debug: PropTypes.bool,
     useNativeClone: PropTypes.bool,
     mmContext: MagicMoveContextPropType,
-    onWillHide: PropTypes.func,
-    onWillShow: PropTypes.func
+    onWillAppear: PropTypes.func,
+    onWillDisappear: PropTypes.func
+    // onDidAppear: PropTypes.func,
+    // onDidDisappear: PropTypes.func,
   };
 
   static defaultProps = {
@@ -120,12 +122,12 @@ class MagicMoveScene extends Component {
         }
         this.props.mmContext.administration.activateScene(this, isActive);
         if (!isActive) {
-          if (this.props.onWillHide) {
-            this.props.onWillHide();
+          if (this.props.onWillDisappear) {
+            this.props.onWillDisappear();
           }
         } else {
-          if (this.props.onWillShow) {
-            this.props.onWillShow();
+          if (this.props.onWillAppear) {
+            this.props.onWillAppear();
           }
         }
       }
