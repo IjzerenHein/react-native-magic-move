@@ -4,16 +4,19 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
-## [0.6.2] - 2019-04-09
+## [0.6.2] - 2019-05-21
 
 ### Added
 
-- Added `parentScaleHint` prop to make it possible to render scaled content correctly
+- Added `onWillAppear` and `onWillDisappear` Scene life-cycle events
 - Added missing docs for `imageSizeHint` and `useNativeClone` props
 
 ### Fixed
 
+- Fixed clone snapshot not always correctly visible on iOS, using the native extensions
 - Fixed scene not visible when no explicit style was provided to the Scene component
+- Reduced glitch where target image is briefly visible on iOS (when using native extensions and ‘move’ transition)
+- Improved debug-logging for the target component and native clones
 
 ## [0.6.1] - 2019-03-15
 
