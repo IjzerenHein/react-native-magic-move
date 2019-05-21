@@ -120,7 +120,7 @@ RCT_REMAP_METHOD(init,
                  UIGraphicsEndImageContext();
                  //NSLog(@"drawViewHierarchyInRect... DONE");*/
                 //NSLog(@"snapshotViewAfterScreenUpdates...");
-                snapshot = [sourceView snapshotViewAfterScreenUpdates:NO];
+                snapshot = [sourceView snapshotViewAfterScreenUpdates:YES];
                 //NSLog(@"snapshotViewAfterScreenUpdates... DONE");
             }
             
