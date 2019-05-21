@@ -26,8 +26,6 @@ function contentTypeFromString(str) {
   }
 }
 
-const DELAYED_HIDE_IOS = true;
-
 /**
  * 1. Hide to component
  * 2. Get layout to and from component
@@ -49,6 +47,7 @@ class MagicMoveAnimation extends Component {
     sourceLayout: undefined,
     targetLayout: undefined
   };
+  _useDelayedTargetHide = false;
 
   /**
    * Upon creating, hide the "target" component as quickly
@@ -56,11 +55,12 @@ class MagicMoveAnimation extends Component {
    */
   constructor(props) {
     super(props);
-    if (
-      !props.target.props.useNativeClone ||
-      Platform.OS === "android" ||
-      !DELAYED_HIDE_IOS
-    ) {
+    this._useDelayedTargetHide =
+      props.target.props.useNativeClone &&
+      Platform.OS === "ios" &&
+      (props.target.props.ComponentType !== "image" ||
+        this.getTransition() !== defaultTransition);
+    if (!this._useDelayedTargetHide) {
       if (this.isDebug) {
         //eslint-disable-next-line
         console.debug(`[MagicMove] Hiding target ${props.target.debugName}`);
@@ -258,11 +258,7 @@ class MagicMoveAnimation extends Component {
    * animation between the two.
    */
   onLayoutTargetClone = layout => {
-    if (
-      DELAYED_HIDE_IOS &&
-      this.props.target.props.useNativeClone &&
-      Platform.OS === "ios"
-    ) {
+    if (this._useDelayedTargetHide) {
       if (this.isDebug) {
         //eslint-disable-next-line
         console.debug(
@@ -391,7 +387,6 @@ class MagicMoveAnimation extends Component {
           sourceLayout.scaleY,
         opacity: targetStyle.opacity !== undefined ? targetStyle.opacity : 1
       },
-      initial: from,
       props: {
         ...source.props
       },
