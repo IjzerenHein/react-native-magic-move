@@ -14,7 +14,11 @@ Create magical move transitions between scenes in react-native 🐰🎩✨
   - [Transitions](#transitions)
   - [Scenes](#scenes)
   - [Context](#context)
-- [Examples](#examples)
+- [Resources](#resources)
+  - [React Europe Talk](#react-europe-talk)
+  - [react-native-magic-move-presentation](#react-native-magic-move-presentation)
+  - [react-navigation-magic-move](#react-navigation-magic-move)
+  - [examples/src](#examplessrc)
 - [Disclaimer 🐰🎩](#disclaimer-%F0%9F%90%B0%F0%9F%8E%A9)
 
 ## Usage
@@ -174,57 +178,17 @@ When a magic-move is performend, a temporary clone of the source and/or target c
 ```
 
 
-## Examples
+## Resources
 
-Example with scene transitions using `react-native-router-flux`.
-
-```jsx
-import React from "react";
-import { View, TouchableOpacity } from "react-native";
-import { Router, Stack, Scene, Actions } from "react-native-router-flux";
-import * as MagicMove from "react-native-magic-move";
-
-const Scene1 = () => (
-  <MagicMove.Scene>
-    <TouchableOpacity onPress={() => Actions.scene2()}>
-      <MagicMove.View id="myView" style={{
-        alignSelf: "center",
-        width: 100,
-        height: 100,
-        backgroundColor: "green",
-        borderRadius: 20
-      }} />
-    </TouchableOpacity>
-  </MagicMove.Scene>
-);
-
-const Scene2 = () => (
-  <MagicMove.Scene>
-    <MagicMove.View id="myView" style={{
-      height: 300,
-      backgroundColor: "purple"
-    }} />
-  </MagicMove.Scene>
-);
-
-const App = () => (
-  <MagicMove.Provider>
-    <Router>
-      <Stack key="root">
-        <Scene key="scene1" component={Scene1} />
-        <Scene key="scene2" component={Scene2} />
-      </Stack>
-    </Router>
-  </MagicMove.Provider>
-);
-```
-
-See [`examples/src`](./examples/src) for more code examples.
-
+### [React Europe Talk](https://www.youtube.com/watch?v=Uj7aWfrtey8&list=FLsxiG7-SUK8s8xReSGAH4lQ)
+### [react-native-magic-move-presentation](https://github.com/IjzerenHein/react-native-magic-move-presentation)
+### [react-navigation-magic-move](https://github.com/IjzerenHein/react-navigation-magic-move)
+### [examples/src](./examples/src)
 
 ## Disclaimer 🐰🎩
 
-Magic-move creates the illusion of transitioning/morphing components from one scene to another. _It however doesn't actually move components to different scenes._ As with real magic tricks, there will be situations where the illusion will not work for you. And as with magic tricks, you may need to **"set the stage"** (e.g. change some stuff in your app) to create the transition that you want. So now that you've received this reality check ✅, go forth and create some bad-ass illusions. Drop me a note of the cool stuff you've built with it. Grand wizard, IjzerenHein
+Magic-move creates the illusion of transitioning/morphing components from one scene to another. _It however doesn't actually move components to different scenes._ As with real magic tricks, there will be situations where the illusion will not work for you. And as with magic tricks, you may need to **"set the stage"** (e.g. change some stuff in your app) to create the transition that you want. So now that you've received this reality check ✅, go forth and create some bad-ass illusions.
+
 
 ## License <!-- omit in toc -->
 
