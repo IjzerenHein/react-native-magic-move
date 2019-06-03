@@ -18,7 +18,7 @@ Create magical move transitions between scenes in react-native 🐰🎩✨
   - [React Europe Talk](#react-europe-talk)
   - [react-native-magic-move-presentation](#react-native-magic-move-presentation)
   - [react-navigation-magic-move](#react-navigation-magic-move)
-  - [examples/src](#examplessrc)
+  - [examples/expo/src](#examplesexposrc)
 - [Disclaimer 🐰🎩](#disclaimer-%F0%9F%90%B0%F0%9F%8E%A9)
 
 ## Usage
@@ -183,7 +183,7 @@ When a magic-move is performend, a temporary clone of the source and/or target c
 ### [React Europe Talk](https://www.youtube.com/watch?v=Uj7aWfrtey8&list=FLsxiG7-SUK8s8xReSGAH4lQ)
 ### [react-native-magic-move-presentation](https://github.com/IjzerenHein/react-native-magic-move-presentation)
 ### [react-navigation-magic-move](https://github.com/IjzerenHein/react-navigation-magic-move)
-### [examples/src](./examples/src)
+### [examples/expo/src](./examples/expo/src)
 
 ## Disclaimer 🐰🎩
 
