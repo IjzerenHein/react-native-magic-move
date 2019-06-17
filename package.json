@@ -11,6 +11,7 @@
     "scene-transition"
   ],
   "repository": "https://github.com/IjzerenHein/react-native-magic-move",
+  "homepage": "https://github.com/IjzerenHein/react-native-magic-move#readme",
   "bugs": "https://github.com/IjzerenHein/react-native-magic-move/issues",
   "license": "MIT",
   "main": "src/index.js",
