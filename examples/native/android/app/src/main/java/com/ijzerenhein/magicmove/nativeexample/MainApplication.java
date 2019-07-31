@@ -1,4 +1,4 @@
-package com.wixnavigation;
+package com.ijzerenhein.magicmove.nativeexample;
 
 import android.app.Application;
 
@@ -23,8 +23,7 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(new MainReactPackage(),
-            new ReactMagicMovePackage(), new VectorIconsPackage());
+      return Arrays.<ReactPackage>asList(new MainReactPackage(), new ReactMagicMovePackage(), new VectorIconsPackage());
     }
 
     @Override

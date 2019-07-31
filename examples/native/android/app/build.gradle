@@ -103,7 +103,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.wixnavigation"
+        applicationId "com.ijzerenhein.magicmove.nativeexample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
