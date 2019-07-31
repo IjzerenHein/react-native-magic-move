@@ -119,7 +119,7 @@ const AppDebugStackNavigator = createStackNavigator(
 
 const AppModalStackNavigator = createStackNavigator(
   {
-    modal: ModalScene,
+    modal: Main,
     modal2: ModalScene2
   },
   {

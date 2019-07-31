@@ -40,22 +40,20 @@ class Main extends Component {
   renderItem({ id, style, text, onPress }) {
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={onPress} key={id}>
-        {[
-          <MagicMove.View
-            key={id}
-            id={id}
-            style={[styles.box, style]}
+        <MagicMove.View
+          key={id}
+          id={id}
+          style={[styles.box, style]}
+          transition={MagicMove.Transition.morph}
+        >
+          <MagicMove.Text
+            id={`${id}.title`}
+            style={styles.text}
             transition={MagicMove.Transition.morph}
           >
-            <MagicMove.Text
-              id={`${id}.title`}
-              style={styles.text}
-              transition={MagicMove.Transition.morph}
-            >
-              {text}
-            </MagicMove.Text>
-          </MagicMove.View>
-        ]}
+            {text}
+          </MagicMove.Text>
+        </MagicMove.View>
       </TouchableOpacity>
     );
   }
@@ -79,81 +77,77 @@ class Main extends Component {
     const { navigation } = this.props;
     return (
       <MagicMove.Scene style={styles.container}>
-        {[
-          <View style={styles.row} key="row1">
-            {[
-              this.renderItem({
-                id: "scene1",
-                text: "Move",
-                style: {
-                  backgroundColor: "blueviolet"
-                },
-                onPress: () => navigation.navigate("scene1")
-              }),
-              this.renderImageItem({
-                id: "image",
-                source: require("../assets/waterfall.jpg"),
-                onPress: () => navigation.navigate("scene3")
-              })
-            ]}
-          </View>,
-          <View style={styles.row} key="row2">
-            {this.renderItem({
-              id: "list5",
-              text: "ScrollView",
-              style: {
-                backgroundColor: "purple",
-                borderRadius: 0
-              },
-              onPress: () => navigation.navigate("scene2")
-            })}
-            {this.renderItem({
-              id: "scene4",
-              text: "Morph",
-              style: {
-                backgroundColor: "orange",
-                borderTopLeftRadius: 0
-              },
-              onPress: () => navigation.navigate("scene4")
-            })}
-          </View>,
-          <View style={styles.row} key="row3">
-            {this.renderItem({
-              id: "scene5",
-              text: "Flip",
-              style: {
-                backgroundColor: "goldenrod"
-              },
-              onPress: () => navigation.navigate("scene5")
-            })}
-            {this.renderItem({
-              id: "scene6",
-              text: "Dissolve",
-              style: {
-                backgroundColor: "seagreen"
-              },
-              onPress: () => navigation.navigate("scene6")
-            })}
-          </View>,
-          <View style={styles.row} key="row4">
-            {this.renderItem({
-              id: "scene7",
-              text: "Shrink & Grow",
-              style: {
-                backgroundColor: "salmon"
-              },
-              onPress: () => navigation.navigate("scene7")
-            })}
-            {this.renderItem({
-              id: "scene8",
-              text: "Squash & Stretch",
-              style: {
-                backgroundColor: "steelblue"
-              },
-              onPress: () => navigation.navigate("scene8")
-            })}
-          </View>
-        ]}
+        <View style={styles.row} key="row1">
+          {this.renderItem({
+            id: "scene1",
+            text: "Move",
+            style: {
+              backgroundColor: "blueviolet"
+            },
+            onPress: () => navigation.navigate("scene1")
+          })}
+          {this.renderImageItem({
+            id: "image",
+            source: require("../assets/waterfall.jpg"),
+            onPress: () => navigation.navigate("scene3")
+          })}
+        </View>
+        <View style={styles.row} key="row2">
+          {this.renderItem({
+            id: "list5",
+            text: "ScrollView",
+            style: {
+              backgroundColor: "purple",
+              borderRadius: 0
+            },
+            onPress: () => navigation.navigate("scene2")
+          })}
+          {this.renderItem({
+            id: "scene4",
+            text: "Morph",
+            style: {
+              backgroundColor: "orange",
+              borderTopLeftRadius: 0
+            },
+            onPress: () => navigation.navigate("scene4")
+          })}
+        </View>
+        <View style={styles.row} key="row3">
+          {this.renderItem({
+            id: "scene5",
+            text: "Flip",
+            style: {
+              backgroundColor: "goldenrod"
+            },
+            onPress: () => navigation.navigate("scene5")
+          })}
+          {this.renderItem({
+            id: "scene6",
+            text: "Dissolve",
+            style: {
+              backgroundColor: "seagreen"
+            },
+            onPress: () => navigation.navigate("scene6")
+          })}
+        </View>
+        <View style={styles.row} key="row4">
+          {this.renderItem({
+            id: "scene7",
+            text: "Shrink & Grow",
+            style: {
+              backgroundColor: "salmon"
+            },
+            onPress: () => navigation.navigate("scene7")
+          })}
+          {this.renderItem({
+            id: "scene8",
+            text: "Squash & Stretch",
+            style: {
+              backgroundColor: "steelblue"
+            },
+            onPress: () => navigation.navigate("scene8")
+          })}
+        </View>
       </MagicMove.Scene>
     );
   }
