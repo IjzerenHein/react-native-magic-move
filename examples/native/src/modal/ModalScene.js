@@ -2,8 +2,8 @@ import React from "react";
 import { View, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import * as MagicMove from "react-native-magic-move";
 import * as Animatable from "react-native-animatable";
-import { Actions } from "react-native-router-flux";
 import content from "./content";
+import PropTypes from "prop-types";
 
 const ITEM_SIZE = Math.round(Dimensions.get("window").width / 3);
 
@@ -40,12 +40,19 @@ const styles = StyleSheet.create({
 });
 
 class Scene extends React.Component {
+  static propTypes = {
+    navigation: PropTypes.any
+  };
+  static navigationOptions = {
+    title: "Homage to Escher"
+  };
   renderItem(content) {
+    const { navigation } = this.props;
     const { id, image } = content;
     return (
       <TouchableOpacity
         activeOpacity={0.5}
-        onPress={() => Actions.modal2({ content })}
+        onPress={() => navigation.navigate("modal2", { content })}
       >
         <MagicMove.Image
           id={id}

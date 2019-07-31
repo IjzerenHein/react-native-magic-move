@@ -39,6 +39,9 @@ const styles = StyleSheet.create({
 });
 
 class Scene extends React.Component {
+  static navigationOptions = {
+    title: "Multi"
+  };
   render() {
     return (
       <MagicMove.Scene style={styles.container}>

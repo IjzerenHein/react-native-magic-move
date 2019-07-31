@@ -43,6 +43,9 @@ class DebugScene extends React.Component {
   static propTypes = {
     store: StorePropType
   };
+  static navigationOptions = {
+    title: "Debug"
+  };
   render() {
     const { debug } = this.props.store;
     return (

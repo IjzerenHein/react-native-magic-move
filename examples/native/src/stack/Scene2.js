@@ -31,6 +31,9 @@ function getColor(idx) {
 }
 
 class Scene extends React.Component {
+  static navigationOptions = {
+    title: "ScrollView"
+  };
   render() {
     const items = [];
     for (let i = 1; i < 100; i++) {

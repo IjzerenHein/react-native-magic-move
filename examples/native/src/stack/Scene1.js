@@ -34,6 +34,9 @@ class Scene extends React.Component {
   static propTypes = {
     store: StorePropType
   };
+  static navigationOptions = {
+    title: "Scale"
+  };
   render() {
     const { debug } = this.props.store;
     return (

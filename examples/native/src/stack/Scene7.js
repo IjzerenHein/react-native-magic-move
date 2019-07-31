@@ -35,6 +35,9 @@ const styles = StyleSheet.create({
 });
 
 class Scene extends React.Component {
+  static navigationOptions = {
+    title: "Shrink & Grow"
+  };
   render() {
     return (
       <MagicMove.Scene style={styles.container}>

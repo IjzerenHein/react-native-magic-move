@@ -41,10 +41,15 @@ const styles = StyleSheet.create({
 
 class Scene extends React.Component {
   static propTypes = {
-    content: PropTypes.object.isRequired
+    navigation: PropTypes.any.isRequired
+  };
+  static navigationOptions = {
+    title: "Modal"
   };
   render() {
-    const { id, image, title, description } = this.props.content;
+    const { navigation } = this.props;
+    const content = navigation.getParam("content");
+    const { id, image, title, description } = content;
     return (
       <MagicMove.Scene style={styles.container}>
         <ScrollView style={styles.flex}>

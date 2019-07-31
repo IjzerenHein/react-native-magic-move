@@ -30,6 +30,9 @@ const styles = StyleSheet.create({
 });
 
 class ExplorerView extends Component {
+  static navigationOptions = {
+    title: "Transition Explorer"
+  };
   state = {
     isTabActive: false,
     componentStores: [
