@@ -4,28 +4,31 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios --simulator=\"iPhone X\"",
+    "android-clean": "cd android && ./gradlew clean && cd .."
   },
   "dependencies": {
     "lodash.findlast": "^4.6.0",
-    "mobx": "^4.7.0",
-    "mobx-react": "^5.4.2",
+    "mobx": "^5.13.0",
+    "mobx-react": "^6.1.1",
     "randomcolor": "^0.5.3",
-    "react": "16.6.3",
-    "react-native": "0.57.8",
+    "react": "16.8.3",
+    "react-native": "0.59.10",
     "react-native-actionsheet": "^2.4.2",
-    "react-native-animatable": "^1.3.0",
-    "react-native-magic-move": "*",
+    "react-native-animatable": "^1.3.2",
+    "react-native-magic-move": "file:.yalc/react-native-magic-move",
     "react-native-router-flux": "^4.0.6",
-    "react-native-segmented-control-tab": "^3.3.1",
-    "react-native-vector-icons": "^6.1.0",
+    "react-native-segmented-control-tab": "^3.4.1",
+    "react-native-vector-icons": "^6.6.0",
     "react-navigation-magic-move": "*"
   },
   "devDependencies": {
-    "babel-jest": "23.6.0",
-    "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.51.1",
-    "react-test-renderer": "16.6.3"
+    "babel-jest": "^24.5.0",
+    "jest": "^24.5.0",
+    "metro-react-native-babel-preset": "^0.53.1",
+    "react-test-renderer": "16.8.3"
   },
   "jest": {
     "preset": "react-native"
