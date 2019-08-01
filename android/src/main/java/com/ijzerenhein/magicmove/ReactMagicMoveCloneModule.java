@@ -1,5 +1,7 @@
 package com.ijzerenhein.magicmove;
 
+import java.util.concurrent.TimeUnit;
+
 import android.view.View;
 import android.os.Handler;
 import android.graphics.Rect;
@@ -20,13 +22,17 @@ import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.UIBlock;
 import com.facebook.react.uimanager.UIManagerModule;
 
+abstract class RetryRunnable implements Runnable {
+    int numRetries = 0;
+}
+
 public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
     private ReactMagicMoveCloneDataManager mCloneDataManager;
 
     static String LOG_TAG = "MagicMove";
 
     public ReactMagicMoveCloneModule(ReactApplicationContext reactContext,
-            ReactMagicMoveCloneDataManager cloneDataManager) {
+                                     ReactMagicMoveCloneDataManager cloneDataManager) {
         super(reactContext);
         mCloneDataManager = cloneDataManager;
     }
@@ -63,6 +69,7 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                 final RectF initialLayout = new RectF(x, y, x + width, y + height);
 
                 if ((width == 0f) || (height == 0f)) {
+                    Log.d(LOG_TAG, "Failed to measure layout, continuing anyway...");
                     // promise.reject("measure_failed", "measureLayout returned 0 for width/height
                     // after 3 times");
                     width = 100f;
@@ -135,59 +142,33 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
         };
 
         // Try a couple times to measure the layout.
-        // I know, I know, this solution down here is a "regelrechte" mess.
-        // I couldn't figure out how to do a generic delayed retry mechanism
-        // without tripping up Java...
-        // If you read this code and you know how to (without using external libs),
-        // let me know at: https://github.com/IjzerenHein/react-native-magic-move
-        uiManager.measureLayout(sourceTag, parentTag, measureErrorCallback, new Callback() {
+        final long startTime = System.nanoTime();
+        handler.post(new RetryRunnable() {
+
             @Override
-            public void invoke(Object... args) {
-                if (((Float) args[2]).floatValue() == 0f || ((Float) args[3]).floatValue() == 0f) {
-                    // Log.d(LOG_TAG, "Retrying layout #1...");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            uiManager.measureLayout(sourceTag, parentTag, measureErrorCallback, new Callback() {
-                                @Override
-                                public void invoke(Object... args) {
-                                    if (((Float) args[2]).floatValue() == 0f || ((Float) args[3]).floatValue() == 0f) {
-                                        // Log.d(LOG_TAG, "Retrying layout #2...");
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                uiManager.measureLayout(sourceTag, parentTag, measureErrorCallback,
-                                                        new Callback() {
-                                                            @Override
-                                                            public void invoke(Object... args) {
-                                                                if (((Float) args[2]).floatValue() == 0f
-                                                                        || ((Float) args[3]).floatValue() == 0f) {
-                                                                    // Log.d(LOG_TAG, "Retrying layout #3...");
-                                                                    handler.postDelayed(new Runnable() {
-                                                                        @Override
-                                                                        public void run() {
-                                                                            uiManager.measureLayout(sourceTag,
-                                                                                    parentTag, measureErrorCallback,
-                                                                                    measureSuccessCallback);
-                                                                        }
-                                                                    }, 8);
-                                                                } else {
-                                                                    measureSuccessCallback.invoke(args);
-                                                                }
-                                                            }
-                                                        });
-                                            }
-                                        }, 4);
-                                    } else {
-                                        measureSuccessCallback.invoke(args);
-                                    }
-                                }
-                            });
+            public void run() {
+                final RetryRunnable runnable = this;
+                uiManager.measureLayout(sourceTag, parentTag, measureErrorCallback, new Callback() {
+                    @Override
+                    public void invoke(Object... args) {
+                        if (((Float) args[2]).floatValue() == 0f || ((Float) args[3]).floatValue() == 0f) {
+                            runnable.numRetries++;
+                            if (runnable.numRetries >= 100) {
+                                promise.reject("measure_failed", "Too many retries");
+                                return;
+                            }
+                            if (runnable.numRetries >= 3) {
+                                Log.d(LOG_TAG, "Warning, retrying measure for element '" + sharedId  + "', numRetries: " + runnable.numRetries + ", delaySoFar: " + TimeUnit.NANOSECONDS.toMillis( (System.nanoTime() - startTime)) + " ms ...");
+                            }
+                            handler.postDelayed(runnable, 8);
+                        } else {
+                            if (runnable.numRetries >= 2) {
+                                Log.d(LOG_TAG, "Warning, measure completed for element '" + sharedId  + "', after " + runnable.numRetries + " retries, totalDelay: " + TimeUnit.NANOSECONDS.toMillis((System.nanoTime() - startTime)) + " ms ...");
+                            }
+                            measureSuccessCallback.invoke(args);
                         }
-                    }, 4);
-                } else {
-                    measureSuccessCallback.invoke(args);
-                }
+                    }
+                });
             }
         });
     }
