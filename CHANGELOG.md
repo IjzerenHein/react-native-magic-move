@@ -4,6 +4,13 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+## [0.6.3] - 2019-06-17
+
+### Added
+
+- Added `podspec` file for when using the new Cocoapods package system
+- Added link to ReactEurope talk
+
 ## [0.6.2] - 2019-05-21
 
 ### Added
