@@ -119,10 +119,11 @@ const AppDebugStackNavigator = createStackNavigator(
 
 const AppModalStackNavigator = createStackNavigator(
   {
-    modal: Main,
+    modal: ModalScene,
     modal2: ModalScene2
   },
   {
+    mode: "modal",
     initialRouteName: "modal",
     navigationOptions: () => {
       return {
