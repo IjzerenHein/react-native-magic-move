@@ -4,6 +4,16 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+## [0.6.4] - 2019-08-03
+
+### Fixed
+
+- Fixed exception on Android "parameter must be a descentdant of this view"
+
+## Update
+
+- Update "Native" example app to use the `react-navigation` API
+
 ## [0.6.3] - 2019-06-17
 
 ### Added
