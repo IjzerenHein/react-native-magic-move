@@ -4,9 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import android.view.View;
 import android.os.Handler;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.util.Log;
 
 import com.facebook.react.bridge.Callback;
@@ -42,6 +42,19 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
         return "MagicMoveCloneManager";
     }
 
+    private static RectF getScrollOffset(View view, ViewGroup ancestorView) {
+        int left = 0;
+        int top = 0;
+        ViewParent parent = view.getParent();
+        while ((parent != null) && (parent != ancestorView)) {
+            View parentView = (View) parent;
+            left += parentView.getScrollX();
+            top += parentView.getScrollY();
+            parent = parent.getParent();
+        }
+        return new RectF(PixelUtil.toDIPFromPixel(left), PixelUtil.toDIPFromPixel(top), 0, 0);
+    }
+
     @ReactMethod
     public void init(final ReadableMap config, final int tag, final Promise promise) {
 
@@ -66,17 +79,8 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                 Float y = ((Float) args[1]).floatValue();
                 Float width = ((Float) args[2]).floatValue();
                 Float height = ((Float) args[3]).floatValue();
-                final RectF initialLayout = new RectF(x, y, x + width, y + height);
+                final RectF measuredLayout = new RectF(x, y, x + width, y + height);
 
-                if ((width == 0f) || (height == 0f)) {
-                    Log.d(LOG_TAG, "Failed to measure layout, continuing anyway...");
-                    // promise.reject("measure_failed", "measureLayout returned 0 for width/height
-                    // after 3 times");
-                    width = 100f;
-                    height = 100f;
-                }
-
-                // Get source view
                 uiManager.prependUIBlock(new UIBlock() {
                     @Override
                     public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
@@ -88,12 +92,12 @@ public class ReactMagicMoveCloneModule extends ReactContextBaseJavaModule {
                         ViewGroup parentView = (ViewGroup) nativeViewHierarchyManager.resolveView(parentTag);
 
                         // Calculate adjusted position
-                        Rect rawLayout = new Rect();
-                        sourceView.getDrawingRect(rawLayout);
-                        parentView.offsetDescendantRectToMyCoords(sourceView, rawLayout);
-                        final RectF layout = new RectF(PixelUtil.toDIPFromPixel(rawLayout.left),
-                                PixelUtil.toDIPFromPixel(rawLayout.top), PixelUtil.toDIPFromPixel(rawLayout.right),
-                                PixelUtil.toDIPFromPixel(rawLayout.bottom));
+                        final RectF layout = measuredLayout;
+                        final RectF scrollOffset = ReactMagicMoveCloneModule.getScrollOffset(sourceView, parentView);
+                        layout.left -= scrollOffset.left;
+                        layout.right -= scrollOffset.left;
+                        layout.top -= scrollOffset.top;
+                        layout.bottom -= scrollOffset.top;
 
                         // Update the layout props for the view
                         handler.post(new Runnable() {
