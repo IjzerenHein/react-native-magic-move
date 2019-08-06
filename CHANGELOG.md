@@ -4,7 +4,7 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
-## [0.6.4] - 2019-08-03
+## [0.6.5] - 2019-08-06
 
 ### Fixed
 
