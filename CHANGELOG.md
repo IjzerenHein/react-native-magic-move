@@ -4,6 +4,12 @@ Create magical move transitions between scenes in react-native
 
 ## [Unreleased]
 
+## [0.6.6] - 2019-08-12
+
+### Fixed
+
+- Fixed `No podspec file was found` when using iOS auto-linking on react-native 0.60.
+
 ## [0.6.5] - 2019-08-06
 
 ### Fixed
