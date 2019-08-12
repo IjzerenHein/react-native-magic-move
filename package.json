@@ -19,7 +19,8 @@
   "files": [
     "src",
     "ios",
-    "android"
+    "android",
+    "RNMagicMove.podspec"
   ],
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./src"
