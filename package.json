@@ -1,6 +1,6 @@
 {
   "name": "react-native-magic-move",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "Create magical move transitions between scenes in react-native",
   "author": "IjzerenHein <hrutjes@gmail.com>",
   "keywords": [
