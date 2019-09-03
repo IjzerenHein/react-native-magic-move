@@ -1,3 +1,14 @@
+# Important `react-native-shared-element` update! <!-- omit in toc -->
+
+A follow up project called [react-native-shared-element](https://github.com/IjzerenHein/react-native-shared-element) has been created which can be considered
+the successor to `react-native-magic-move`. It it an all native solution that provides superior
+performance (no more passes over the react-native bridge) and transitions.
+It however does not support some of the more exotic transition types (flip, shrinkAndGrow) that
+Magic Move does. It also doesn't support the web-platform **yet** and requires **native** extensions to run.
+New users are advised to use `react-native-shared-element` when possible.
+As for Magic Move, no more new developments will be started for Magic Move, merely critical bug-fixes.
+This notification will be updated as development on `react-native-shared-element` progresses.
+
 # react-native-magic-move <!-- omit in toc -->
 
 Create magical move transitions between scenes in react-native 🐰🎩✨
